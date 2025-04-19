@@ -33,9 +33,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r docs/requirements-docs.txt
 
-      - name: Fetch gh-pages branch
+      - name: Fetch gh-pages branch or initialize if not exists
         run: |
-          git fetch origin gh-pages --depth=1
+          git fetch origin gh-pages --depth=1 || {
+            echo "创建 gh-pages 分支"
+            git checkout --orphan gh-pages
+            git reset --hard
+            git commit --allow-empty -m "初始化 gh-pages 分支"
+            git push origin gh-pages
+            git checkout ${{ github.ref_name }}
+          }
 
       - name: Configure Git user
         run: |
