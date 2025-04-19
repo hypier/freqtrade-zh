@@ -1,0 +1,2484 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Freqtrade is a free and open source crypto trading bot written in Python, designed to support all major exchanges and be controlled via Telegram or builtin Web UI">
+      
+      
+      
+        <link rel="canonical" href="https://www.freqtrade.io/en/stable/edge/">
+      
+      
+        <link rel="prev" href="../sql_cheatsheet/">
+      
+      
+        <link rel="next" href="../faq/">
+      
+      
+      <link rel="icon" href="../images/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.11">
+    
+    
+      
+        <title>Edge Positioning - Freqtrade</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.4af4bdda.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/ft.extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-VH170LG9M5"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-VH170LG9M5",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-VH170LG9M5",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="tear">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Freqtrade" class="md-header__button md-logo" aria-label="Freqtrade" data-md-component="logo">
+      
+  <img src="../images/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Freqtrade
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Edge Positioning
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="tear"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="blue-grey" data-md-color-accent="tear"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/freqtrade/freqtrade" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+
+  <!-- Main navigation -->
+  
+  
+  <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+    <div class="md-sidebar__scrollwrap">
+      <div class="md-sidebar__inner">
+        
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Freqtrade" class="md-nav__button md-logo" aria-label="Freqtrade" data-md-component="logo">
+      
+  <img src="../images/logo.png" alt="logo">
+
+    </a>
+    Freqtrade
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/freqtrade/freqtrade" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docker_quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Quickstart with Docker
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Installation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Linux/MacOS/Raspberry
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../windows_installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Windows
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bot-basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Freqtrade Basics
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-101/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-customization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy Customization
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-callbacks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy Callbacks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stoploss/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Stoploss
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Plugins
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bot-usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Start the bot
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Control the bot
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            Control the bot
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../telegram-usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Telegram
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freq-ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    freqUI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rest-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    REST API
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../webhook-config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Web Hook
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-download/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Data Downloading
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backtesting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Backtesting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hyperopt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Hyperopt
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_16" >
+        
+          
+          <label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    FreqAI
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_16_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_16">
+            <span class="md-nav__icon md-icon"></span>
+            FreqAI
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-parameter-table/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Parameter table
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-feature-engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Feature engineering
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-running/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Running FreqAI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-reinforcement-learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Reinforcement Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-developers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Developer guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../leverage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Short / Leverage
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Utility Sub-commands
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plotting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Plotting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exchanges/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Exchange-specific Notes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_21" >
+        
+          
+          <label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Data Analysis
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_21_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_21">
+            <span class="md-nav__icon md-icon"></span>
+            Data Analysis
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Jupyter Notebooks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy_analysis_example/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-backtesting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Backtest analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_22" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Advanced Topics
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_22_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_22">
+            <span class="md-nav__icon md-icon"></span>
+            Advanced Topics
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Advanced Post-installation Tasks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trade-object/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Trade Object
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lookahead-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Lookahead analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../recursive-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Recursive analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-advanced/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Advanced Strategy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-hyperopt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Advanced Hyperopt
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-orderflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Orderflow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../producer-consumer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Producer/Consumer mode
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sql_cheatsheet/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SQL Cheat-sheet
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Edge Positioning
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Edge Positioning
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      引言
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="引言">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      交易、盈利与亏损
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      胜率与亏损率
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#risk-reward-ratio-r" class="md-nav__link">
+    <span class="md-ellipsis">
+      风险回报比（Risk Reward Ratio, R）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#expectancy" class="md-nav__link">
+    <span class="md-ellipsis">
+      期望值（Expectancy）
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      原理
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="原理">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      仓位规模
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#edge" class="md-nav__link">
+    <span class="md-ellipsis">
+      Edge命令参考
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Edge命令参考">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      更新缓存的交易对数据以获得最新信息
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      精确控制止损范围
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#timerange" class="md-nav__link">
+    <span class="md-ellipsis">
+      高级用法：时间范围（timerange）
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    FAQ
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy_migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy migration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../updating/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Updating Freqtrade
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deprecated/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Deprecated Features
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Contributors Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+      </div>
+    </div>
+  </div>
+  
+
+  <!-- Table of contents -->
+  
+  
+  <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+    <div class="md-sidebar__scrollwrap">
+      <div class="md-sidebar__inner">
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      引言
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="引言">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      交易、盈利与亏损
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      胜率与亏损率
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#risk-reward-ratio-r" class="md-nav__link">
+    <span class="md-ellipsis">
+      风险回报比（Risk Reward Ratio, R）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#expectancy" class="md-nav__link">
+    <span class="md-ellipsis">
+      期望值（Expectancy）
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      原理
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="原理">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      仓位规模
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#edge" class="md-nav__link">
+    <span class="md-ellipsis">
+      Edge命令参考
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Edge命令参考">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      更新缓存的交易对数据以获得最新信息
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      精确控制止损范围
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#timerange" class="md-nav__link">
+    <span class="md-ellipsis">
+      高级用法：时间范围（timerange）
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      </div>
+    </div>
+  </div>
+  
+
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="_1">边缘定位<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<p><code>Edge Positioning</code>模块使用概率来计算你的胜率和风险/回报比。它会利用这些统计数据控制你的策略交易入场点、仓位规模和止损。</p>
+<div class="admonition danger">
+<p class="admonition-title">已弃用功能</p>
+<p><code>Edge positioning</code>（或简称Edge）目前处于维护模式（我们只负责保持现有功能的正常运行），应被视作已废弃。
+目前不会再添加新功能，直到有人接手该模块，或者我们决定从freqtrade中移除Edge。</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>在使用<code>Edge positioning</code>配合动态白名单（VolumePairList）时，请确保也启用<code>AgeFilter</code>并设置其<code>calculate_since_number_of_days</code>参数，避免因数据缺失导致的问题。</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>Edge Positioning</code>只考虑<em>自身</em>的买/卖/止损信号。它会忽略策略配置文件中的止损、追踪止损和ROI设置。
+<code>Edge Positioning</code>可以提升某些交易策略的表现，但也可能<em>降低</em>其他策略的效果。</p>
+</div>
+<h2 id="_2">引言<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>交易策略并非完美。它们是受市场及其指标影响的框架。由于市场完全难以预测，有时策略会获利，有时会亏损，即使是相同的策略。</p>
+<p>为了在市场中获得优势，策略必须盈利多于亏损。盈利不仅关乎策略多频繁盈利或亏损。</p>
+<div class="admonition tip">
+<p class="admonition-title">关键是赚多还是赚少！</p>
+<p>一个糟糕的策略可能在十笔交易中赚1分钱，却在一次交易中亏掉1美元。如果只看盈利交易的数量，可能会误以为该策略是盈利的，但实际上未必如此。</p>
+</div>
+<p><code>Edge Positioning</code>模块旨在提高策略的胜率和<em>长远来看</em>的盈利潜力。</p>
+<p>我们提出如下问题<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>：</p>
+<div class="admonition question">
+<p class="admonition-title">哪种交易更优？</p>
+<p>a) 胜率80%，亏损100$的交易，赢200$的交易<br/>
+b) 胜率100%，亏损30$的交易</p>
+</div>
+<details class="info" open="open">
+<summary>答案</summary>
+<p><em>a)</em>的期望值小于<em>b)</em>的期望值。<br/>
+因此，<em>b)</em>从长远来看亏损更少。<br/>
+不过，答案是：<em>视情况而定</em></p>
+</details>
+<p>另一种思考方式是提出类似的问题：</p>
+<div class="admonition question">
+<p class="admonition-title">哪种交易更优？</p>
+<p>a) 胜率80%，赢100$的交易<br/>
+b) 胜率100%，赢30$的交易</p>
+</div>
+<p>Edge定位试图自动回答关于风险/回报和仓位规模的难题，旨在最大限度地降低某个策略的亏损概率。</p>
+<h3 id="_3">交易、盈利与亏损<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<p>设<span class="arithmatex">\(o\)</span>为单笔交易的回报，其中<span class="arithmatex">\(o \in \mathbb{R}\)</span>。所有交易回报组成的集合为<span class="arithmatex">\(O = \{o_1, o_2, ..., o_N\}\)</span>，<span class="arithmatex">\(N\)</span>为该交易会话中的交易次数。我们说<span class="arithmatex">\(N\)</span>是<span class="arithmatex">\(O\)</span>的基数，通俗地，就是一次交易会话中的交易总数。</p>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<p>在一个策略进行三笔交易的会话中，定义<span class="arithmatex">\(O = \{3.5, -1, 15\}\)</span>。这表示<span class="arithmatex">\(N=3\)</span>，且<span class="arithmatex">\(o_1=3.5\)</span>, <span class="arithmatex">\(o_2=-1\)</span>, <span class="arithmatex">\(o_3=15\)</span>。</p>
+</div>
+<p>盈利交易是指策略“赚”了钱的交易。盈利意味着策略在扣除所有费用后，以盈利的价格平仓。正式而言，盈利交易的回报<span class="arithmatex">\(o_i &gt; 0\)</span>。亏损交易则是回报<span class="arithmatex">\(o_j \leq 0\)</span>。据此，我们可以定义所有盈利交易集合<span class="arithmatex">\(T_{win}\)</span>：</p>
+<div class="arithmatex">\[ T_{win} = \{ o \in O | o &gt; 0 \} \]</div>
+<p>亏损交易集合<span class="arithmatex">\(T_{lose}\)</span>为：</p>
+<div class="arithmatex">\[ T_{lose} = \{ o \in O | o \leq 0 \} \]</div>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<p>在一个交易中，策略进行了四笔交易，<span class="arithmatex">\(O = \{3.5, -1, 15, 0\}\)</span>：<br>
+<span class="arithmatex">\(T_{win} = \{3.5, 15\}\)</span><br>
+<span class="arithmatex">\(T_{lose} = \{-1, 0\}\)</span><br></p>
+</div>
+<h3 id="_4">胜率与亏损率<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
+<p>胜率<span class="arithmatex">\(W\)</span>是盈利交易占全部交易的比例。它的计算公式为：</p>
+<div class="arithmatex">\[W = \frac{|T_{win}|}{N}\]</div>
+<p>其中<span class="arithmatex">\(W\)</span>为胜率，<span class="arithmatex">\(N\)</span>为交易总数，<span class="arithmatex">\(T_{win}\)</span>为所有盈利交易的集合。</p>
+<p>亏损率<span class="arithmatex">\(L\)</span>的计算类似：</p>
+<div class="arithmatex">\[ 
+    L = \frac{|T_{lose}|}{N} 
+\]</div>
+<p>即亏损交易占比，<span class="arithmatex">\(L\)</span>为亏损率。注意：<span class="arithmatex">\(L = 1 - W\)</span>，也等价于<span class="arithmatex">\(W = 1 - L\)</span>。</p>
+<h3 id="risk-reward-ratio-r">风险回报比（Risk Reward Ratio, R）<a class="headerlink" href="#risk-reward-ratio-r" title="Permanent link">&para;</a></h3>
+<p>风险回报比（<span class="arithmatex">\(R\)</span>）用来衡量某一投资的预期收益相对于亏损的比例。它基本上是你潜在赢取的金额除以潜在亏损的金额。正式定义为：</p>
+<div class="arithmatex">\[ R = \frac{\text{潜在利润}}{\text{潜在亏损}} \]</div>
+<details class="example" open="open">
+<summary><span class="arithmatex">\(R\)</span>的计算示例</summary>
+<p>假设你认为<em>stonecoin</em>今天的价格是10.0$，你相信因为它们将开始挖矿，明天价格会涨到15.0$。但存在风险，矿难导致GPU无法挖矿，价格可能会跌到0$。你计划投资100$，这样可以买到<span class="arithmatex">\(100 / 10 = 10\)</span>股。</p>
+<p>潜在利润为：</p>
+<p><span class="arithmatex">\(\begin{aligned} 
+    \text{潜在利润} &amp;= (\text{潜在价格} - \text{入场价格}) * \frac{\text{投资金额}}{\text{入场价格}} \\
+                            &amp;= (15 - 10) * (100 / 10) \\
+                            &amp;= 5 * 10 = 50
+\end{aligned}\)</span></p>
+<p>如果价格跌到0$，那么投入的100$可能变为0。</p>
+<p>但我们设置了15%的止损：在最坏情况下，价格将以低于入场价15%的价格卖出，即8.5$。</p>
+<p>潜在亏损为：</p>
+<p><span class="arithmatex">\(\begin{aligned}
+    \text{潜在亏损} &amp;= (\text{入场价格} - \text{止损价}) * \frac{\text{投资金额}}{\text{入场价格}} \\
+                            &amp;= (10 - 8.5) * (100 / 10) \\
+                            &amp;= 1.5 * 10 = 15
+\end{aligned}\)</span></p>
+<p>因此，风险回报比为：</p>
+<p><span class="arithmatex">\(\begin{aligned}
+    R &amp;= \frac{\text{潜在利润}}{\text{潜在亏损}} \\
+      &amp;= \frac{50}{15} \\
+      &amp;= 3.33
+\end{aligned}\)</span><br>
+这意味着策略每投资1$，在最佳情况下可以赚取大约3.33$。</p>
+</details>
+<p>在长时间、多笔交易的情况下，可以通过用策略在盈利交易中的平均利润除以在亏损交易中的平均亏损来计算风险回报比。平均利润<span class="arithmatex">\(\mu_{win}\)</span>的计算方式为：</p>
+<div class="arithmatex">\[ \text{average_profit} = \mu_{win} = \frac{\text{sum_of_profits}}{\text{count_winning_trades}} = \frac{\sum^{o \in T_{win}} o}{|T_{win}|} \]</div>
+<p>类似地，平均亏损<span class="arithmatex">\(\mu_{lose}\)</span>为：</p>
+<div class="arithmatex">\[ \text{average_loss} = \mu_{lose} = \frac{\text{sum_of_losses}}{\text{count_losing_trades}} = \frac{\sum^{o \in T_{lose}} o}{|T_{lose}|} \]</div>
+<p>最后，风险回报比<span class="arithmatex">\(R\)</span>为：</p>
+<div class="arithmatex">\[ R = \frac{\text{平均利润}}{\text{平均亏损}} = \frac{\mu_{win}}{\mu_{lose}} \]</div>
+<details class="example" open="open">
+<summary>用平均利润/亏损计算<span class="arithmatex">\(R\)</span>的实例</summary>
+<p>假设所用策略的平均赢利<span class="arithmatex">\(\mu_{win} = 2.06\)</span>，平均亏损<span class="arithmatex">\(\mu_{loss} =4.11\)</span>。
+计算风险回报比为：
+<span class="arithmatex">\(R = \frac{2.06}{4.11} \approx 0.5012\)</span></p>
+</details>
+<h3 id="expectancy">期望值（Expectancy）<a class="headerlink" href="#expectancy" title="Permanent link">&para;</a></h3>
+<p>将胜率<span class="arithmatex">\(W\)</span>和风险回报比<span class="arithmatex">\(R\)</span>结合，得到期望比率<span class="arithmatex">\(E\)</span>。期望值反映单次交易的预期收益。其计算公式为：</p>
+<div class="arithmatex">\[E = R * W - L\]</div>
+<details class="example" open="open">
+<summary>计算<span class="arithmatex">\(E\)</span></summary>
+<p>假设一个策略的胜率<span class="arithmatex">\(W=0.28\)</span>，风险回报比<span class="arithmatex">\(R=5\)</span>，意味着它在约28%的交易中预期获得5倍的投资回报。计算：<br>
+<span class="arithmatex">\(E = R * W - L = 5 * 0.28 - 0.72 = 1.4 - 0.72 = 0.68\)</span></p>
+</details>
+<p>上例中的<span class="arithmatex">\(E\)</span>表示平均每笔交易可以回报亏损的1.68倍。换句话说，策略平均每亏损1$，就能盈利1.68$。</p>
+<p>这个指标非常重要：一方面，它直观显示交易的盈利潜力；另一方面，可以用它和其他系统的表现做比较，辅助决策。</p>
+<p>需要注意的是，任何期望值大于0的系统，从历史数据看都是盈利的。关键在于未来是否也能持续盈利。</p>
+<p>你还可以利用此值评估对系统的修改效果。</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>需要记住的是，Edge在用历史数据测试你的期望值时，并不能保证未来也会有类似的优势。尽管如此，这样的测试依然能增强你的信心，但要警惕“曲线拟合”，避免过度依赖历史数据推断未来交易的表现。</p>
+</div>
+<h2 id="_5">原理<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<p>Edge结合动态止损、动态仓位和白名单生成，形成一个孤立的模块，并应用到交易策略中。如果在配置中启用，Edge会根据不同止损值，遍历历史数据，寻找买卖/止损信号，然后计算每个止损条件下的胜率和期望值。示例：</p>
+<table>
+<thead>
+<tr>
+<th>配对</th>
+<th style="text-align: center;">止损</th>
+<th style="text-align: right;">胜率</th>
+<th style="text-align: right;">风险回报比</th>
+<th style="text-align: right;">期望值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>XZC/ETH</td>
+<td style="text-align: center;">-0.01</td>
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">1.176384</td>
+<td style="text-align: right;">0.088</td>
+</tr>
+<tr>
+<td>XZC/ETH</td>
+<td style="text-align: center;">-0.02</td>
+<td style="text-align: right;">0.51</td>
+<td style="text-align: right;">1.115941</td>
+<td style="text-align: right;">0.079</td>
+</tr>
+<tr>
+<td>XZC/ETH</td>
+<td style="text-align: center;">-0.03</td>
+<td style="text-align: right;">0.52</td>
+<td style="text-align: right;">1.359670</td>
+<td style="text-align: right;">0.228</td>
+</tr>
+<tr>
+<td>XZC/ETH</td>
+<td style="text-align: center;">-0.04</td>
+<td style="text-align: right;">0.51</td>
+<td style="text-align: right;">1.234539</td>
+<td style="text-align: right;">0.117</td>
+</tr>
+</tbody>
+</table>
+<p>目标是找到最大期望值的止损点。上例中，<span class="arithmatex">\(3\%\)</span>的止损能带来最大期望值（基于历史数据）。</p>
+<p>Edge模块会动态将该止损值强制应用到策略中。</p>
+<h3 id="_6">仓位规模<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
+<p>Edge根据以下因素，决定每笔交易的投入金额：</p>
+<ul>
+<li>允许的风险资本</li>
+<li>止损值</li>
+</ul>
+<p>允许风险资本的计算公式为：</p>
+<div class="highlight"><pre><span></span><code>允许风险资本 = (可用资金百分比) * (允许的单笔风险)
+</code></pre></div>
+<p>止损值依据历史数据设定。</p>
+<p>仓位规模的计算为：</p>
+<div class="highlight"><pre><span></span><code>仓位大小 = (允许风险资金) / (止损值)
+</code></pre></div>
+<p>示例：</p>
+<p>假设基础货币为<strong>ETH</strong>，钱包中有10个<strong>ETH</strong>。资金可用百分比为50%，允许风险为1%：</p>
+<ul>
+<li>可用资金：10 * 0.5 = 5 <strong>ETH</strong></li>
+<li>允许风险：5 * 0.01 = 0.05 <strong>ETH</strong></li>
+</ul>
+<p><em>第1笔交易：</em>策略检测到在<strong>XLM/ETH</strong>市场出现买入信号，Edge计算出止损为2%，那么仓位为：0.05 / 0.02 = 2.5 <strong>ETH</strong>。交易机器人随后在XLM/ETH市场买入2.5 <strong>ETH</strong>。</p>
+<p><em>第2笔交易：</em>策略检测到在<strong>BTC/ETH</strong>市场的买入信号，而第1笔交易尚未平仓，Edge计算的止损为4%，那此时的仓位为：0.05 / 0.04 = 1.25 <strong>ETH</strong>。</p>
+<div class="admonition tip">
+<p class="admonition-title">可用资金≠钱包中的剩余金额</p>
+<p>事实上，第一次交易后的可用资金会因为平仓盈利或亏损而变动，<strong>与钱包剩余余额不同</strong>。</p>
+</div>
+<p><em>第3笔交易：</em>策略在<strong>ADA/ETH</strong>市场发出买入信号，Edge计算止损为1%，仓位为：0.05 / 0.01=5 <strong>ETH</strong>。但由于前两笔交易已经占用了1.25 + 2.5 <strong>ETH</strong>，钱包中剩余：5 - 1.25 - 2.5=1.25 <strong>ETH</strong>，所以这次仓位最大为1.25 <strong>ETH</strong>。</p>
+<div class="admonition tip">
+<p class="admonition-title">可用资金随交易变化</p>
+<p>仓位在交易未平仓前不会变化。交易平仓后，获利会使可用资金增加，亏损会减少。</p>
+</div>
+<p>举例：</p>
+<p>在第4笔交易中，策略检测到<strong>XLM/ETH</strong>的买入信号，Edge计算止损为2%，仓位为：0.055 / 0.02=2.75 <strong>ETH</strong>。</p>
+<h2 id="edge">Edge命令参考<a class="headerlink" href="#edge" title="Permanent link">&para;</a></h2>
+<p>用法：freqtrade edge [-h] [-v] [--no-color] [--logfile FILE] [-V] [-c PATH]
+                     [-d PATH] [--userdir PATH] [-s NAME]
+                     [--strategy-path PATH] [--recursive-strategy-search]
+                     [--freqaimodel NAME] [--freqaimodel-path PATH]
+                     [-i TIMEFRAME] [--timerange TIMERANGE]
+                     [--data-format-ohlcv {json,jsongz,feather,parquet}]
+                     [--max-open-trades INT] [--stake-amount STAKE_AMOUNT]
+                     [--fee FLOAT] [-p PAIRS [PAIRS ...]]
+                     [--stoplosses STOPLOSS_RANGE]</p>
+<p>选项：
+  -h, --help            显示此帮助信息并退出
+  -i TIMEFRAME, --timeframe TIMEFRAME
+                        指定时间周期（<code>1m</code>、<code>5m</code>、<code>30m</code>、<code>1h</code>、<code>1d</code>）
+  --timerange TIMERANGE
+                        指定使用的数据时间范围
+  --data-format-ohlcv {json,jsongz,feather,parquet}
+                        下载蜡烛数据（OHLCV）的存储格式。
+                        （默认：<code>feather</code>）
+  --max-open-trades INT
+                        覆盖配置中的 <code>max_open_trades</code> 设置值
+  --stake-amount STAKE_AMOUNT
+                        覆盖配置中的 <code>stake_amount</code> 设置值
+  --fee FLOAT           指定手续费比例。将在交易的开仓和平仓时应用两次
+  -p PAIRS [PAIRS ...], --pairs PAIRS [PAIRS ...]
+                        指定交易对，限制命令仅作用于这些交易对。交易对以空格分隔
+  --stoplosses STOPLOSS_RANGE
+                        定义止损值范围，策略将依据此范围评估。格式为
+                        "min,max,step"（无空格）。示例：
+                        <code>--stoplosses=-0.01,-0.1,-0.001</code></p>
+<p>常用参数：
+  -v, --verbose         提升输出详细程度（-vv 获取更多信息，-vvv 获取所有信息）
+  --no-color            禁用高亮显示结果，如果输出重定向到文件可能有用
+  --logfile FILE, --log-file FILE
+                        日志输出到指定文件。特殊值包括：
+                        'syslog'、'journald'。详细信息请查阅文档
+  -V, --version         显示程序版本号并退出
+  -c PATH, --config PATH
+                        指定配置文件（默认：<code>userdir/config.json</code>或
+                        <code>config.json</code>，以存在的文件为准）。可以使用多
+                        个 --config 选项。也可以设置为 <code>-</code> 以从标准输入读取配置
+  -d PATH, --datadir PATH, --data-dir PATH
+                        历史回测数据目录路径
+  --userdir PATH, --user-data-dir PATH
+                        用户数据目录路径</p>
+<p>策略参数：
+  -s NAME, --strategy NAME
+                        指定将由机器人使用的策略类名
+  --strategy-path PATH  指定额外的策略搜索路径
+  --recursive-strategy-search
+                        在策略文件夹中递归搜索策略
+  --freqaimodel NAME    指定自定义的 freqaimodel
+  --freqaimodel-path PATH
+                        指定 freqaimodel 的额外搜索路径
+<div class="highlight"><pre><span></span><code>## 配置选项
+
+Edge模块支持以下配置参数：
+
+| 参数                     | 描述                                                                                          |
+|-------------------------|------------------------------------------------------------------------------------------------|
+| `enabled`               | 是否启用Edge。启用后，Edge会周期性运行。&lt;br&gt;*默认值：`false`。&lt;br&gt;**数据类型：**Boolean         |
+| `process_throttle_secs` | Edge运行的频率（秒）。&lt;br&gt;*默认3600秒（每小时一次）。*&lt;br&gt;**数据类型：**Integer                   |
+| `calculate_since_number_of_days` | 与之关联的历史数据天数，用于计算胜率、风险回报和期望值。&lt;br&gt;**注意**：该参数会下载历史数据，值越大，处理越慢。&lt;br&gt;*默认：7天。*&lt;br&gt;**数据类型：**Integer |
+| `allowed_risk`          | 每笔交易允许的风险比例。&lt;br&gt;*默认：0.01（1%）*&lt;br&gt;**数据类型：**Float                         |
+| `stoploss_range_min`    | 最小止损值。&lt;br&gt;*默认：-0.01*&lt;br&gt;**数据类型：**Float                                                      |
+| `stoploss_range_max`    | 最大止损值。&lt;br&gt;*默认：-0.10*&lt;br&gt;**数据类型：**Float                                                      |
+| `stoploss_range_step`   | 止损范围的步长。例如，设置为-0.01，Edge会测试范围如[-0.01, -0.02, -0.03 ... -0.09, -0.10]`。&lt;br&gt;**注意：**较小的步长意味着更宽的范围，但会增加计算时间。若设置为-0.001，则计算速度变慢十倍。&lt;br&gt;*默认：-0.001*&lt;br&gt;**数据类型：**Float |
+| `minimum_winrate`       | 过滤胜率低于此值的交易对，有助于变得更保守，优先考虑胜率。&lt;br&gt;*默认：0.60*&lt;br&gt;**数据类型：**Float                 |
+| `minimum_expectancy`    | 过滤期望值低于此值的交易对。例如，期望值为0.20表示投入10\$，预期收益12\$。&lt;br&gt;*默认：0.20*&lt;br&gt;**数据类型：**Float             |
+| `min_trade_number`      | 计算$W$、$R$和$E$时，要求的最小交易次数。数值越大，结果越可靠。&lt;br&gt;单笔盈利100%的交易没有意义，但过去100笔交易胜率70%则说明问题。&lt;br&gt;*默认：10（不建议降低此值）*&lt;br&gt;**数据类型：**Integer |
+| `max_trade_duration_minute` | 过滤持仓时间超过此分钟数的交易。最长持仓超1个月的策略难以评估，但持续盈利的短期交易（如30分钟以内）则显示良好。&lt;br&gt;**注意：**配置此参数应考虑你的时间框架。例如，过滤掉持续不到一天的交易对对于每4小时的策略可能不合理。默认值为1440（一天）。&lt;br&gt;**数据类型：**Integer |
+| `remove_pumps`          | 在历史数据分析中排除突发涨幅（pumps）。考虑到加密货币市场涨幅频繁，建议关闭此功能。&lt;br&gt;*默认：false*。&lt;br&gt;**数据类型：**Boolean |
+
+## 独立运行Edge
+
+你可以单独运行Edge，以详细查看结果。例如：
+
+```bash
+freqtrade edge
+</code></pre></div></p>
+<p>示例输出：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><strong>pair</strong></th>
+<th style="text-align: center;"><strong>stoploss</strong></th>
+<th style="text-align: center;"><strong>win rate</strong></th>
+<th style="text-align: center;"><strong>risk reward ratio</strong></th>
+<th style="text-align: center;"><strong>expectancy</strong></th>
+<th style="text-align: center;"><strong>总交易数</strong></th>
+<th style="text-align: center;"><strong>平均持仓时间（分钟）</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>AGI/BTC</strong></td>
+<td style="text-align: center;">-0.02</td>
+<td style="text-align: center;">0.64</td>
+<td style="text-align: center;">5.86</td>
+<td style="text-align: center;">0.56</td>
+<td style="text-align: center;">14</td>
+<td style="text-align: center;">54</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>NXS/BTC</strong></td>
+<td style="text-align: center;">-0.03</td>
+<td style="text-align: center;">0.64</td>
+<td style="text-align: center;">2.99</td>
+<td style="text-align: center;">0.57</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">26</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>LEND/BTC</strong></td>
+<td style="text-align: center;">-0.02</td>
+<td style="text-align: center;">0.82</td>
+<td style="text-align: center;">2.05</td>
+<td style="text-align: center;">0.22</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">36</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>VIA/BTC</strong></td>
+<td style="text-align: center;">-0.01</td>
+<td style="text-align: center;">0.55</td>
+<td style="text-align: center;">3.01</td>
+<td style="text-align: center;">0.83</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">48</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>MTH/BTC</strong></td>
+<td style="text-align: center;">-0.09</td>
+<td style="text-align: center;">0.56</td>
+<td style="text-align: center;">2.82</td>
+<td style="text-align: center;">0.80</td>
+<td style="text-align: center;">18</td>
+<td style="text-align: center;">52</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>ARDR/BTC</strong></td>
+<td style="text-align: center;">-0.04</td>
+<td style="text-align: center;">0.42</td>
+<td style="text-align: center;">3.14</td>
+<td style="text-align: center;">1.40</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">42</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>BCPT/BTC</strong></td>
+<td style="text-align: center;">-0.01</td>
+<td style="text-align: center;">0.71</td>
+<td style="text-align: center;">1.34</td>
+<td style="text-align: center;">0.40</td>
+<td style="text-align: center;">14</td>
+<td style="text-align: center;">30</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>WINGS/BTC</strong></td>
+<td style="text-align: center;">-0.02</td>
+<td style="text-align: center;">0.56</td>
+<td style="text-align: center;">1.97</td>
+<td style="text-align: center;">0.80</td>
+<td style="text-align: center;">27</td>
+<td style="text-align: center;">42</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>VIBE/BTC</strong></td>
+<td style="text-align: center;">-0.02</td>
+<td style="text-align: center;">0.83</td>
+<td style="text-align: center;">0.91</td>
+<td style="text-align: center;">0.20</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">35</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>MCO/BTC</strong></td>
+<td style="text-align: center;">-0.02</td>
+<td style="text-align: center;">0.79</td>
+<td style="text-align: center;">0.97</td>
+<td style="text-align: center;">0.27</td>
+<td style="text-align: center;">14</td>
+<td style="text-align: center;">31</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>GNT/BTC</strong></td>
+<td style="text-align: center;">-0.02</td>
+<td style="text-align: center;">0.50</td>
+<td style="text-align: center;">2.06</td>
+<td style="text-align: center;">1.00</td>
+<td style="text-align: center;">18</td>
+<td style="text-align: center;">24</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>HOT/BTC</strong></td>
+<td style="text-align: center;">-0.01</td>
+<td style="text-align: center;">0.17</td>
+<td style="text-align: center;">7.72</td>
+<td style="text-align: center;">4.81</td>
+<td style="text-align: center;">209</td>
+<td style="text-align: center;">7</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SNM/BTC</strong></td>
+<td style="text-align: center;">-0.03</td>
+<td style="text-align: center;">0.71</td>
+<td style="text-align: center;">1.06</td>
+<td style="text-align: center;">0.42</td>
+<td style="text-align: center;">17</td>
+<td style="text-align: center;">38</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>APPC/BTC</strong></td>
+<td style="text-align: center;">-0.02</td>
+<td style="text-align: center;">0.44</td>
+<td style="text-align: center;">2.28</td>
+<td style="text-align: center;">1.27</td>
+<td style="text-align: center;">25</td>
+<td style="text-align: center;">43</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>NEBL/BTC</strong></td>
+<td style="text-align: center;">-0.03</td>
+<td style="text-align: center;">0.63</td>
+<td style="text-align: center;">1.29</td>
+<td style="text-align: center;">0.58</td>
+<td style="text-align: center;">19</td>
+<td style="text-align: center;">59</td>
+</tr>
+</tbody>
+</table>
+<p>Edge通过比较<code>calculate_since_number_of_days</code>与<code>minimum_expectancy</code>，根据配置文件找到对应的历史信息数<code>min_trade_number</code>。你也可以使用<code>--timerange</code>参数进一步限制时间范围。</p>
+<p>在实盘和测试模式中，经过<code>process_throttle_secs</code>的等待后，Edge会再次根据<code>calculate_since_number_of_days</code>和<code>minimum_expectancy</code>计算<code>min_trade_number</code>。如果找不到符合条件的交易数，程序会返回“whitelist empty”。不同策略会导致这一状态出现频率不同，甚至可能一直为空。使用Edge可能会使交易出现集中爆发，但这种情况不常见。</p>
+<p>如果经常遇到“whitelist empty”，建议调节<code>calculate_since_number_of_days</code>、<code>minimum_expectancy</code>和<code>min_trade_number</code>，使其与策略的交易频率匹配。</p>
+<h3 id="_7">更新缓存的交易对数据以获得最新信息<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
+<p>Edge需要历史数据，方法和回测相似。详情请参阅<a href="../data-download/">数据下载</a>部分。</p>
+<h3 id="_8">精确控制止损范围<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>freqtrade<span class="w"> </span>edge<span class="w"> </span>--stoplosses<span class="o">=</span>-0.01,-0.1,-0.001<span class="w"> </span><span class="c1">#最小值，最大值，步长</span>
+</code></pre></div>
+<h3 id="timerange">高级用法：时间范围（timerange）<a class="headerlink" href="#timerange" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>freqtrade<span class="w"> </span>edge<span class="w"> </span>--timerange<span class="o">=</span><span class="m">20181110</span>-20181113
+</code></pre></div>
+<p>指定<code>--timerange=-20190901</code>则表示获取直到2019年9月1日（不含）所有数据。</p>
+<p>完整时间范围格式说明：</p>
+<ul>
+<li>用芯片日期到2018/01/31：<code>--timerange=-20180131</code></li>
+<li>自2018/01/31起：<code>--timerange=20180131-</code></li>
+<li>从2018/01/31到2018/03/01：<code>--timerange=20180131-20180301</code></li>
+<li>两个POSIX时间戳之间：<code>--timerange=1527595200-1527618600</code></li>
+</ul>
+<hr />
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>该问题摘自MIT OpenCourseWare S096 - “金融应用中的数学（Mathematics with applications in Finance）”课程：<a href="https://ocw.mit.edu/courses/mathematics/18-s096-topics-in-mathematics-with-applications-in-finance-fall-2013/">https://ocw.mit.edu/courses/mathematics/18-s096-topics-in-mathematics-with-applications-in-finance-fall-2013/</a>&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+    
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../sql_cheatsheet/" class="md-footer__link md-footer__link--prev" aria-label="Previous: SQL Cheat-sheet">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                SQL Cheat-sheet
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../faq/" class="md-footer__link md-footer__link--next" aria-label="Next: FAQ">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                FAQ
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate", "search.share", "content.code.copy", "navigation.top", "navigation.footer"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+        <script src="../javascripts/config.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

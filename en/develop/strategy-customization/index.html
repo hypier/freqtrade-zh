@@ -1,0 +1,3724 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Freqtrade is a free and open source crypto trading bot written in Python, designed to support all major exchanges and be controlled via Telegram or builtin Web UI">
+      
+      
+      
+        <link rel="canonical" href="https://www.freqtrade.io/en/stable/strategy-customization/">
+      
+      
+        <link rel="prev" href="../strategy-101/">
+      
+      
+        <link rel="next" href="../strategy-callbacks/">
+      
+      
+      <link rel="icon" href="../images/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.11">
+    
+    
+      
+        <title>Strategy Customization - Freqtrade</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.4af4bdda.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/ft.extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-VH170LG9M5"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-VH170LG9M5",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-VH170LG9M5",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="tear">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Freqtrade" class="md-header__button md-logo" aria-label="Freqtrade" data-md-component="logo">
+      
+  <img src="../images/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Freqtrade
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Strategy Customization
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="tear"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="blue-grey" data-md-color-accent="tear"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/freqtrade/freqtrade" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+
+  <!-- Main navigation -->
+  
+  
+  <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+    <div class="md-sidebar__scrollwrap">
+      <div class="md-sidebar__inner">
+        
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Freqtrade" class="md-nav__button md-logo" aria-label="Freqtrade" data-md-component="logo">
+      
+  <img src="../images/logo.png" alt="logo">
+
+    </a>
+    Freqtrade
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/freqtrade/freqtrade" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docker_quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Quickstart with Docker
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Installation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Linux/MacOS/Raspberry
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../windows_installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Windows
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bot-basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Freqtrade Basics
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-101/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Strategy Customization
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy Customization
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      开发你自己的策略
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="开发你自己的策略">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      生成策略模板
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      策略组成结构
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      机器人运行模式
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      深入学习
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="深入学习">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dataframe" class="md-nav__link">
+    <span class="md-ellipsis">
+      DataFrame基础
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DataFrame基础">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      为什么不能看到“实时”蜡烛数据？
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      自定义指标
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="自定义指标">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      常用指标库
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      策略启动期
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="策略启动期">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      示例
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      入场信号规则
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      出场信号规则
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#roiminimal-roi" class="md-nav__link">
+    <span class="md-ellipsis">
+      最小ROI（Minimal ROI）
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="最小ROI（Minimal ROI）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#roi" class="md-nav__link">
+    <span class="md-ellipsis">
+      关闭ROI策略
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#roi_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      用时间（基于蜡烛数）设置ROI
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stoploss" class="md-nav__link">
+    <span class="md-ellipsis">
+      止损（Stoploss）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#timeframe" class="md-nav__link">
+    <span class="md-ellipsis">
+      时间周期（Timeframe）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#can-short" class="md-nav__link">
+    <span class="md-ellipsis">
+      支持空头（Can short）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      元数据字典（metadata）
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      运行策略所需的导入
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      策略文件加载方式
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#informative-pairs" class="md-nav__link">
+    <span class="md-ellipsis">
+      信息配对（Informative Pairs）
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="信息配对（Informative Pairs）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      获取非交易用配对数据
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#informativeinformative-pairs" class="md-nav__link">
+    <span class="md-ellipsis">
+      装饰器@informative()（Informative Pairs定义）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#merge_informative_pair" class="md-nav__link">
+    <span class="md-ellipsis">
+      merge_informative_pair()
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dataprovider" class="md-nav__link">
+    <span class="md-ellipsis">
+      附加数据（DataProvider）
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="附加数据（DataProvider）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_17" class="md-nav__link">
+    <span class="md-ellipsis">
+      可用方法
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_18" class="md-nav__link">
+    <span class="md-ellipsis">
+      使用示例
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="使用示例">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#available_pairs" class="md-nav__link">
+    <span class="md-ellipsis">
+      available_pairs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#current_whitelist" class="md-nav__link">
+    <span class="md-ellipsis">
+      current_whitelist()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_pair_dataframepair-timeframe" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_pair_dataframe(pair, timeframe)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_analyzed_dataframepair-timeframe" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_analyzed_dataframe(pair, timeframe)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#orderbookpair-maximum" class="md-nav__link">
+    <span class="md-ellipsis">
+      orderbook(pair, maximum)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tickerpair" class="md-nav__link">
+    <span class="md-ellipsis">
+      ticker(pair)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#notification" class="md-nav__link">
+    <span class="md-ellipsis">
+      发送通知（Notification）
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dataprovider_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      完整示例：DataProvider用法
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_19" class="md-nav__link">
+    <span class="md-ellipsis">
+      其他数据（钱包信息）
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="其他数据（钱包信息）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wallets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Wallets常用方法
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_20" class="md-nav__link">
+    <span class="md-ellipsis">
+      其他数据（交易记录）
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_21" class="md-nav__link">
+    <span class="md-ellipsis">
+      阻止某配对交易
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="阻止某配对交易">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_22" class="md-nav__link">
+    <span class="md-ellipsis">
+      在策略中锁定配对
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dataframe_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      打印主DataFrame
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_23" class="md-nav__link">
+    <span class="md-ellipsis">
+      常见开发错误
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="常见开发错误">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_24" class="md-nav__link">
+    <span class="md-ellipsis">
+      回测时“提前看未来”
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colliding-signals" class="md-nav__link">
+    <span class="md-ellipsis">
+      信号冲突（Colliding signals）
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_25" class="md-nav__link">
+    <span class="md-ellipsis">
+      未来策略建议
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_26" class="md-nav__link">
+    <span class="md-ellipsis">
+      后续步骤
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-callbacks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy Callbacks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stoploss/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Stoploss
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Plugins
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bot-usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Start the bot
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Control the bot
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            Control the bot
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../telegram-usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Telegram
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freq-ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    freqUI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rest-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    REST API
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../webhook-config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Web Hook
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-download/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Data Downloading
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backtesting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Backtesting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hyperopt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Hyperopt
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_16" >
+        
+          
+          <label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    FreqAI
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_16_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_16">
+            <span class="md-nav__icon md-icon"></span>
+            FreqAI
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-parameter-table/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Parameter table
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-feature-engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Feature engineering
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-running/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Running FreqAI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-reinforcement-learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Reinforcement Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-developers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Developer guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../leverage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Short / Leverage
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Utility Sub-commands
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plotting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Plotting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exchanges/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Exchange-specific Notes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_21" >
+        
+          
+          <label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Data Analysis
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_21_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_21">
+            <span class="md-nav__icon md-icon"></span>
+            Data Analysis
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Jupyter Notebooks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy_analysis_example/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-backtesting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Backtest analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_22" >
+        
+          
+          <label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Advanced Topics
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_22_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_22">
+            <span class="md-nav__icon md-icon"></span>
+            Advanced Topics
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Advanced Post-installation Tasks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trade-object/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Trade Object
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lookahead-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Lookahead analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../recursive-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Recursive analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-advanced/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Advanced Strategy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-hyperopt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Advanced Hyperopt
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-orderflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Orderflow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../producer-consumer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Producer/Consumer mode
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sql_cheatsheet/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SQL Cheat-sheet
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../edge/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Edge Positioning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    FAQ
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy_migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy migration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../updating/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Updating Freqtrade
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deprecated/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Deprecated Features
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Contributors Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+      </div>
+    </div>
+  </div>
+  
+
+  <!-- Table of contents -->
+  
+  
+  <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+    <div class="md-sidebar__scrollwrap">
+      <div class="md-sidebar__inner">
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      开发你自己的策略
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="开发你自己的策略">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      生成策略模板
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      策略组成结构
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      机器人运行模式
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      深入学习
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="深入学习">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dataframe" class="md-nav__link">
+    <span class="md-ellipsis">
+      DataFrame基础
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DataFrame基础">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      为什么不能看到“实时”蜡烛数据？
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      自定义指标
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="自定义指标">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      常用指标库
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      策略启动期
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="策略启动期">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      示例
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      入场信号规则
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      出场信号规则
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#roiminimal-roi" class="md-nav__link">
+    <span class="md-ellipsis">
+      最小ROI（Minimal ROI）
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="最小ROI（Minimal ROI）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#roi" class="md-nav__link">
+    <span class="md-ellipsis">
+      关闭ROI策略
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#roi_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      用时间（基于蜡烛数）设置ROI
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stoploss" class="md-nav__link">
+    <span class="md-ellipsis">
+      止损（Stoploss）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#timeframe" class="md-nav__link">
+    <span class="md-ellipsis">
+      时间周期（Timeframe）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#can-short" class="md-nav__link">
+    <span class="md-ellipsis">
+      支持空头（Can short）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      元数据字典（metadata）
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      运行策略所需的导入
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      策略文件加载方式
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#informative-pairs" class="md-nav__link">
+    <span class="md-ellipsis">
+      信息配对（Informative Pairs）
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="信息配对（Informative Pairs）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      获取非交易用配对数据
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#informativeinformative-pairs" class="md-nav__link">
+    <span class="md-ellipsis">
+      装饰器@informative()（Informative Pairs定义）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#merge_informative_pair" class="md-nav__link">
+    <span class="md-ellipsis">
+      merge_informative_pair()
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dataprovider" class="md-nav__link">
+    <span class="md-ellipsis">
+      附加数据（DataProvider）
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="附加数据（DataProvider）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_17" class="md-nav__link">
+    <span class="md-ellipsis">
+      可用方法
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_18" class="md-nav__link">
+    <span class="md-ellipsis">
+      使用示例
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="使用示例">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#available_pairs" class="md-nav__link">
+    <span class="md-ellipsis">
+      available_pairs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#current_whitelist" class="md-nav__link">
+    <span class="md-ellipsis">
+      current_whitelist()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_pair_dataframepair-timeframe" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_pair_dataframe(pair, timeframe)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#get_analyzed_dataframepair-timeframe" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_analyzed_dataframe(pair, timeframe)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#orderbookpair-maximum" class="md-nav__link">
+    <span class="md-ellipsis">
+      orderbook(pair, maximum)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tickerpair" class="md-nav__link">
+    <span class="md-ellipsis">
+      ticker(pair)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#notification" class="md-nav__link">
+    <span class="md-ellipsis">
+      发送通知（Notification）
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dataprovider_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      完整示例：DataProvider用法
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_19" class="md-nav__link">
+    <span class="md-ellipsis">
+      其他数据（钱包信息）
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="其他数据（钱包信息）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wallets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Wallets常用方法
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_20" class="md-nav__link">
+    <span class="md-ellipsis">
+      其他数据（交易记录）
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_21" class="md-nav__link">
+    <span class="md-ellipsis">
+      阻止某配对交易
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="阻止某配对交易">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_22" class="md-nav__link">
+    <span class="md-ellipsis">
+      在策略中锁定配对
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dataframe_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      打印主DataFrame
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_23" class="md-nav__link">
+    <span class="md-ellipsis">
+      常见开发错误
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="常见开发错误">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_24" class="md-nav__link">
+    <span class="md-ellipsis">
+      回测时“提前看未来”
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colliding-signals" class="md-nav__link">
+    <span class="md-ellipsis">
+      信号冲突（Colliding signals）
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_25" class="md-nav__link">
+    <span class="md-ellipsis">
+      未来策略建议
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_26" class="md-nav__link">
+    <span class="md-ellipsis">
+      后续步骤
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      </div>
+    </div>
+  </div>
+  
+
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="_1">策略自定义<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<p>本页面说明如何自定义策略，添加新指标以及设置交易规则。</p>
+<p>如果还没有了解过，请先熟悉以下内容：</p>
+<ul>
+<li><a href="../strategy-101/">Freqtrade策略入门101</a>，提供策略开发的快速入门指南</li>
+<li><a href="../bot-basics/">Freqtrade机器人基础</a>，介绍机器人总体的运行机制</li>
+</ul>
+<h2 id="_2">开发你自己的策略<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>机器人包含一个默认策略文件。</p>
+<p>此外，在<a href="https://github.com/freqtrade/freqtrade-strategies">策略仓库</a>中还提供了多个其他策略。</p>
+<p>不过，你很可能会有自己的策略想法。</p>
+<p>本指南旨在帮助你将你的想法转化为可用的策略。</p>
+<h3 id="_3">生成策略模板<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<p>你可以使用以下命令开始：</p>
+<div class="highlight"><pre><span></span><code>freqtrade<span class="w"> </span>new-strategy<span class="w"> </span>--strategy<span class="w"> </span>AwesomeStrategy
+</code></pre></div>
+<p>此命令将基于模板创建一个名为<code>AwesomeStrategy</code>的新策略，其文件位置为<code>user_data/strategies/AwesomeStrategy.py</code>。</p>
+<div class="admonition 注意">
+<p class="admonition-title">注意</p>
+<p>策略的<em>名称</em>和文件名是不同的。在大多数命令中，Freqtrade使用的是策略的<em>名称</em>，而不是文件名。</p>
+</div>
+<div class="admonition 注意">
+<p class="admonition-title">注意</p>
+<p><code>new-strategy</code>命令生成的示例模板在初始状态下不会盈利，需自行优化。</p>
+</div>
+<details class="提示">
+<summary>不同模板级别</summary>
+<p><code>freqtrade new-strategy</code>还有一个参数<code>--template</code>，可控制生成策略中的预设信息量。使用<code>--template minimal</code>可以得到空白策略（无指标示例），而<code>--template advanced</code>则会生成更复杂的功能模板。</p>
+</details>
+<h3 id="_4">策略组成结构<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
+<p>一个策略文件包含所有定义逻辑所需的信息：</p>
+<ul>
+<li>Candle数据（OHLCV格式）</li>
+<li>指标</li>
+<li>入场逻辑<ul>
+<li>触发信号</li>
+</ul>
+</li>
+<li>出场逻辑<ul>
+<li>触发信号</li>
+<li>最小ROI</li>
+<li>回调函数（“自定义函数”）</li>
+</ul>
+</li>
+<li>止损<ul>
+<li>固定/绝对</li>
+<li>跟踪（Trailing）</li>
+<li>回调函数（“自定义函数”）</li>
+</ul>
+</li>
+<li>价格策略 [可选]</li>
+<li>仓位调整 [可选]</li>
+</ul>
+<p>策略示例配有一个叫<code>SampleStrategy</code>的样例策略，文件在<code>user_data/strategies/sample_strategy.py</code>。可以通过参数<code>--strategy SampleStrategy</code>测试，但请注意使用的是策略类名，而非文件名。</p>
+<p>此外，策略类中还包含一个<code>INTERFACE_VERSION</code>属性，定义了策略接口的版本。当前版本为3，若未显式设置，默认为版本3，未来版本可能会要求更新。</p>
+<p>不同版本的策略可能设置的<code>INTERFACE_VERSION</code>不同（如2版），需要随着未来版本的升级而更新为v3。</p>
+<p>启动机器人（测试或正式交易）可用以下命令：</p>
+<div class="highlight"><pre><span></span><code>freqtrade<span class="w"> </span>trade<span class="w"> </span>--strategy<span class="w"> </span>AwesomeStrategy
+</code></pre></div>
+<h3 id="_5">机器人运行模式<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
+<p>Freqtrade支持五种主要模式：</p>
+<ul>
+<li>回测（backtesting）</li>
+<li>超参数优化（hyperopt）</li>
+<li>数字“模拟”测试（dry，即“前向测试”）</li>
+<li>实时交易（live）</li>
+<li>FreqAI（此处不涉及）</li>
+</ul>
+<p>有关如何设置机器人为dry或live模式，请查阅<a href="../configuration/">配置文档</a>。</p>
+<p><strong>在测试时，必须始终使用dry模式，这样可以在不涉入资金的情况下模拟策略表现。</strong></p>
+<h2 id="_6">深入学习<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
+<p><strong>以下内容，以 <a href="https://github.com/freqtrade/freqtrade/blob/develop/freqtrade/templates/sample_strategy.py">user_data/strategies/sample_strategy.py</a> 文件为参考。</strong></p>
+<div class="admonition 注意">
+<p class="admonition-title">策略与回测</p>
+<p>为避免回测和dry/live模式之间出现问题或差异，提醒如下：
+- 在回测中，整个时间范围会一次性传递给<code>populate_*()</code>方法。
+- 因此，应优先使用向量化操作（对整个DataFrame操作，而非循环）
+- 避免使用索引引用（如<code>df.iloc[-1]</code>），应用<code>df.shift()</code>函数获取前一根K线，以避免未来数据泄露。</p>
+</div>
+<div class="admonition 警告">
+<p class="admonition-title">警惕未来数据</p>
+<p>由于回测会一次性传入完整时间段数据，策略开发时必须确保不利用未来数据（“提前预知”）。
+常见违规模式可在<a href="#common-mistakes-when-developing-strategies">常见错误</a>部分查阅。</p>
+</div>
+<details class="提示">
+<summary>提前预判和递归分析</summary>
+<p>Freqtrade提供两个有用的命令帮助识别常见的“提前预判”（利用未来数据）和“递归偏差”（指标值波动）问题：
+- 运行干/正式模式前，务必首先执行这些命令。
+- 可查阅<a href="../lookahead-analysis/">提前预判分析</a>和<a href="../recursive-analysis/">递归分析</a>文档。</p>
+</details>
+<h3 id="dataframe">DataFrame基础<a class="headerlink" href="#dataframe" title="Permanent link">&para;</a></h3>
+<p>Freqtrade使用<a href="https://pandas.pydata.org/">pandas</a>来存储/提供蜡烛图（OHLCV）数据。
+pandas是处理大量表格数据的优秀库。</p>
+<p>每一行对应一根蜡烛，最新完成的蜡烛总在DataFrame的最后（按时间排序）。</p>
+<p>例如，用pandas的<code>head()</code>函数查看前几行会得到：</p>
+<div class="highlight"><pre><span></span><code><span class="go">&gt; dataframe.head()</span>
+<span class="go">                       date      open      high       low     close     volume</span>
+<span class="go">0 2021-11-09 23:25:00+00:00  67279.67  67321.84  67255.01  67300.97   44.62253</span>
+<span class="go">1 2021-11-09 23:30:00+00:00  67300.97  67301.34  67183.03  67187.01   61.38076</span>
+<span class="go">2 2021-11-09 23:35:00+00:00  67187.02  67187.02  67031.93  67123.81  113.42728</span>
+<span class="go">3 2021-11-09 23:40:00+00:00  67123.80  67222.40  67080.33  67160.48   78.96008</span>
+<span class="go">4 2021-11-09 23:45:00+00:00  67160.48  67160.48  66901.26  66943.37  111.39292</span>
+</code></pre></div>
+<p>DataFrame是个表格，列不只单个值，而是一列列的数据。因此，像下面的Python比较表达式是无效的：</p>
+<div class="highlight"><pre><span></span><code>    <span class="k">if</span> <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;rsi&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">:</span>
+        <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;enter_long&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+</code></pre></div>
+<p>会抛出<code>The truth value of a Series is ambiguous [...]</code>错误。</p>
+<p>正确的做法是用pandas的写法，进行向量化操作：</p>
+<div class="highlight"><pre><span></span><code>    <span class="n">dataframe</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+        <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;rsi&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">30</span><span class="p">)</span>
+    <span class="p">,</span> <span class="s1">&#39;enter_long&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+</code></pre></div>
+<p>这样在整个DataFrame范围内，"enter_long"列在RSI&gt;30时都为1。</p>
+<p>利用pandas的向量化计算，可极大提高指标的运算速度。建议避免用循环，改用向量化方法。</p>
+<details class="提示">
+<summary>信号 vs 交易</summary>
+</details>
+<ul>
+<li>信号（Signals）由指标在蜡烛收盘时产生，表示入场意向。</li>
+<li>交易（Trades）为实际订单（在实盘中在交易所执行），一个趋势可能在下一根K线开盘时立即成交。</li>
+</ul>
+<div class="admonition 警告">
+<p class="admonition-title">交易订单假设</p>
+<p>在回测中，信号在蜡烛收盘时产生，订单在下一根蜡烛开盘时立即执行。</p>
+<p>在dry和实盘模式，可能会有延迟，因为所有配对的DataFrame都需要分析，且每个订单都会处理。</p>
+<p>这意味着在dry/live模式下，应尽量降低计算延迟，减少同时处理的配对数，并确保CPU性能较好。</p>
+</div>
+<h4 id="_7">为什么不能看到“实时”蜡烛数据？<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h4>
+<p>Freqtrade不会存储不完整（未结束）的蜡烛。</p>
+<p>不使用未来数据（“重绘”）做决策，避免策略“提前预判”。一些平台可能允许重绘，但Freqtrade不会。</p>
+<p>只有已完全完成的蜡烛数据，才会存入DataFrame。</p>
+<h3 id="_8">自定义指标<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h3>
+<p>入场和出场信号都依赖指标。你可以在策略文件中的<code>populate_indicators()</code>方法里添加更多指标。</p>
+<p>只应添加在<code>populate_entry_trend()</code>、<code>populate_exit_trend()</code>或其他指标计算中用到的指标，否则可能影响性能。</p>
+<p>此外，必须确保这三个函数返回的DataFrame都不删除或修改<code>"open"</code>、<code>"high"</code>、<code>"low"</code>、<code>"close"</code>、<code>"volume"</code>列，否则可能导致后续计算出错。</p>
+<p>示例：</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">populate_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    在DataFrame中添加多种技术指标</span>
+
+<span class="sd">    性能提示：为追求最好性能，应减少指标个数，仅使用策略中实际用到的指标。</span>
+<span class="sd">    只启用你在策略或超参数优化配置中用到的指标，否则会浪费内存和CPU。</span>
+<span class="sd">    :param dataframe: 来自交易所的数据</span>
+<span class="sd">    :param metadata: 其他信息，如当前交易对</span>
+<span class="sd">    :return: 包含所有必须指标的DataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;sar&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">SAR</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;adx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">ADX</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+    <span class="n">stoch</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">STOCHF</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;fastd&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stoch</span><span class="p">[</span><span class="s1">&#39;fastd&#39;</span><span class="p">]</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;fastk&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stoch</span><span class="p">[</span><span class="s1">&#39;fastk&#39;</span><span class="p">]</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;bb_lower&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">BBANDS</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">nbdevup</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nbdevdn</span><span class="o">=</span><span class="mi">2</span><span class="p">)[</span><span class="s1">&#39;lowerband&#39;</span><span class="p">]</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;sma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">SMA</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">timeperiod</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;tema&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">TEMA</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">timeperiod</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;mfi&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">MFI</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;rsi&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">RSI</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;ema5&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">EMA</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">timeperiod</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;ema10&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">EMA</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">timeperiod</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;ema50&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">EMA</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">timeperiod</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;ema100&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">EMA</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">timeperiod</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;ao&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">awesome_oscillator</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+    <span class="n">macd</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">MACD</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;macd&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">macd</span><span class="p">[</span><span class="s1">&#39;macd&#39;</span><span class="p">]</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;macdsignal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">macd</span><span class="p">[</span><span class="s1">&#39;macdsignal&#39;</span><span class="p">]</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;macdhist&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">macd</span><span class="p">[</span><span class="s1">&#39;macdhist&#39;</span><span class="p">]</span>
+    <span class="n">hilbert</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">HT_SINE</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;htsine&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hilbert</span><span class="p">[</span><span class="s1">&#39;sine&#39;</span><span class="p">]</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;htleadsine&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hilbert</span><span class="p">[</span><span class="s1">&#39;leadsine&#39;</span><span class="p">]</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;plus_dm&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">PLUS_DM</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;plus_di&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">PLUS_DI</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;minus_dm&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">MINUS_DM</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;minus_di&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">MINUS_DI</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+
+    <span class="c1"># 记得始终返回DataFrame</span>
+    <span class="k">return</span> <span class="n">dataframe</span>
+</code></pre></div>
+<div class="admonition 注意">
+<p class="admonition-title">需要更多指标示例？</p>
+<p>查看 <a href="https://github.com/freqtrade/freqtrade/blob/develop/freqtrade/templates/sample_strategy.py">user_data/strategies/sample_strategy.py</a>，
+其中已包含多个指标示例，你可以根据需要取消注释启用。</p>
+</div>
+<h4 id="_9">常用指标库<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h4>
+<p>Freqtrade内置支持以下技术指标库：</p>
+<ul>
+<li><a href="https://ta-lib.github.io/ta-lib-python/">ta-lib</a></li>
+<li><a href="https://twopirllc.github.io/pandas-ta/">pandas-ta</a></li>
+<li><a href="https://technical.freqtrade.io">technical</a></li>
+</ul>
+<p>你也可以根据需要安装其他技术库或自行编写/发明指标。</p>
+<h3 id="_10">策略启动期<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h3>
+<p>某些指标在策略开始阶段（启动期）可能计算不稳定，导致值为NaN或计算错误。这会引起不一致，因为Freqtrade不知道不稳定期的长度，使用指标的值。</p>
+<p>为此，可设置<code>startup_candle_count</code>属性，指明策略所需的最大蜡烛数（即需要多少蜡烛才能得到稳定指标值）。</p>
+<p>如果在包含高时间框架与辅助配对的场景中，<code>startup_candle_count</code>通常不变，值为所有时间段中最长的那个。</p>
+<p>你可以用<a href="../recursive-analysis/">递归分析</a>检验并找到合适的<code>startup_candle_count</code>。当递归分析显示偏差为0%时，说明蜡烛数据已足够。</p>
+<p>例如，以下策略示例中，<code>startup_candle_count</code>应设为400（即<code>startup_candle_count = 400</code>），因为计算<code>ema100</code>所需的最少蜡烛数即为400根。</p>
+<div class="highlight"><pre><span></span><code>    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;ema100&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">EMA</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">timeperiod</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</code></pre></div>
+<p>明确策略所需的蜡烛数，有助在回测和超参数优化时提前准备数据。</p>
+<div class="admonition 警告">
+<p class="admonition-title">多次调用获取OHLCV数据</p>
+<p>如果收到警告“WARNING - Using 3 calls to get OHLCV...” ，建议你重新考虑是否真需要这么多历史蜡烛的数据。
+频繁调用会导致交易机器人变慢甚至被交易所限制。</p>
+</div>
+<div class="admonition 警告">
+<p class="admonition-title"><code>startup_candle_count</code>应低于<code>ohlcv_candle_limit * 5</code></p>
+<p>这是因为在dry或实盘交易中，最多只会提供<code>ohlcv_candle_limit * 5</code>根蜡烛。</p>
+</div>
+<h4 id="_11">示例<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h4>
+<p>用示例策略对2019年1月的5分钟蜡烛进行回测，假设<code>startup_candle_count=400</code>：</p>
+<div class="highlight"><pre><span></span><code>freqtrade<span class="w"> </span>backtesting<span class="w"> </span>--timerange<span class="w"> </span><span class="m">20190101</span>-20190201<span class="w"> </span>--timeframe<span class="w"> </span>5m
+</code></pre></div>
+<p>回测会在<code>2018-12-30 11:40:00</code>左右开始加载数据（考虑<code>400</code>蜡烛的历史长度）。如果数据足够，则指标会在此时间范围内计算，且在2019-01-01 00:00之前的“非稳定”启动期会被剔除。</p>
+<div class="admonition 注意">
+<p class="admonition-title">启动期蜡烛数据不可用</p>
+<p>如果无法获取到策略所需的启动期蜡烛数据，则会自动调整时间范围，从实际起点开始。</p>
+</div>
+<p>比如，回测可能从<code>2019-01-02 09:20:00</code>开始。</p>
+<h3 id="_12">入场信号规则<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h3>
+<p>修改<code>populate_entry_trend()</code>函数，实现自己的入场策略。</p>
+<p>务必要始终返回未被删除或修改<code>"open"</code>、<code>"high"</code>、<code>"low"</code>、<code>"close"</code>、<code>"volume"</code>列的DataFrame，否则将导致出错。</p>
+<p>此方法会新增<code>"enter_long"</code>（多头）和<code>"enter_short"</code>（空头）列，值为<code>1</code>代表入场，<code>0</code>为“无动作”。<code>enter_long</code>为必填列（即使只做空也要设置），而<code>"enter_tag"</code>列为标识标签，用于调试。</p>
+<p>示例（<code>user_data/strategies/sample_strategy.py</code>）：</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">populate_entry_trend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    根据技术指标，设置入场信号</span>
+<span class="sd">    :param dataframe: 包含指标的DataFrame</span>
+<span class="sd">    :param metadata: 其他信息，如交易对</span>
+<span class="sd">    :return: 包含买入信号的DataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dataframe</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+        <span class="p">(</span>
+            <span class="p">(</span><span class="n">qtpylib</span><span class="o">.</span><span class="n">crossed_above</span><span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;rsi&#39;</span><span class="p">],</span> <span class="mi">30</span><span class="p">))</span> <span class="o">&amp;</span>  <span class="c1"># RSI 上穿30</span>
+            <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;tema&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;bb_middleband&#39;</span><span class="p">])</span> <span class="o">&amp;</span>  <span class="c1"># 保护措施</span>
+            <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;tema&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;tema&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="o">&amp;</span>  <span class="c1"># 趋势确认</span>
+            <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;volume&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># 确保有成交量</span>
+        <span class="p">),</span>
+        <span class="p">[</span><span class="s1">&#39;enter_long&#39;</span><span class="p">,</span> <span class="s1">&#39;enter_tag&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;rsi_cross&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">dataframe</span>
+</code></pre></div>
+<details class="提示">
+<summary>空头交易入场</summary>
+</details>
+<ul>
+<li>您可以设置<code>enter_short</code>列实现空头入场（对应<code>enter_long</code>）。</li>
+<li><code>enter_tag</code>列保持一致。</li>
+<li>需确认交易所支持空头，并正确设置策略中的<code>can_short</code>。</li>
+</ul>
+<p>示例（支持多空）：</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 允许多空交易</span>
+<span class="n">can_short</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">populate_entry_trend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+    <span class="n">dataframe</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+        <span class="p">(</span>
+            <span class="p">(</span><span class="n">qtpylib</span><span class="o">.</span><span class="n">crossed_above</span><span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;rsi&#39;</span><span class="p">],</span> <span class="mi">30</span><span class="p">))</span> <span class="o">&amp;</span>  <span class="c1"># RSI 上穿30</span>
+            <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;tema&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;bb_middleband&#39;</span><span class="p">])</span> <span class="o">&amp;</span>  <span class="c1"># 保护</span>
+            <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;tema&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;tema&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="o">&amp;</span>  <span class="c1"># 趋势确认</span>
+            <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;volume&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># 确保有成交量</span>
+        <span class="p">),</span>
+        <span class="p">[</span><span class="s1">&#39;enter_long&#39;</span><span class="p">,</span> <span class="s1">&#39;enter_tag&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;rsi_cross&#39;</span><span class="p">)</span>
+
+    <span class="n">dataframe</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+        <span class="p">(</span>
+            <span class="p">(</span><span class="n">qtpylib</span><span class="o">.</span><span class="n">crossed_below</span><span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;rsi&#39;</span><span class="p">],</span> <span class="mi">70</span><span class="p">))</span> <span class="o">&amp;</span>  <span class="c1"># RSI下穿70</span>
+            <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;tema&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;bb_middleband&#39;</span><span class="p">])</span> <span class="o">&amp;</span>  <span class="c1"># 保护</span>
+            <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;tema&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;tema&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="o">&amp;</span>  <span class="c1"># 趋势确认</span>
+            <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;volume&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># 确保有成交量</span>
+        <span class="p">),</span>
+        <span class="p">[</span><span class="s1">&#39;enter_short&#39;</span><span class="p">,</span> <span class="s1">&#39;enter_tag&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;rsi_cross&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">dataframe</span>
+</code></pre></div>
+<details class="注意">
+<summary>买入需要有卖单，确保成交量 &gt; 0</summary>
+</details>
+<ul>
+<li>交易时，买卖都要求<code>volume &gt; 0</code>，以确保在无成交量的空档期不发起买卖。</li>
+</ul>
+<h3 id="_13">出场信号规则<a class="headerlink" href="#_13" title="Permanent link">&para;</a></h3>
+<p>修改<code>populate_exit_trend()</code>函数，定义你的出场逻辑。</p>
+<p>可以通过在配置或策略中设置<code>use_exit_signal = False</code>来禁用出场信号。</p>
+<p><code>use_exit_signal</code>不影响信号碰撞规则（后文详述），即碰到冲突信号时仍会阻止入场。</p>
+<p>务必返回未删减“open”、“high”、“low”、“close”、“volume”列，以免产生异常。</p>
+<p>此方法会新增<code>"exit_long"</code>（多头平仓）和<code>"exit_short"</code>（空头平仓）列，值为<code>1</code>表示执行出场，否则为<code>0</code>。</p>
+<p><code>"exit_tag"</code>列为标签，用于后续调试。</p>
+<p>示例（<code>user_data/strategies/sample_strategy.py</code>）：</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">populate_exit_trend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    根据技术指标，设置出场信号</span>
+<span class="sd">    :param dataframe: 包含指标的DataFrame</span>
+<span class="sd">    :param metadata: 其他信息，如交易对</span>
+<span class="sd">    :return: 包含出场信号的DataFrame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dataframe</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+        <span class="p">(</span>
+            <span class="p">(</span><span class="n">qtpylib</span><span class="o">.</span><span class="n">crossed_above</span><span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;rsi&#39;</span><span class="p">],</span> <span class="mi">70</span><span class="p">))</span> <span class="o">&amp;</span>  <span class="c1"># RSI上穿70</span>
+            <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;tema&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;bb_middleband&#39;</span><span class="p">])</span> <span class="o">&amp;</span>  <span class="c1"># 保护</span>
+            <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;tema&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;tema&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="o">&amp;</span>  <span class="c1"># 趋势确认</span>
+            <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;volume&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># 确保有成交量</span>
+        <span class="p">),</span>
+        <span class="p">[</span><span class="s1">&#39;exit_long&#39;</span><span class="p">,</span> <span class="s1">&#39;exit_tag&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;rsi_too_high&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dataframe</span>
+</code></pre></div>
+<details class="提示">
+<summary>空头平仓</summary>
+</details>
+<ul>
+<li>空头平仓信号可以通过设置<code>exit_short</code>实现（对应<code>exit_long</code>）。</li>
+<li><code>exit_tag</code>标签保持一致。</li>
+<li>确认交易所支持空头，设置<code>can_short</code>。</li>
+</ul>
+<p>示例（支持多空）：</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 允许多空交易</span>
+<span class="n">can_short</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">populate_exit_trend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+    <span class="n">dataframe</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+        <span class="p">(</span>
+            <span class="p">(</span><span class="n">qtpylib</span><span class="o">.</span><span class="n">crossed_above</span><span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;rsi&#39;</span><span class="p">],</span> <span class="mi">70</span><span class="p">))</span> <span class="o">&amp;</span>  <span class="c1"># RSI上穿70</span>
+            <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;tema&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;bb_middleband&#39;</span><span class="p">])</span> <span class="o">&amp;</span>  <span class="c1"># 保护</span>
+            <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;tema&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;tema&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="o">&amp;</span>  <span class="c1"># 趋势确认</span>
+            <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;volume&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># 保证成交量</span>
+        <span class="p">),</span>
+        <span class="p">[</span><span class="s1">&#39;exit_long&#39;</span><span class="p">,</span> <span class="s1">&#39;exit_tag&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;rsi_too_high&#39;</span><span class="p">)</span>
+    <span class="n">dataframe</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+        <span class="p">(</span>
+            <span class="p">(</span><span class="n">qtpylib</span><span class="o">.</span><span class="n">crossed_below</span><span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;rsi&#39;</span><span class="p">],</span> <span class="mi">30</span><span class="p">))</span> <span class="o">&amp;</span>  <span class="c1"># RSI下穿30</span>
+            <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;tema&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;bb_middleband&#39;</span><span class="p">])</span> <span class="o">&amp;</span>  <span class="c1"># 保护</span>
+            <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;tema&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;tema&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span> <span class="o">&amp;</span>  <span class="c1"># 趋势确认</span>
+            <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;volume&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># 保证成交量</span>
+        <span class="p">),</span>
+        <span class="p">[</span><span class="s1">&#39;exit_short&#39;</span><span class="p">,</span> <span class="s1">&#39;exit_tag&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;rsi_too_low&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dataframe</span>
+</code></pre></div>
+<h3 id="roiminimal-roi">最小ROI（Minimal ROI）<a class="headerlink" href="#roiminimal-roi" title="Permanent link">&para;</a></h3>
+<p><code>minimal_roi</code>是一个字典，定义在非信号触发的情况下，交易应达到的最低收益率（ROI）。</p>
+<p>格式：<code>{minutes_since_open: ROI百分比}</code></p>
+<p>示例：</p>
+<div class="highlight"><pre><span></span><code><span class="n">minimal_roi</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;40&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="s2">&quot;30&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+    <span class="s2">&quot;20&quot;</span><span class="p">:</span> <span class="mf">0.02</span><span class="p">,</span>
+    <span class="s2">&quot;0&quot;</span><span class="p">:</span> <span class="mf">0.04</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>含义：<br />
+- 40分钟内，无盈利时落袋为安（ROI&lt;4%）<br />
+- 30分钟后盈利≥1%<br />
+- 20分钟后盈利≥2%<br />
+- 任何时间占用盈利≥4%都会触发出场</p>
+<p>此配置会考虑手续费。</p>
+<h4 id="roi">关闭ROI策略<a class="headerlink" href="#roi" title="Permanent link">&para;</a></h4>
+<p>设置为空字典即可禁用：</p>
+<div class="highlight"><pre><span></span><code><span class="n">minimal_roi</span> <span class="o">=</span> <span class="p">{}</span>
+</code></pre></div>
+<h4 id="roi_1">用时间（基于蜡烛数）设置ROI<a class="headerlink" href="#roi_1" title="Permanent link">&para;</a></h4>
+<p>可以用策略中的<code>timeframe</code>和蜡烛数转换成时间点：</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">freqtrade.exchange</span><span class="w"> </span><span class="kn">import</span> <span class="n">timeframe_to_minutes</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AwesomeStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
+
+    <span class="n">timeframe</span> <span class="o">=</span> <span class="s2">&quot;1d&quot;</span>
+    <span class="n">timeframe_mins</span> <span class="o">=</span> <span class="n">timeframe_to_minutes</span><span class="p">(</span><span class="n">timeframe</span><span class="p">)</span>
+    <span class="n">minimal_roi</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;0&quot;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span>                      <span class="c1"># 之前3根蜡烛（默认）</span>
+        <span class="nb">str</span><span class="p">(</span><span class="n">timeframe_mins</span> <span class="o">*</span> <span class="mi">3</span><span class="p">):</span> <span class="mf">0.02</span><span class="p">,</span> <span class="c1"># 3根蜡烛后达成2%</span>
+        <span class="nb">str</span><span class="p">(</span><span class="n">timeframe_mins</span> <span class="o">*</span> <span class="mi">6</span><span class="p">):</span> <span class="mf">0.01</span><span class="p">,</span> <span class="c1"># 6根蜡烛后达成1%</span>
+    <span class="p">}</span>
+</code></pre></div>
+<div class="admonition 提示">
+<p class="admonition-title">未立即成交的订单</p>
+</div>
+<ul>
+<li><code>minimal_roi</code>会以<code>trade.open_date</code>（订单开启时间）为基准。</li>
+<li>适用于限价单未立即成交时的场景（配合<code>custom_entry_price()</code>使用），以及订单被调价后。</li>
+</ul>
+<h3 id="stoploss">止损（Stoploss）<a class="headerlink" href="#stoploss" title="Permanent link">&para;</a></h3>
+<p>设置止损可以有效保护资金。</p>
+<p>示例：设置10%的止损</p>
+<div class="highlight"><pre><span></span><code><span class="n">stoploss</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.10</span>
+</code></pre></div>
+<p>完整功能详情请查看<a href="../stoploss/">止损页</a>。</p>
+<h3 id="timeframe">时间周期（Timeframe）<a class="headerlink" href="#timeframe" title="Permanent link">&para;</a></h3>
+<p>代表策略使用的蜡烛周期。</p>
+<p>常用有<code>"1m"</code>、<code>"5m"</code>、<code>"15m"</code>、<code>"1h"</code>等，但支持所有交易所支持的周期。</p>
+<p>注意：不同时间周期的入场/出场信号效果不同。可以在策略文件中通过<code>self.timeframe</code>访问。</p>
+<h3 id="can-short">支持空头（Can short）<a class="headerlink" href="#can-short" title="Permanent link">&para;</a></h3>
+<p>在期货市场启用空头策略，需设定<code>can_short = True</code>。</p>
+<p>启用后，仅支持期货市场（现货市场中此设置无效）。若<code>enter_short</code>列中有值，未启用<code>can_short</code>时，空头信号将被忽略。</p>
+<h3 id="metadata">元数据字典（metadata）<a class="headerlink" href="#metadata" title="Permanent link">&para;</a></h3>
+<p><code>metadata</code>包含额外信息（在<code>populate_*</code>函数中可用）：</p>
+<ul>
+<li><code>pair</code>：交易对，例如<code>XRP/BTC</code>（或<code>XRP/BTC:BTC</code>用于期货市场）。</li>
+</ul>
+<p>勿自行修改此字典。可参考<a href="../strategy-advanced/#storing-information-persistent">存储信息</a>。</p>
+<h2 id="_14">运行策略所需的导入<a class="headerlink" href="#_14" title="Permanent link">&para;</a></h2>
+<p>在创建策略时，你需要导入必要的模块和类。以下导入是策略所需的基本内容：</p>
+<p>默认情况下，我们建议使用以下导入作为策略的基础：
+这将涵盖所有使频繁交易（freqtrade）功能正常运行的导入。
+当然，你可以根据策略需要添加更多的导入。</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># flake8: noqa: F401</span>
+<span class="c1"># isort: skip_file</span>
+<span class="c1"># --- 请勿删除以下导入 ---</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">timezone</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataFrame</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">freqtrade.strategy</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">IStrategy</span><span class="p">,</span>
+    <span class="n">Trade</span><span class="p">,</span> 
+    <span class="n">Order</span><span class="p">,</span>
+    <span class="n">PairLocks</span><span class="p">,</span>
+    <span class="n">informative</span><span class="p">,</span>  <span class="c1"># @informative 装饰器</span>
+    <span class="c1"># 超参数（Hyperopt）相关</span>
+    <span class="n">BooleanParameter</span><span class="p">,</span>
+    <span class="n">CategoricalParameter</span><span class="p">,</span>
+    <span class="n">DecimalParameter</span><span class="p">,</span>
+    <span class="n">IntParameter</span><span class="p">,</span>
+    <span class="n">RealParameter</span><span class="p">,</span>
+    <span class="c1"># 时间框架辅助函数</span>
+    <span class="n">timeframe_to_minutes</span><span class="p">,</span>
+    <span class="n">timeframe_to_next_date</span><span class="p">,</span>
+    <span class="n">timeframe_to_prev_date</span><span class="p">,</span>
+    <span class="c1"># 策略辅助函数</span>
+    <span class="n">merge_informative_pair</span><span class="p">,</span>
+    <span class="n">stoploss_from_absolute</span><span class="p">,</span>
+    <span class="n">stoploss_from_open</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># --------------------------------</span>
+<span class="c1"># 在这里添加你的库导入</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">talib.abstract</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ta</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">technical</span><span class="w"> </span><span class="kn">import</span> <span class="n">qtpylib</span>
+</code></pre></div>
+<h2 id="_15">策略文件加载方式<a class="headerlink" href="#_15" title="Permanent link">&para;</a></h2>
+<p>默认情况下，Freqtrade会加载所有<code>user_data/strategies</code>目录下的<code>.py</code>文件中的策略。</p>
+<p>假设你的策略名为<code>AwesomeStrategy</code>，文件名为<code>user_data/strategies/AwesomeStrategy.py</code>，可以用：</p>
+<div class="highlight"><pre><span></span><code>freqtrade<span class="w"> </span>trade<span class="w"> </span>--strategy<span class="w"> </span>AwesomeStrategy
+</code></pre></div>
+<p>启动时用策略类名（非文件名）。</p>
+<p>还可以用<code>freqtrade list-strategies</code>列出所有能加载的策略（即在策略文件夹中的策略），并显示状态。</p>
+<details class="提示">
+<summary>自定义策略目录</summary>
+<p>可用参数<code>--strategy-path</code>指定其他路径，例如<code>--strategy-path user_data/otherPath</code>，作用于所有涉及策略的命令。</p>
+</details>
+<h2 id="informative-pairs">信息配对（Informative Pairs）<a class="headerlink" href="#informative-pairs" title="Permanent link">&para;</a></h2>
+<h3 id="_16">获取非交易用配对数据<a class="headerlink" href="#_16" title="Permanent link">&para;</a></h3>
+<p>某些策略需要观察更长周期（如日线）数据，以辅助决策。</p>
+<p>这些配对的OHLCV数据，会在常规的白名单刷新时下载，且可通过<code>DataProvider</code>访问。</p>
+<p>这些配对<strong>不会</strong>直接交易，除非它们被加入白名单或经过动态白名单（如<code>VolumePairlist</code>）筛选。</p>
+<p>配对格式：<code>("pair", "timeframe")</code>，<code>pair</code>为交易对，<code>timeframe</code>为时间周期。</p>
+<p>示例：</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">informative_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[(</span><span class="s2">&quot;ETH/USDT&quot;</span><span class="p">,</span> <span class="s2">&quot;5m&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;BTC/TUSD&quot;</span><span class="p">,</span> <span class="s2">&quot;15m&quot;</span><span class="p">),</span>
+            <span class="p">]</span>
+</code></pre></div>
+<p>详细示例可参见<a href="#complete-dataprovider-sample">DataProvider部分</a>。</p>
+<div class="admonition 警告">
+<p class="admonition-title">警告</p>
+<p>因为这些配对会随白名单刷新，建议限制列表长度。支持的平台必须在交易所中存在且激活。建议优先使用重采样（resampling）到长周期，以减少请求频次。</p>
+</div>
+<details class="提示">
+<summary>替代蜡烛类型</summary>
+<p>informative_pairs还支持第三个参数，明示蜡烛类型（<code>candletype</code>）。不同交易模式与交易所支持不同：
+- 现货配对不能用于期货配对，反之亦然。
+具体支持情况可参考交易所文档。</p>
+</details>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">informative_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;ETH/USDT&quot;</span><span class="p">,</span> <span class="s2">&quot;5m&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>       <span class="c1"># 使用默认蜡烛类型（建议）</span>
+        <span class="p">(</span><span class="s2">&quot;ETH/USDT&quot;</span><span class="p">,</span> <span class="s2">&quot;5m&quot;</span><span class="p">,</span> <span class="s2">&quot;spot&quot;</span><span class="p">),</span>   <span class="c1"># 强制使用现货蜡烛（仅支持现货）</span>
+        <span class="p">(</span><span class="s2">&quot;BTC/TUSD&quot;</span><span class="p">,</span> <span class="s2">&quot;15m&quot;</span><span class="p">,</span> <span class="s2">&quot;futures&quot;</span><span class="p">),</span>  <span class="c1"># 期货蜡烛（需设置trading_mode=futures）</span>
+        <span class="p">(</span><span class="s2">&quot;BTC/TUSD&quot;</span><span class="p">,</span> <span class="s2">&quot;15m&quot;</span><span class="p">,</span> <span class="s2">&quot;mark&quot;</span><span class="p">),</span>     <span class="c1"># 结算（标记）蜡烛（仅期货）</span>
+    <span class="p">]</span>
+</code></pre></div>
+<hr />
+<h3 id="informativeinformative-pairs">装饰器<code>@informative()</code>（Informative Pairs定义）<a class="headerlink" href="#informativeinformative-pairs" title="Permanent link">&para;</a></h3>
+<p>用<code>@informative</code>装饰器，可快速定义辅助配对。被装饰的<code>populate_indicators_*</code>方法只会在自身环境中运行，不会访问其他配对的数据信息。</p>
+<p>但是，所有“辅助数据帧”会在每次调用<code>populate_indicators()</code>时合并后传入。</p>
+<div class="admonition 注意">
+<p class="admonition-title">注意</p>
+<p>若需在生成某个辅助配对时引用另一个辅助配对的数据，不要用<code>@informative()</code>，应手动定义配对列表。</p>
+</div>
+<p>在超参数优化（hyperopt）时，不支持通过<code>.value</code>访问参数属性，应使用<code>.range</code>。</p>
+<details class="信息">
+<summary>完整示例</summary>
+</details>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">informative</span><span class="p">(</span>
+    <span class="n">timeframe</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">asset</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">candle_type</span><span class="p">:</span> <span class="n">CandleType</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">ffill</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">PopulateIndicators</span><span class="p">],</span> <span class="n">PopulateIndicators</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    装饰器，用于定义数据提供的辅助指标函数。</span>
+
+<span class="sd">    示例：</span>
+
+<span class="sd">        @informative(&#39;1h&#39;)</span>
+<span class="sd">        def populate_indicators_1h(self, dataframe: DataFrame, metadata: dict) -&gt; DataFrame:</span>
+<span class="sd">            dataframe[&#39;rsi&#39;] = ta.RSI(dataframe, timeperiod=14)</span>
+<span class="sd">            return dataframe</span>
+
+<span class="sd">    参数说明：</span>
+<span class="sd">    - timeframe: 辅助周期，必须大于或等于策略周期</span>
+<span class="sd">    - asset: 辅助交易资产（如BTC、BTC/USDT），可留空使用当前对</span>
+<span class="sd">    - fmt: 格式字符串或格式化函数，用于列名（详见官方文档）</span>
+<span class="sd">    - ffill: 合并后是否进行前向填充</span>
+<span class="sd">    - candle_type: 指定蜡烛类型（空、mark、index、premiumIndex、funding_rate）</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+</code></pre></div>
+<div class="admonition 示例">
+<p class="admonition-title">快速定义辅助配对</p>
+</div>
+<ul>
+<li>一般无需使用<code>merge_informative_pair()</code>的强大功能，可用装饰器快速定义。</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">freqtrade.persistence</span><span class="w"> </span><span class="kn">import</span> <span class="n">Trade</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">freqtrade.strategy</span><span class="w"> </span><span class="kn">import</span> <span class="n">IStrategy</span><span class="p">,</span> <span class="n">informative</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AwesomeStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
+
+    <span class="nd">@informative</span><span class="p">(</span><span class="s1">&#39;30m&#39;</span><span class="p">)</span>
+    <span class="nd">@informative</span><span class="p">(</span><span class="s1">&#39;1h&#39;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">populate_indicators_1h</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+        <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;rsi&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">RSI</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">timeperiod</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dataframe</span>
+
+    <span class="nd">@informative</span><span class="p">(</span><span class="s1">&#39;1h&#39;</span><span class="p">,</span> <span class="s1">&#39;BTC/</span><span class="si">{stake}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">populate_indicators_btc_stake</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+        <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;rsi&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">RSI</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">timeperiod</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dataframe</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">populate_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+        <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;rsi&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">RSI</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">timeperiod</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+        <span class="c1"># 访问其他配对辅助数据</span>
+        <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;rsi_less&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;rsi&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;rsi_1h&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">dataframe</span>
+</code></pre></div>
+<details class="注意">
+<summary>跨配对访问，建议用字符串格式化</summary>
+</details>
+<ul>
+<li>在调用其他配对的辅助数据时，用字符串格式化访问列名，确保策略可动态切换主/辅配对。</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">populate_entry_trend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+    <span class="n">stake</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;stake_currency&#39;</span><span class="p">]</span>
+    <span class="n">dataframe</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+        <span class="p">(</span>
+            <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;btc_</span><span class="si">{</span><span class="n">stake</span><span class="si">}</span><span class="s1">_rsi_1h&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">35</span><span class="p">)</span>
+            <span class="o">&amp;</span>
+            <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;volume&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="p">),</span>
+        <span class="p">[</span><span class="s1">&#39;enter_long&#39;</span><span class="p">,</span> <span class="s1">&#39;enter_tag&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;buy_signal_rsi&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">dataframe</span>
+</code></pre></div>
+<p>也可以用列名重命名<code>@informative()</code>的<code>fmt</code>参数，避免引入持仓货币。</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@informative</span><span class="p">(</span><span class="s1">&#39;1h&#39;</span><span class="p">,</span> <span class="s1">&#39;BTC/</span><span class="si">{stake}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{base}</span><span class="s1">_</span><span class="si">{column}</span><span class="s1">_</span><span class="si">{timeframe}</span><span class="s1">&#39;</span><span class="p">)</span>
+</code></pre></div>
+<div class="admonition 警告">
+<p class="admonition-title">方法名重复</p>
+</div>
+<ul>
+<li>被<code>@informative()</code>装饰的方法必须唯一，否则会覆盖已有方法，导致指标无法被引用。</li>
+<li>例如拷贝粘贴多个同名的<code>populate_indicators_*</code>，会出现此问题。</li>
+<li>应确保方法名唯一，避免覆盖。</li>
+</ul>
+<h3 id="merge_informative_pair"><em>merge_informative_pair()</em><a class="headerlink" href="#merge_informative_pair" title="Permanent link">&para;</a></h3>
+<p>此函数可将辅助配对与主数据安全合并，避免未来数据泄露（lookahead bias）。</p>
+<p>功能：
+- 改名列以确保唯一
+- 不引入未来信息
+- 可以选择前向填充</p>
+<p>完整示例参见<a href="#complete-dataprovider-sample">完整DataProvider示例</a>。</p>
+<p>合并后，辅助配对的所有列会自动更名（例子见下）：</p>
+<div class="admonition 示例">
+<p class="admonition-title">列名重命名</p>
+</div>
+<p>假设<code>inf_tf='1d'</code>，合并后列名：</p>
+<div class="highlight"><pre><span></span><code><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="s1">&#39;close&#39;</span><span class="p">,</span> <span class="s1">&#39;rsi&#39;</span>                     <span class="c1"># 来自原始DataFrame</span>
+<span class="s1">&#39;date_1d&#39;</span><span class="p">,</span> <span class="s1">&#39;open_1d&#39;</span><span class="p">,</span> <span class="s1">&#39;high_1d&#39;</span><span class="p">,</span> <span class="s1">&#39;low_1d&#39;</span><span class="p">,</span> <span class="s1">&#39;close_1d&#39;</span><span class="p">,</span> <span class="s1">&#39;rsi_1d&#39;</span>   <span class="c1"># 来自辅助配对</span>
+</code></pre></div>
+<details class="示例">
+<summary>1h配对的列名</summary>
+</details>
+<p>假设<code>inf_tf='1h'</code>，合并后：</p>
+<div class="highlight"><pre><span></span><code><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">,</span> <span class="s1">&#39;low&#39;</span><span class="p">,</span> <span class="s1">&#39;close&#39;</span><span class="p">,</span> <span class="s1">&#39;rsi&#39;</span>
+<span class="s1">&#39;date_1h&#39;</span><span class="p">,</span> <span class="s1">&#39;open_1h&#39;</span><span class="p">,</span> <span class="s1">&#39;high_1h&#39;</span><span class="p">,</span> <span class="s1">&#39;low_1h&#39;</span><span class="p">,</span> <span class="s1">&#39;close_1h&#39;</span><span class="p">,</span> <span class="s1">&#39;rsi_1h&#39;</span>
+</code></pre></div>
+<details class="示例">
+<summary>自定义实现</summary>
+</details>
+<p>可以自己写合并逻辑，例如：</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 以1根蜡烛的偏移模拟时间对齐（防未来信息泄露）</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="n">minutes</span> <span class="o">=</span> <span class="n">timeframe_to_minutes</span><span class="p">(</span><span class="n">inf_tf</span><span class="p">)</span>
+<span class="c1"># 时间偏移1个周期</span>
+<span class="n">informative</span><span class="p">[</span><span class="s1">&#39;date_merge&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">informative</span><span class="p">[</span><span class="s2">&quot;date&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span><span class="p">)</span>
+
+<span class="c1"># 更改列名，确保唯一</span>
+<span class="n">informative</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">col</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">inf_tf</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">informative</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+
+<span class="c1"># 合并DataFrame</span>
+<span class="c1"># 先确保所有指标在此之前都已计算</span>
+<span class="n">dataframe</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">informative</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">right_on</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;date_merge_</span><span class="si">{</span><span class="n">inf_tf</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+<span class="c1"># 使用ffill保证每日的辅助指标值在每个时间点都可用</span>
+<span class="n">dataframe</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">ffill</span><span class="p">()</span>
+</code></pre></div>
+<details class="警告">
+<summary>辅助时间帧小于主时间帧</summary>
+</details>
+<ul>
+<li>使用辅助配对的时间周期小于主周期，会失去辅助信息的作用。建议用较长周期。</li>
+</ul>
+<h2 id="dataprovider">附加数据（DataProvider）<a class="headerlink" href="#dataprovider" title="Permanent link">&para;</a></h2>
+<p>策略可以访问<code>DataProvider</code>，用于获取更多数据。</p>
+<p>所有方法返回<code>None</code>表示失败（无异常抛出）。</p>
+<p>请根据当前运行状态选择用对应的方法（如回测、dry或实盘）。</p>
+<div class="admonition 警告">
+<p class="admonition-title">超参数优化中的限制</p>
+</div>
+<ul>
+<li>DataProvider在超参数优化时可用，但只能在<code>populate_indicators()</code>中使用（仅在策略中），不能在<code>populate_entry_trend()</code>或<code>populate_exit_trend()</code>中用。</li>
+</ul>
+<h3 id="_17">可用方法<a class="headerlink" href="#_17" title="Permanent link">&para;</a></h3>
+<ul>
+<li><a href="#available_pairs"><code>available_pairs</code></a>：已缓存配对列表（pair, timeframe）</li>
+<li><a href="#current_whitelist"><code>current_whitelist()</code></a>：动态白名单（如VolumePairlist）</li>
+<li><a href="#get_pair_dataframepair-timeframe"><code>get_pair_dataframe(pair, timeframe)</code></a>：返回历史或缓存的实时数据</li>
+<li><a href="#get_analyzed_dataframepair-timeframe"><code>get_analyzed_dataframe(pair, timeframe)</code></a>：返回指标分析后数据和上次分析时间</li>
+<li><code>historic_ohlcv(pair, timeframe)</code>：磁盘存储的历史数据</li>
+<li><code>market(pair)</code>：配对市场信息（手续费、限制、精度等）</li>
+<li><code>ohlcv(pair, timeframe)</code>：当前缓存的K线数据（DataFrame）</li>
+<li><a href="#orderbookpair-maximum"><code>orderbook(pair, maximum)</code></a>：最新订单簿（含bids/asks）</li>
+<li><a href="#tickerpair"><code>ticker(pair)</code></a>：实时行情</li>
+<li><code>runmode</code>：运行模式（回测/实盘/优化等）</li>
+</ul>
+<h3 id="_18">使用示例<a class="headerlink" href="#_18" title="Permanent link">&para;</a></h3>
+<h4 id="available_pairs"><em>available_pairs</em><a class="headerlink" href="#available_pairs" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="n">pair</span><span class="p">,</span> <span class="n">timeframe</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">available_pairs</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;可用配对：</span><span class="si">{</span><span class="n">pair</span><span class="si">}</span><span class="s2">, 周期：</span><span class="si">{</span><span class="n">timeframe</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h4 id="current_whitelist"><em>current_whitelist()</em><a class="headerlink" href="#current_whitelist" title="Permanent link">&para;</a></h4>
+<p>例如，开发策略用1天周期（日线）配合10个交易对，用5分钟线信号判定买卖。</p>
+<p>因数据有限，不能直接用<code>5m</code>转成日线。可以用<code>current_whitelist()</code>获取动态白单中的配对集合。</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">informative_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c1"># 获取白名单中的全部配对</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">current_whitelist</span><span class="p">()</span>
+    <span class="c1"># 以1日周期下载缓存</span>
+    <span class="n">informative_pairs</span> <span class="o">=</span> <span class="p">[(</span><span class="n">pair</span><span class="p">,</span> <span class="s1">&#39;1d&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">informative_pairs</span>
+</code></pre></div>
+<div class="admonition 提示">
+<p class="admonition-title">配对绘图建议</p>
+</div>
+<ul>
+<li><code>plot-dataframe</code>目前不支持用白名单，结果可能误导。</li>
+<li>Web界面显示也不支持动态配对。</li>
+</ul>
+<h4 id="get_pair_dataframepair-timeframe"><em>get_pair_dataframe(pair, timeframe)</em><a class="headerlink" href="#get_pair_dataframepair-timeframe" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1"># 获取第一个配置的辅助配对数据</span>
+<span class="n">inf_pair</span><span class="p">,</span> <span class="n">inf_timeframe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">informative_pairs</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">informative</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">get_pair_dataframe</span><span class="p">(</span><span class="n">pair</span><span class="o">=</span><span class="n">inf_pair</span><span class="p">,</span> <span class="n">timeframe</span><span class="o">=</span><span class="n">inf_timeframe</span><span class="p">)</span>
+</code></pre></div>
+<div class="admonition 警告">
+<p class="admonition-title">回测中的特殊情况</p>
+</div>
+<ul>
+<li>在回测中，<code>get_pair_dataframe()</code>会返回全时间段数据，但要确保不“预知未来”。</li>
+<li>在回调中会返回部分时间段（直到当前蜡烛）数据。</li>
+</ul>
+<h4 id="get_analyzed_dataframepair-timeframe"><em>get_analyzed_dataframe(pair, timeframe)</em><a class="headerlink" href="#get_analyzed_dataframepair-timeframe" title="Permanent link">&para;</a></h4>
+<p>用以获取已分析后（指标/买卖点）数据，常用于判定操作。</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 获取当前数据</span>
+<span class="n">dataframe</span><span class="p">,</span> <span class="n">last_updated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">get_analyzed_dataframe</span><span class="p">(</span><span class="n">pair</span><span class="o">=</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;pair&#39;</span><span class="p">],</span> <span class="n">timeframe</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeframe</span><span class="p">)</span>
+</code></pre></div>
+<div class="admonition 注意">
+<p class="admonition-title">无数据</p>
+</div>
+<ul>
+<li>若配对未缓存，会返回空DataFrame。</li>
+<li>可用<code>if dataframe.empty:</code>判断处理。</li>
+</ul>
+<h4 id="orderbookpair-maximum"><em>orderbook(pair, maximum)</em><a class="headerlink" href="#orderbookpair-maximum" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">runmode</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;live&#39;</span><span class="p">,</span> <span class="s1">&#39;dry_run&#39;</span><span class="p">):</span>
+    <span class="n">ob</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">orderbook</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;pair&#39;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;best_bid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ob</span><span class="p">[</span><span class="s1">&#39;bids&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;best_ask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ob</span><span class="p">[</span><span class="s1">&#39;asks&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+</code></pre></div>
+<p>结构示意：</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="s1">&#39;bids&#39;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">[</span><span class="nx">价格</span><span class="p">,</span><span class="w"> </span><span class="nx">数量</span><span class="p">],</span><span class="w">  </span><span class="c1">//例如[30000, 0.5]</span>
+<span class="w">        </span><span class="p">...</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="w">    </span><span class="s1">&#39;asks&#39;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">[</span><span class="nx">价格</span><span class="p">,</span><span class="w"> </span><span class="nx">数量</span><span class="p">],</span>
+<span class="w">        </span><span class="p">...</span>
+<span class="w">    </span><span class="p">],</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>用<code>ob['bids'][0][0]</code>得到最高买价，<code>ob['bids'][0][1]</code>对应买量。</p>
+<div class="admonition 警告">
+<p class="admonition-title">回测中不可用</p>
+</div>
+<ul>
+<li>订单簿是实时数据，回测时此函数返回的可能与实际历史不符。</li>
+</ul>
+<h4 id="tickerpair"><em>ticker(pair)</em><a class="headerlink" href="#tickerpair" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">runmode</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;live&#39;</span><span class="p">,</span> <span class="s1">&#39;dry_run&#39;</span><span class="p">):</span>
+    <span class="n">ticker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">ticker</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;pair&#39;</span><span class="p">])</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;last_price&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ticker</span><span class="p">[</span><span class="s1">&#39;last&#39;</span><span class="p">]</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;volume24h&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ticker</span><span class="p">[</span><span class="s1">&#39;quoteVolume&#39;</span><span class="p">]</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;vwap&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ticker</span><span class="p">[</span><span class="s1">&#39;vwap&#39;</span><span class="p">]</span>
+</code></pre></div>
+<ul>
+<li>返回值结构随交易所不同，可能没有<code>vwap</code>或<code>last</code>字段等。用前应验证。</li>
+</ul>
+<div class="admonition 警告">
+<p class="admonition-title">回测中不适用</p>
+</div>
+<ul>
+<li>此方法返回实时行情数据，回测无限制使用会导致每行数据都出现相同值。</li>
+</ul>
+<h3 id="notification">发送通知（Notification）<a class="headerlink" href="#notification" title="Permanent link">&para;</a></h3>
+<p>用<code>.send_msg()</code>可以在策略中发自定义通知。</p>
+<p>参数<code>always_send=True</code>可以强制每根K线都发一次。</p>
+<div class="highlight"><pre><span></span><code><span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">send_msg</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;pair&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">火热中！&quot;</span><span class="p">)</span>
+<span class="c1"># 强制每根都发</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">send_msg</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;pair&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">火热中！&quot;</span><span class="p">,</span> <span class="n">always_send</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+<ul>
+<li>仅在交易中（实盘/模拟）有效。</li>
+</ul>
+<div class="admonition 警告">
+<p class="admonition-title">刷屏</p>
+</div>
+<ul>
+<li><code>always_send=True</code>时，会持续推送，请谨慎使用，避免频繁消息扰民。</li>
+</ul>
+<h2 id="dataprovider_1">完整示例：DataProvider用法<a class="headerlink" href="#dataprovider_1" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">freqtrade.strategy</span><span class="w"> </span><span class="kn">import</span> <span class="n">IStrategy</span><span class="p">,</span> <span class="n">merge_informative_pair</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataFrame</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SampleStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
+    <span class="c1"># 初始化配置...</span>
+
+    <span class="n">timeframe</span> <span class="o">=</span> <span class="s1">&#39;5m&#39;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">informative_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># 获取当前白名单中的所有配对</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">current_whitelist</span><span class="p">()</span>
+        <span class="c1"># 为每对指定日线周期，下载缓存</span>
+        <span class="n">informative_pairs</span> <span class="o">=</span> <span class="p">[(</span><span class="n">pair</span><span class="p">,</span> <span class="s1">&#39;1d&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">]</span>
+        <span class="c1"># 可加入静态配对</span>
+        <span class="n">informative_pairs</span> <span class="o">+=</span> <span class="p">[(</span><span class="s2">&quot;ETH/USDT&quot;</span><span class="p">,</span> <span class="s2">&quot;5m&quot;</span><span class="p">),</span>
+                              <span class="p">(</span><span class="s2">&quot;BTC/TUSD&quot;</span><span class="p">,</span> <span class="s2">&quot;15m&quot;</span><span class="p">),</span>
+                            <span class="p">]</span>
+        <span class="k">return</span> <span class="n">informative_pairs</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">populate_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+        <span class="c1"># 确保DataProvider可用</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">dataframe</span>
+        <span class="n">inf_tf</span> <span class="o">=</span> <span class="s1">&#39;1d&#39;</span>
+        <span class="c1"># 获取日线配对数据</span>
+        <span class="n">informative</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">get_pair_dataframe</span><span class="p">(</span><span class="n">pair</span><span class="o">=</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;pair&#39;</span><span class="p">],</span> <span class="n">timeframe</span><span class="o">=</span><span class="n">inf_tf</span><span class="p">)</span>
+        <span class="c1"># 计算日线RSI</span>
+        <span class="n">informative</span><span class="p">[</span><span class="s1">&#39;rsi&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">RSI</span><span class="p">(</span><span class="n">informative</span><span class="p">,</span> <span class="n">timeperiod</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+        <span class="c1"># 合并辅助日线指标到本次数据</span>
+        <span class="n">dataframe</span> <span class="o">=</span> <span class="n">merge_informative_pair</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">informative</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeframe</span><span class="p">,</span> <span class="n">inf_tf</span><span class="p">,</span> <span class="n">ffill</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># 计算本周期RSI</span>
+        <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;rsi&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">RSI</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">timeperiod</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+
+        <span class="c1"># 其他指标...</span>
+        <span class="k">return</span> <span class="n">dataframe</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">populate_entry_trend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+        <span class="c1"># 设定入场条件</span>
+        <span class="n">dataframe</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
+            <span class="p">(</span>
+                <span class="p">(</span><span class="n">qtpylib</span><span class="o">.</span><span class="n">crossed_above</span><span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;rsi&#39;</span><span class="p">],</span> <span class="mi">30</span><span class="p">))</span> <span class="o">&amp;</span>
+                <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;rsi_1d&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">30</span><span class="p">)</span> <span class="o">&amp;</span>
+                <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;volume&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="p">),</span>
+            <span class="p">[</span><span class="s1">&#39;enter_long&#39;</span><span class="p">,</span> <span class="s1">&#39;enter_tag&#39;</span><span class="p">]</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;rsi_cross&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">dataframe</span>
+</code></pre></div>
+<hr />
+<h2 id="_19">其他数据（钱包信息）<a class="headerlink" href="#_19" title="Permanent link">&para;</a></h2>
+<p>策略还可访问<code>wallets</code>对象，获取账户余额。</p>
+<div class="admonition 注意">
+<p class="admonition-title">回测/超参优化</p>
+</div>
+<ul>
+<li>在<code>populate_*()</code>中，<code>wallets</code>返回的是配置的全钱包状态。</li>
+<li>在callbacks中，则是模拟的实际钱包。</li>
+</ul>
+<p>示例：</p>
+<div class="highlight"><pre><span></span><code><span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wallets</span><span class="p">:</span>
+    <span class="n">free_eth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wallets</span><span class="o">.</span><span class="n">get_free</span><span class="p">(</span><span class="s1">&#39;ETH&#39;</span><span class="p">)</span>
+    <span class="n">used_eth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wallets</span><span class="o">.</span><span class="n">get_used</span><span class="p">(</span><span class="s1">&#39;ETH&#39;</span><span class="p">)</span>
+    <span class="n">total_eth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wallets</span><span class="o">.</span><span class="n">get_total</span><span class="p">(</span><span class="s1">&#39;ETH&#39;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="wallets">Wallets常用方法<a class="headerlink" href="#wallets" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>get_free(asset)</code>：当前可用余额</li>
+<li><code>get_used(asset)</code>：暂用余额（挂单）</li>
+<li><code>get_total(asset)</code>：总余额（“可用+挂单”）</li>
+</ul>
+<hr />
+<h2 id="_20">其他数据（交易记录）<a class="headerlink" href="#_20" title="Permanent link">&para;</a></h2>
+<p>可以在策略中查询已完成的交易历史。</p>
+<p>在文件开头导入：</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">freqtrade.persistence</span><span class="w"> </span><span class="kn">import</span> <span class="n">Trade</span>
+</code></pre></div>
+<p>示例：查询昨日的交易</p>
+<div class="highlight"><pre><span></span><code><span class="n">trades</span> <span class="o">=</span> <span class="n">Trade</span><span class="o">.</span><span class="n">get_trades_proxy</span><span class="p">(</span><span class="n">pair</span><span class="o">=</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;pair&#39;</span><span class="p">],</span>
+                                <span class="n">open_date</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+                                <span class="n">is_open</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="c1"># 统计利润</span>
+<span class="n">curdayprofit</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">trade</span><span class="o">.</span><span class="n">close_profit</span> <span class="k">for</span> <span class="n">trade</span> <span class="ow">in</span> <span class="n">trades</span><span class="p">)</span>
+</code></pre></div>
+<p>完整方法细节请查阅<a href="../trade-object/">Trade对象文档</a>。</p>
+<div class="admonition 警告">
+<p class="admonition-title">警告</p>
+</div>
+<ul>
+<li>在回测或超参优化中，<code>populate_*()</code>无法访问交易历史，返回空。</li>
+</ul>
+<h2 id="_21">阻止某配对交易<a class="headerlink" href="#_21" title="Permanent link">&para;</a></h2>
+<p>Freqtrade会在当前蜡烛完成前锁定某配对，避免重复操作。</p>
+<p>显示消息：<code>Pair &lt;pair&gt; is currently locked.</code></p>
+<h3 id="_22">在策略中锁定配对<a class="headerlink" href="#_22" title="Permanent link">&para;</a></h3>
+<p>可以调用<code>self.lock_pair(pair, until, [reason])</code>实现。参数<code>until</code>为未来时间点，<code>reason</code>为说明。</p>
+<p>解锁用<code>self.unlock_pair(pair)</code>或<code>self.unlock_reason(reason)</code>。</p>
+<p>检查锁定状态用<code>self.is_pair_locked(pair)</code>。</p>
+<div class="admonition 注意">
+<p class="admonition-title">注意</p>
+</div>
+<ul>
+<li>锁定要以蜡烛结束时间为准（向上取整）。</li>
+<li>例如，5分钟周期，锁到10:18意味着10:15-10:20的蜡烛结束后才解锁。</li>
+</ul>
+<div class="admonition 警告">
+<p class="admonition-title">警告</p>
+</div>
+<ul>
+<li>在回测中不能用手动锁定。只支持策略内部设置的保护机制。</li>
+</ul>
+<p>示例代码：在交易后检查盈亏，决定锁定</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">freqtrade.persistence</span><span class="w"> </span><span class="kn">import</span> <span class="n">Trade</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
+
+<span class="c1"># 在策略的`populate_*()`中</span>
+<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;runmode&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;live&#39;</span><span class="p">,</span> <span class="s1">&#39;dry_run&#39;</span><span class="p">):</span>
+    <span class="n">trades</span> <span class="o">=</span> <span class="n">Trade</span><span class="o">.</span><span class="n">get_trades_proxy</span><span class="p">(</span>
+        <span class="n">pair</span><span class="o">=</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;pair&#39;</span><span class="p">],</span> <span class="n">is_open</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">open_date</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">profit_sum</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">trade</span><span class="o">.</span><span class="n">close_profit</span> <span class="k">for</span> <span class="n">trade</span> <span class="ow">in</span> <span class="n">trades</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">profit_sum</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># 亏损，锁定2小时</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lock_pair</span><span class="p">(</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;pair&#39;</span><span class="p">],</span> <span class="n">until</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+</code></pre></div>
+<h3 id="dataframe_1">打印主DataFrame<a class="headerlink" href="#dataframe_1" title="Permanent link">&para;</a></h3>
+<p>可以在<code>populate_*()</code>中打印调试信息：</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">populate_entry_trend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+    <span class="c1"># 条件</span>
+    <span class="n">dataframe</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span> <span class="o">...</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;enter_long&#39;</span><span class="p">,</span> <span class="s1">&#39;enter_tag&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;signal&#39;</span><span class="p">)</span>
+
+    <span class="c1"># 打印当前配对信息</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing </span><span class="si">{</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;pair&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 打印最后几行</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">dataframe</span><span class="o">.</span><span class="n">tail</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="n">dataframe</span>
+</code></pre></div>
+<p>也可以输出全部内容（不过行数多，建议慎用）：</p>
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="_23">常见开发错误<a class="headerlink" href="#_23" title="Permanent link">&para;</a></h2>
+<h3 id="_24">回测时“提前看未来”<a class="headerlink" href="#_24" title="Permanent link">&para;</a></h3>
+<ul>
+<li>回测会一次分析完全部数据，因性能考虑，不能用未来数据“作弊”。</li>
+<li>常见错误：<ul>
+<li>用<code>shift(-1)</code>或类似操作，造成未来数据泄露。</li>
+<li>用<code>iloc[-1]</code>在<code>populate_*()</code>方法中，可能在不同阶段值不一致。</li>
+<li>用全列统计（如<code>mean()</code>）会涵盖未来数据，应改用滚动窗口。</li>
+<li>不用<code>.resample()</code>，应用<code>.resample(..., label='right')</code>。</li>
+<li>不能用<code>merge()</code>直接合长短时间框架，必须用辅助配对（<a href="#informative-pairs">informative pairs</a>）方案。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>建议：定期执行<a href="../lookahead-analysis/">提前预判分析</a>和<a href="../recursive-analysis/">递归分析</a>，帮助排查潜在问题。</li>
+</ul>
+<h3 id="colliding-signals">信号冲突（Colliding signals）<a class="headerlink" href="#colliding-signals" title="Permanent link">&para;</a></h3>
+<ul>
+<li>同一时间，若<code>'enter_long'</code>和<code>'exit_long'</code>同时为1，机器人会忽略入场，避免瞬间进出。</li>
+<li>规则：<ul>
+<li>若<code>enter_long</code>被触发，<code>exit_long</code>和<code>enter_short</code>会被忽略。</li>
+<li>若<code>enter_short</code>被触发，<code>exit_short</code>和<code>enter_long</code>会被忽略。</li>
+</ul>
+</li>
+</ul>
+<p>这样确保策略在冲突时不会立即反复买卖。</p>
+<h2 id="_25">未来策略建议<a class="headerlink" href="#_25" title="Permanent link">&para;</a></h2>
+<ul>
+<li>结合不同指标，尝试不同激励方案。</li>
+<li>使用<a href="https://github.com/freqtrade/freqtrade-strategies">策略仓库</a>中的示例作为参考。</li>
+<li>先在纸上或模拟环境中验证策略表现，然后逐步实盘运行。</li>
+</ul>
+<p>欢迎提交Pull Requests，贡献新策略！</p>
+<h2 id="_26">后续步骤<a class="headerlink" href="#_26" title="Permanent link">&para;</a></h2>
+<p>你已经拥有了一个策略，下一步可以学习<a href="../backtesting/">回测使用方法</a>。</p>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+    
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../strategy-101/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Strategy Quickstart">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Strategy Quickstart
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../strategy-callbacks/" class="md-footer__link md-footer__link--next" aria-label="Next: Strategy Callbacks">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Strategy Callbacks
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate", "search.share", "content.code.copy", "navigation.top", "navigation.footer"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+        <script src="../javascripts/config.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

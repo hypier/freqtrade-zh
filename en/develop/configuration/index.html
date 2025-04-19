@@ -1,0 +1,4034 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Freqtrade is a free and open source crypto trading bot written in Python, designed to support all major exchanges and be controlled via Telegram or builtin Web UI">
+      
+      
+      
+        <link rel="canonical" href="https://www.freqtrade.io/en/stable/configuration/">
+      
+      
+        <link rel="prev" href="../bot-basics/">
+      
+      
+        <link rel="next" href="../strategy-101/">
+      
+      
+      <link rel="icon" href="../images/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.11">
+    
+    
+      
+        <title>Configuration - Freqtrade</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.4af4bdda.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/ft.extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-VH170LG9M5"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-VH170LG9M5",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-VH170LG9M5",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="tear">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Freqtrade" class="md-header__button md-logo" aria-label="Freqtrade" data-md-component="logo">
+      
+  <img src="../images/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Freqtrade
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Configuration
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="tear"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="blue-grey" data-md-color-accent="tear"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/freqtrade/freqtrade" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+
+  <!-- Main navigation -->
+  
+  
+  <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+    <div class="md-sidebar__scrollwrap">
+      <div class="md-sidebar__inner">
+        
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Freqtrade" class="md-nav__button md-logo" aria-label="Freqtrade" data-md-component="logo">
+      
+  <img src="../images/logo.png" alt="logo">
+
+    </a>
+    Freqtrade
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/freqtrade/freqtrade" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docker_quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Quickstart with Docker
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Installation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Linux/MacOS/Raspberry
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../windows_installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Windows
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bot-basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Freqtrade Basics
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Configuration
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuration
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#freqtrade" class="md-nav__link">
+    <span class="md-ellipsis">
+      Freqtrade的配置文件
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Freqtrade的配置文件">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      环境变量
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      多个配置文件
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      编辑器自动补全与验证
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      配置参数
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="配置参数">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      配置选项的优先级
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      参数表
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      策略中的参数
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      配置每笔交易的投入金额
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="配置每笔交易的投入金额">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      最小交易额度
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dry-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dry-run钱包
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      可交易余额
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      分配可用资金
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      修改最后一次投入金额
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      固定投入金额
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      动态投入金额
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      带仓位调整的动态投入金额
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_17" class="md-nav__link">
+    <span class="md-ellipsis">
+      订单使用的价格
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="订单使用的价格">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_18" class="md-nav__link">
+    <span class="md-ellipsis">
+      建仓价格
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="建仓价格">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_19" class="md-nav__link">
+    <span class="md-ellipsis">
+      价格方向设置
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_20" class="md-nav__link">
+    <span class="md-ellipsis">
+      开仓价格（启用订单簿时）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_21" class="md-nav__link">
+    <span class="md-ellipsis">
+      开仓价格（未启用订单簿）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_22" class="md-nav__link">
+    <span class="md-ellipsis">
+      观察市场深度
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_23" class="md-nav__link">
+    <span class="md-ellipsis">
+      平仓价格
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="平仓价格">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_24" class="md-nav__link">
+    <span class="md-ellipsis">
+      平仓价格方向
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_25" class="md-nav__link">
+    <span class="md-ellipsis">
+      开仓（平仓）启用订单簿时
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_26" class="md-nav__link">
+    <span class="md-ellipsis">
+      不启用订单簿时
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_27" class="md-nav__link">
+    <span class="md-ellipsis">
+      市价单定价
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_28" class="md-nav__link">
+    <span class="md-ellipsis">
+      其他配置细节
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="其他配置细节">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#minimal_roi" class="md-nav__link">
+    <span class="md-ellipsis">
+      了解 minimal_roi
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#force_entry_enable" class="md-nav__link">
+    <span class="md-ellipsis">
+      理解 force_entry_enable
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#k" class="md-nav__link">
+    <span class="md-ellipsis">
+      忽略过期K线信号
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#order_types" class="md-nav__link">
+    <span class="md-ellipsis">
+      理解 order_types
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#order_time_in_force" class="md-nav__link">
+    <span class="md-ellipsis">
+      了解 order_time_in_force
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="了解 order_time_in_force">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#order_time_in_force_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      order_time_in_force 配置示例
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_29" class="md-nav__link">
+    <span class="md-ellipsis">
+      法币转换
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="法币转换">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#forex_display_currency" class="md-nav__link">
+    <span class="md-ellipsis">
+      forex_display_currency 可以取哪些值？
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coingecko" class="md-nav__link">
+    <span class="md-ellipsis">
+      Coingecko调用频率限制
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#websocket" class="md-nav__link">
+    <span class="md-ellipsis">
+      通过Websocket消费交易所数据
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dry-run_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      使用Dry-Run（模拟）模式
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="使用Dry-Run（模拟）模式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dry-run_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dry-Run的注意事项
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_30" class="md-nav__link">
+    <span class="md-ellipsis">
+      切换到正式交易
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_31" class="md-nav__link">
+    <span class="md-ellipsis">
+      配置交易所账户
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_32" class="md-nav__link">
+    <span class="md-ellipsis">
+      切换到正式模式
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="切换到正式模式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_33" class="md-nav__link">
+    <span class="md-ellipsis">
+      保密建议
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      使用代理（Proxy）设置
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="使用代理（Proxy）设置">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_34" class="md-nav__link">
+    <span class="md-ellipsis">
+      为交易所请求配置代理
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-101/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-customization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy Customization
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-callbacks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy Callbacks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stoploss/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Stoploss
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Plugins
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bot-usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Start the bot
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Control the bot
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            Control the bot
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../telegram-usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Telegram
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freq-ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    freqUI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rest-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    REST API
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../webhook-config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Web Hook
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-download/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Data Downloading
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backtesting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Backtesting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hyperopt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Hyperopt
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_16" >
+        
+          
+          <label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    FreqAI
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_16_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_16">
+            <span class="md-nav__icon md-icon"></span>
+            FreqAI
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-parameter-table/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Parameter table
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-feature-engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Feature engineering
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-running/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Running FreqAI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-reinforcement-learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Reinforcement Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-developers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Developer guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../leverage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Short / Leverage
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Utility Sub-commands
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plotting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Plotting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exchanges/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Exchange-specific Notes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_21" >
+        
+          
+          <label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Data Analysis
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_21_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_21">
+            <span class="md-nav__icon md-icon"></span>
+            Data Analysis
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Jupyter Notebooks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy_analysis_example/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-backtesting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Backtest analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_22" >
+        
+          
+          <label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Advanced Topics
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_22_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_22">
+            <span class="md-nav__icon md-icon"></span>
+            Advanced Topics
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Advanced Post-installation Tasks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trade-object/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Trade Object
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lookahead-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Lookahead analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../recursive-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Recursive analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-advanced/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Advanced Strategy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-hyperopt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Advanced Hyperopt
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-orderflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Orderflow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../producer-consumer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Producer/Consumer mode
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sql_cheatsheet/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SQL Cheat-sheet
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../edge/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Edge Positioning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    FAQ
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy_migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy migration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../updating/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Updating Freqtrade
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deprecated/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Deprecated Features
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Contributors Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+      </div>
+    </div>
+  </div>
+  
+
+  <!-- Table of contents -->
+  
+  
+  <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+    <div class="md-sidebar__scrollwrap">
+      <div class="md-sidebar__inner">
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#freqtrade" class="md-nav__link">
+    <span class="md-ellipsis">
+      Freqtrade的配置文件
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Freqtrade的配置文件">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      环境变量
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      多个配置文件
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      编辑器自动补全与验证
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      配置参数
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="配置参数">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      配置选项的优先级
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      参数表
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      策略中的参数
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      配置每笔交易的投入金额
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="配置每笔交易的投入金额">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      最小交易额度
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dry-run" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dry-run钱包
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      可交易余额
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      分配可用资金
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      修改最后一次投入金额
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      固定投入金额
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      动态投入金额
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      带仓位调整的动态投入金额
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_17" class="md-nav__link">
+    <span class="md-ellipsis">
+      订单使用的价格
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="订单使用的价格">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_18" class="md-nav__link">
+    <span class="md-ellipsis">
+      建仓价格
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="建仓价格">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_19" class="md-nav__link">
+    <span class="md-ellipsis">
+      价格方向设置
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_20" class="md-nav__link">
+    <span class="md-ellipsis">
+      开仓价格（启用订单簿时）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_21" class="md-nav__link">
+    <span class="md-ellipsis">
+      开仓价格（未启用订单簿）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_22" class="md-nav__link">
+    <span class="md-ellipsis">
+      观察市场深度
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_23" class="md-nav__link">
+    <span class="md-ellipsis">
+      平仓价格
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="平仓价格">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_24" class="md-nav__link">
+    <span class="md-ellipsis">
+      平仓价格方向
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_25" class="md-nav__link">
+    <span class="md-ellipsis">
+      开仓（平仓）启用订单簿时
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_26" class="md-nav__link">
+    <span class="md-ellipsis">
+      不启用订单簿时
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_27" class="md-nav__link">
+    <span class="md-ellipsis">
+      市价单定价
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_28" class="md-nav__link">
+    <span class="md-ellipsis">
+      其他配置细节
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="其他配置细节">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#minimal_roi" class="md-nav__link">
+    <span class="md-ellipsis">
+      了解 minimal_roi
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#force_entry_enable" class="md-nav__link">
+    <span class="md-ellipsis">
+      理解 force_entry_enable
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#k" class="md-nav__link">
+    <span class="md-ellipsis">
+      忽略过期K线信号
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#order_types" class="md-nav__link">
+    <span class="md-ellipsis">
+      理解 order_types
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#order_time_in_force" class="md-nav__link">
+    <span class="md-ellipsis">
+      了解 order_time_in_force
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="了解 order_time_in_force">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#order_time_in_force_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      order_time_in_force 配置示例
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_29" class="md-nav__link">
+    <span class="md-ellipsis">
+      法币转换
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="法币转换">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#forex_display_currency" class="md-nav__link">
+    <span class="md-ellipsis">
+      forex_display_currency 可以取哪些值？
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coingecko" class="md-nav__link">
+    <span class="md-ellipsis">
+      Coingecko调用频率限制
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#websocket" class="md-nav__link">
+    <span class="md-ellipsis">
+      通过Websocket消费交易所数据
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dry-run_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      使用Dry-Run（模拟）模式
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="使用Dry-Run（模拟）模式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dry-run_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dry-Run的注意事项
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_30" class="md-nav__link">
+    <span class="md-ellipsis">
+      切换到正式交易
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_31" class="md-nav__link">
+    <span class="md-ellipsis">
+      配置交易所账户
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_32" class="md-nav__link">
+    <span class="md-ellipsis">
+      切换到正式模式
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="切换到正式模式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_33" class="md-nav__link">
+    <span class="md-ellipsis">
+      保密建议
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#proxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      使用代理（Proxy）设置
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="使用代理（Proxy）设置">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_34" class="md-nav__link">
+    <span class="md-ellipsis">
+      为交易所请求配置代理
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      </div>
+    </div>
+  </div>
+  
+
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="_1">配置交易机器人<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<p>Freqtrade拥有丰富的可配置功能与选项。<br />
+默认情况下，这些设置都是通过配置文件进行（见下文）。</p>
+<h2 id="freqtrade">Freqtrade的配置文件<a class="headerlink" href="#freqtrade" title="Permanent link">&para;</a></h2>
+<p>在运行过程中，机器人会使用一组配置参数，这些参数共同构成了机器人配置。<br />
+通常，机器人会从一个配置文件（即Freqtrade配置文件）中读取其配置。</p>
+<p>默认情况下，机器人会加载位于当前工作目录中的 <code>config.json</code> 文件。</p>
+<p>你也可以通过命令行参数 <code>-c/--config</code> 指定使用其他配置文件。</p>
+<p>如果你采用<a href="../docker_quickstart/#docker-quick-start">快速入门</a>的方法安装机器人，安装脚本应该已经帮你创建了默认配置文件(<code>config.json</code>)。</p>
+<p>如果没有创建默认配置文件，建议使用 <code>freqtrade new-config --config user_data/config.json</code> 来生成一个基础的配置文件。</p>
+<p>Freqtrade的配置文件必须采用JSON格式。</p>
+<p>除了标准的JSON语法外，你还可以在配置文件中使用单行 <code>// ...</code> 和多行 <code>/* ... */</code> 注释，以及在参数列表中使用尾随逗号。</p>
+<p>如果你对JSON格式不熟悉也不用担心——只需用自己喜欢的编辑器打开配置文件，修改所需参数，保存后重新启动机器人，或者在之前关闭的情况下再次运行，机器人会在启动时验证配置文件的语法，并在有错误时提醒你指出问题所在。</p>
+<h3 id="_2">环境变量<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<p>可以通过设置环境变量来配置Freqtrade的参数。<br />
+环境变量的优先级高于配置文件中的对应项或策略中的参数。</p>
+<p>环境变量必须以 <code>FREQTRADE__</code> 为前缀，才能被加载到Freqtrade配置中。</p>
+<p><code>__</code> 作为层级分隔符，格式应为 <code>FREQTRADE__{section}__{key}</code>。<br />
+例如，定义：
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">FREQTRADE__STAKE_AMOUNT</span><span class="o">=</span><span class="m">200</span>
+</code></pre></div>
+将导致配置中 <code>stake_amount</code> 被设置为200。</p>
+<p>更复杂的示例，例如用环境变量隐藏你的交易所密钥：
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">FREQTRADE__EXCHANGE__KEY</span><span class="o">=</span>&lt;yourExchangeKey&gt;
+</code></pre></div>
+这样会把值放到配置的 <code>exchange.key</code> 部分。<br />
+通过这种方式，所有配置设置也都可以通过环境变量访问。</p>
+<p>请注意：环境变量会覆盖配置文件中的对应设置，但命令行参数的优先级总是最高的。</p>
+<p>常用示例：</p>
+<div class="highlight"><pre><span></span><code><span class="nv">FREQTRADE__TELEGRAM__CHAT_ID</span><span class="o">=</span>&lt;telegramchatid&gt;
+<span class="nv">FREQTRADE__TELEGRAM__TOKEN</span><span class="o">=</span>&lt;telegramToken&gt;
+<span class="nv">FREQTRADE__EXCHANGE__KEY</span><span class="o">=</span>&lt;yourExchangeKey&gt;
+<span class="nv">FREQTRADE__EXCHANGE__SECRET</span><span class="o">=</span>&lt;yourExchangeSecret&gt;
+</code></pre></div>
+<p>JSON列表也支持通过环境变量设置，比如设置交易对白名单列表：</p>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">FREQTRADE__EXCHANGE__PAIR_WHITELIST</span><span class="o">=</span><span class="s1">&#39;[&quot;BTC/USDT&quot;, &quot;ETH/USDT&quot;]&#39;</span>
+</code></pre></div>
+<div class="admonition 注意">
+<p class="admonition-title">注意</p>
+<p>在启动时，检测到的环境变量会被记录日志。如果你发现配置的某个值与你预期不符，可能是被环境变量覆盖，建议确认是否有相关环境变量被加载。</p>
+</div>
+<div class="admonition 提示">
+<p class="admonition-title">验证合并结果</p>
+<p>可以使用 <a href="../utils/#show-config">show-config 子命令</a> 查看最终合并生成的完整配置。</p>
+</div>
+<details class="警告">
+<summary>加载顺序</summary>
+<p>环境变量是在最初配置加载后再进行载入的，因此你不能通过环境变量指定配置文件路径。请使用 <code>--config path/to/config.json</code> 的命令行参数来指定配置文件。<br />
+这也在一定程度上限制了 <code>user_dir</code> ，虽然可以通过环境变量设置用户目录，但配置文件不会从该位置加载。</p>
+</details>
+<h3 id="_3">多个配置文件<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<p>可以为机器人指定多个配置文件，或者让机器人从标准输入流读取配置参数。</p>
+<p>在 <code>add_config_files</code> 参数中指定额外配置文件。这些文件会被加载并合并到初始配置文件中。<br />
+文件路径相对于初始配置文件解析。</p>
+<p>这种方式类似于多次使用 <code>--config</code> 参数，但更简便，无需为每个命令都指定所有配置文件。</p>
+<div class="admonition 提示">
+<p class="admonition-title">验证合并结果</p>
+<p>使用 <a href="../utils/#show-config">show-config 子命令</a> 可以查看最终合并的配置。</p>
+</div>
+<div class="admonition 提示">
+<p class="admonition-title">用多个配置文件保密</p>
+<p>可以用第二个配置文件来存放敏感信息（如API密钥），避免在公共配置中暴露。<br />
+第二个配置文件应只包含需要覆盖的内容。在合并时，最后指定的配置优先。<br />
+举例：<code>config-private.json</code> 是你的私密配置文件。</p>
+<p>执行命令示例：</p>
+</div>
+<div class="highlight"><pre><span></span><code>freqtrade<span class="w"> </span>trade<span class="w"> </span>--config<span class="w"> </span>user_data/config.json<span class="w"> </span>--config<span class="w"> </span>user_data/config-private.json<span class="w"> </span>&lt;...&gt;
+</code></pre></div>
+<p>配置示例：</p>
+<div class="highlight"><pre><span></span><code><span class="s2">&quot;user_data/config.json&quot;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;add_config_files&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="s2">&quot;config1.json&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s2">&quot;config-private.json&quot;</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>这样可以在保持配置的同时，更好地管理私密信息。</p>
+<div class="highlight"><pre><span></span><code>freqtrade<span class="w"> </span>trade<span class="w"> </span>--config<span class="w"> </span>user_data/config.json<span class="w"> </span>&lt;...&gt;
+</code></pre></div>
+<details class="注意">
+<summary>配置冲突处理</summary>
+<p>如果在 <code>config.json</code> 和 <code>config-import.json</code> 中都定义了相同参数，优先加载父配置。</p>
+</details>
+<p>例如：
+<div class="highlight"><pre><span></span><code><span class="c1">// user_data/config.json</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;max_open_trades&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;stake_currency&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;USDT&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;add_config_files&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;config-import.json&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<div class="highlight"><pre><span></span><code><span class="c1">// user_data/config-import.json</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;max_open_trades&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;stake_amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;unlimited&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>最终合并结果为：
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;max_open_trades&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;stake_currency&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;USDT&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;stake_amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;unlimited&quot;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p>如果<code>add_config_files</code>中配置了多个文件，最后出现的配置会覆盖之前的（除非父配置已定义该参数）。</p>
+<h2 id="_4">编辑器自动补全与验证<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<p>如果你使用支持JSON Schema的编辑器，可以在配置文件顶部添加以下内容，以获得自动补全与验证功能：</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;$schema&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://schema.freqtrade.io/schema.json&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<details class="提示">
+<summary>开发版</summary>
+<p>开发中的Schema可用地址为 <code>https://schema.freqtrade.io/schema_dev.json</code>，但建议使用稳定版本以获得最佳体验。</p>
+</details>
+<h2 id="_5">配置参数<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<p>下表列出所有可用的配置参数。</p>
+<p>Freqtrade也支持通过命令行参数（CLI）设置许多选项（详细信息请参考 <code>--help</code> 输出）。</p>
+<h3 id="_6">配置选项的优先级<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
+<p>所有选项的优先级顺序为：</p>
+<ul>
+<li>命令行参数优先</li>
+<li><a href="#environment-variables">环境变量</a></li>
+<li>配置文件（按顺序加载，后加载的覆盖前面的）  </li>
+<li>策略中的参数（如果没有被配置或命令行覆盖）——在下表中标识为 <a href="#parameters-in-the-strategy">策略覆盖</a>。</li>
+</ul>
+<h3 id="_7">参数表<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
+<p>必要参数用 <strong>Required</strong> 标注，表示必须在某种方式中设置。</p>
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>max_open_trades</code></td>
+<td><strong>必需。</strong> 允许的最大未平仓交易数量。每对仅允许一笔未平仓交易，因此对名单长度也是上限之一。若设置为-1，则代表无限制（受交易对名单限制）。<a href="#configuring-amount-per-trade">详情</a>。<a href="#parameters-in-the-strategy">策略覆盖</a>。<br><strong>数据类型：</strong> 正整数或 -1。</td>
+</tr>
+<tr>
+<td><code>stake_currency</code></td>
+<td><strong>必需。</strong> 用于交易的加密货币。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>stake_amount</code></td>
+<td><strong>必需。</strong> 每笔交易使用的加密货币数量。设为 <code>"unlimited"</code> 表示机器人可用所有余额。 <a href="#configuring-amount-per-trade">详情</a>。<br><strong>数据类型：</strong> 正浮点数或 <code>"unlimited"</code>。</td>
+</tr>
+<tr>
+<td><code>tradable_balance_ratio</code></td>
+<td>允许交易的总账户余额比例。 <a href="#configuring-amount-per-trade">详情</a>。<br><strong>默认：</strong> <code>0.99</code>（99%）。<br><strong>数据类型：</strong> 介于 <code>0.1</code> 和 <code>1.0</code> 的正浮点数。</td>
+</tr>
+<tr>
+<td><code>available_capital</code></td>
+<td>机器人可用的起始资金。适用于运行多个机器人在同一交易所账户的场景。 <a href="#configuring-amount-per-trade">详情</a>。<br><strong>数据类型：</strong> 正浮点数。</td>
+</tr>
+<tr>
+<td><code>amend_last_stake_amount</code></td>
+<td>必要时使用缩减的上次投入金额。 <a href="#configuring-amount-per-trade">详情</a>。<br><strong>默认：</strong> <code>false</code>。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>last_stake_amount_min_ratio</code></td>
+<td>定义剩余且必须执行的最小投入金额比。仅在 <code>amend_last_stake_amount</code> 设置为 <code>true</code> 时生效。 <a href="#configuring-amount-per-trade">详情</a>。<br><strong>默认：</strong> <code>0.5</code>。<br><strong>数据类型：</strong> 浮点，比值形式。</td>
+</tr>
+<tr>
+<td><code>amount_reserve_percent</code></td>
+<td>在最小交易对投入金额中保留一定比例，避免交易拒单。会在计算最小投入金额时，预留 <code>amount_reserve_percent</code> + 止损值（如止损偏移）对应的金额。 <a href="#configuring-amount-per-trade">详情</a>。<br><strong>默认：</strong> <code>0.05</code>（5%）。<br><strong>数据类型：</strong> 正浮点数（比率形式）。</td>
+</tr>
+<tr>
+<td><code>timeframe</code></td>
+<td>使用的时间周期（例如<code>1m</code>、<code>5m</code>、<code>15m</code>、<code>30m</code>、<code>1h</code>等），多在策略中指定。 <a href="#parameters-in-the-strategy">策略覆盖</a>。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>fiat_display_currency</code></td>
+<td>用于显示盈利的法币单位。 <a href="#what-values-can-be-used-for-fiat_display_currency">详情</a>。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>dry_run</code></td>
+<td><strong>必需。</strong> 指定机器人是否应在Dry Run模式（模拟交易）下运行。<br><strong>默认：</strong> <code>true</code>。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>dry_run_wallet</code></td>
+<td>在Dry Run模式中，用于模拟钱包的起始资金。支持用数字（浮点）或字典定义每个货币的余额。示例：</td>
+</tr>
+<tr>
+<td><div class="highlight"><pre><span></span><code><span class="nt">&quot;dry_run_wallet&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">&quot;BTC&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;ETH&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;USDT&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div></td>
+<td></td>
+</tr>
+<tr>
+<td>可以通过命令行参数覆盖数字值，但字典形式必须在配置文件中设置。</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>默认：</strong> 1000。</td>
+<td></td>
+</tr>
+<tr>
+<td><code>cancel_open_orders_on_exit</code></td>
+<td>在收到 <code>/stop</code> RPC命令、按下 <code>Ctrl+C</code> 或机器人异常关闭时，取消所有未完成订单。启用后，利用 <code>/stop</code> 命令取消未完成和部分成交订单，但不影响持仓。<br><strong>默认：</strong> <code>false</code>。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>process_only_new_candles</code></td>
+<td>只在新K线到来时处理指标。否则每轮循环都会处理一次相同的K线，可能造成系统负载，但对于依赖逐笔数据的策略很有用。 <a href="#parameters-in-the-strategy">策略覆盖</a>。<br><strong>默认：</strong> <code>true</code>。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>minimal_roi</code></td>
+<td><strong>必需。</strong> 设定机器人在何种ROI阈值下退出交易的比例。 <a href="#understand-minimal_roi">详情</a>。<a href="#parameters-in-the-strategy">策略覆盖</a>。<br><strong>数据类型：</strong> 字典。</td>
+</tr>
+<tr>
+<td><code>stoploss</code></td>
+<td><strong>必需。</strong> 设定止损值（比例）。详细信息请参见 <a href="../stoploss/">止损文档</a>。<a href="#parameters-in-the-strategy">策略覆盖</a>。<br><strong>数据类型：</strong> 浮点数（比例）。</td>
+</tr>
+<tr>
+<td><code>trailing_stop</code></td>
+<td>激活追踪止损（基于配置或策略文件中的 <code>stoploss</code>）。详细见 <a href="../stoploss/#trailing-stop-loss">止损文档</a>。<a href="#parameters-in-the-strategy">策略覆盖</a>。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>trailing_stop_positive</code></td>
+<td>在盈利达到一定水平后调整止损。详见 <a href="../stoploss/#trailing-stop-loss-custom-positive-loss">止损文档</a>。<a href="#parameters-in-the-strategy">策略覆盖</a>。<br><strong>数据类型：</strong> 浮点数。</td>
+</tr>
+<tr>
+<td><code>trailing_stop_positive_offset</code></td>
+<td>激活<code>trailing_stop_positive</code>的偏移比例。正数，比例值。详见 <a href="../stoploss/#trailing-stop-loss-only-once-the-trade-has-reached-a-certain-offset">止损文档</a>。<a href="#parameters-in-the-strategy">策略覆盖</a>。<br><strong>默认：</strong> <code>0.0</code>（无偏移）。<br><strong>数据类型：</strong> 浮点数。</td>
+</tr>
+<tr>
+<td><code>trailing_only_offset_is_reached</code></td>
+<td>仅在偏移值达到后才应用追踪止损。详见 <a href="../stoploss/">止损文档</a>。<a href="#parameters-in-the-strategy">策略覆盖</a>。<br><strong>默认：</strong> <code>false</code>。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>fee</code></td>
+<td>回测/模拟交易中使用的手续费。通常不配置，freqtrade会默认为交易所默认手续费。以比例方式设定（如0.001=0.1%），每笔交易开仓和平仓各收取一次。<br><strong>数据类型：</strong> 浮点数（比例）。</td>
+</tr>
+<tr>
+<td><code>futures_funding_rate</code></td>
+<td>用户自定义的资金费率（当交易所没有提供历史资金费率时使用）。不覆盖实际历史费率。建议设为0，除非在测试特定币种并理解资金费率对利润的影响。详见 <a href="../leverage/#unavailable-funding-rates">杠杆文档</a>。<br><strong>默认：</strong> <code>None</code>。<br><strong>数据类型：</strong> 浮点数。</td>
+</tr>
+<tr>
+<td><code>trading_mode</code></td>
+<td>指定交易方式：正常交易、杠杆交易或基于匹配加密货币价格的合约交易。详见 <a href="../leverage/">杠杆交易文档</a>。<br><strong>默认：</strong> <code>"spot"</code>。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>margin_mode</code></td>
+<td>使用杠杆交易时，决定保证金是共享还是隔离。详见 <a href="../leverage/">杠杆交易</a>。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>liquidation_buffer</code></td>
+<td>设定一个比例，保证在强制平仓价格与止损价之间留出安全垫，防止触及平仓线。详见 <a href="../leverage/">杠杆交易</a>。<br><strong>默认：</strong> <code>0.05</code>。<br><strong>数据类型：</strong> 浮点数。</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>未平仓超时设置</strong></td>
+</tr>
+<tr>
+<td><code>unfilledtimeout.entry</code></td>
+<td><strong>必需。</strong> 机器人在未成交的入场订单等待的时间（分钟或秒），超时后订单会被取消。详见 <a href="#parameters-in-the-strategy">策略</a>。<br><strong>数据类型：</strong> 整数。</td>
+</tr>
+<tr>
+<td><code>unfilledtimeout.exit</code></td>
+<td><strong>必需。</strong> 机器人在未成交的出场订单等待的时间（分钟或秒），超时后订单会被取消，并以当前（新）价格重新挂单，只要有信号。详见 <a href="#parameters-in-the-strategy">策略</a>。<br><strong>数据类型：</strong> 整数。</td>
+</tr>
+<tr>
+<td><code>unfilledtimeout.unit</code></td>
+<td>设置未成交订单超时单位。注意：若设为 <code>"seconds"</code>，则 <code>internals.process_throttle_secs</code> 必须小于或等于此超时值。详见 <a href="#parameters-in-the-strategy">策略</a>。<br><strong>默认：</strong> <code>"minutes"</code>。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>unfilledtimeout.exit_timeout_count</code></td>
+<td>出场订单超时的最大次数。达到次数后触发紧急退出，设为0则不限制。详见 <a href="#parameters-in-the-strategy">策略</a>。<br><strong>默认：</strong> <code>0</code>。<br><strong>数据类型：</strong> 整数。</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>价格设定</strong></td>
+</tr>
+<tr>
+<td><code>entry_pricing.price_side</code></td>
+<td>选择机器人应关注的买卖差价侧（ask/bid）以获得入场价格。详见 <a href="#entry-price">入场价</a>。<br><strong>默认：</strong> <code>"same"</code>。<br><strong>数据类型：</strong> 字符串（<code>ask</code>, <code>bid</code>, <code>same</code>, <code>other</code>）。</td>
+</tr>
+<tr>
+<td><code>entry_pricing.price_last_balance</code></td>
+<td><strong>必需。</strong> 插值计算出缠入价格。详见 <a href="#entry-price-without-orderbook-enabled">无订单簿入场</a>。</td>
+</tr>
+<tr>
+<td><code>entry_pricing.use_order_book</code></td>
+<td>启用订单簿入场方式，使用订单簿中的价格。<br><strong>默认：</strong> <code>true</code>。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>entry_pricing.order_book_top</code></td>
+<td>使用订单簿中“price_side”对应的前N个最优价格作为入场。比如值为2，则机器人可以选择订单簿中第二个报价。<br><strong>默认：</strong> <code>1</code>。<br><strong>数据类型：</strong> 正整数。</td>
+</tr>
+<tr>
+<td><code>entry_pricing.check_depth_of_market.enabled</code></td>
+<td>若买卖盘差异超过设定值，则不入场。详见 <a href="#check-depth-of-market">市场深度检查</a>。<br><strong>默认：</strong> <code>false</code>。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>entry_pricing.check_depth_of_market.bids_to_ask_delta</code></td>
+<td>订单簿中买卖盘差异比率（买卖笔数或量比）。小于1表示卖盘较大，大于1表示买盘较大。详见 <a href="#check-depth-of-market">市场深度检查</a>。<br><strong>默认：</strong> <code>0</code>。<br><strong>数据类型：</strong> 浮点数（比率）。</td>
+</tr>
+<tr>
+<td><code>exit_pricing.price_side</code></td>
+<td>选择关注的卖出差价侧（ask/bid）以获得出场价格。详见 <a href="#exit-price-side">出场价</a>。<br><strong>默认：</strong> <code>"same"</code>。<br><strong>数据类型：</strong> 字符串（<code>ask</code>, <code>bid</code>, <code>same</code>, <code>other</code>）。</td>
+</tr>
+<tr>
+<td><code>exit_pricing.price_last_balance</code></td>
+<td><strong>必需。</strong> 插值计算出出场价格。详见 <a href="#exit-price-without-orderbook-enabled">无订单簿出场</a>。</td>
+</tr>
+<tr>
+<td><code>exit_pricing.use_order_book</code></td>
+<td>启用订单簿出场，使用订单簿中的价格。<br><strong>默认：</strong> <code>true</code>。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>exit_pricing.order_book_top</code></td>
+<td>使用订单簿中“price_side”横向的前N个报价作为出场。比如值为2，则用第二个ask价格。<br><strong>默认：</strong> <code>1</code>。<br><strong>数据类型：</strong> 正整数。</td>
+</tr>
+<tr>
+<td><code>custom_price_max_distance_ratio</code></td>
+<td>配置当前价格与自定义入场/出场价格的最大距离比（比例）。<br><strong>默认：</strong> <code>0.02</code>（2%）。<br><strong>数据类型：</strong> 正浮点数。</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>订单/信号处理</strong></td>
+</tr>
+<tr>
+<td><code>use_exit_signal</code></td>
+<td>使用策略提供的退出信号（除ROI外）。启用后，会禁用 <code>"exit_long"</code> 和 <code>"exit_short"</code> 这两列，其他退出方式不受影响。详见 <a href="#parameters-in-the-strategy">策略</a>。<br><strong>默认：</strong> <code>true</code>。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>exit_profit_only</code></td>
+<td>只有在盈利达到 <code>exit_profit_offset</code> 时才考虑退出信号。详见 <a href="#parameters-in-the-strategy">策略</a>。<br><strong>默认：</strong> <code>false</code>。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>exit_profit_offset</code></td>
+<td>出场信号只在超过此比例时激活。仅在 <code>exit_profit_only=True</code> 时有效。详见 <a href="#parameters-in-the-strategy">策略</a>。<br><strong>默认：</strong> <code>0.0</code>。<br><strong>数据类型：</strong> 浮点（比例值）。</td>
+</tr>
+<tr>
+<td><code>ignore_roi_if_entry_signal</code></td>
+<td>若入场信号仍有效，则不退出。优先级高于 <code>minimal_roi</code> 和 <code>use_exit_signal</code>。详见 <a href="#parameters-in-the-strategy">策略</a>。<br><strong>默认：</strong> <code>false</code>。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>ignore_buying_expired_candle_after</code></td>
+<td>定义在多少秒后买入信号失效。<br><strong>数据类型：</strong> 整数。</td>
+</tr>
+<tr>
+<td><code>order_types</code></td>
+<td>配置订单类型（包括 <code>"entry"</code>、<code>"exit"</code>、<code>"stoploss"</code>、<code>"stoploss_on_exchange"</code>等），以及止损在交易所的实现方式。详见 <a href="#understand-order_types">订单类型</a>。<br><strong>数据类型：</strong> 字典。</td>
+</tr>
+<tr>
+<td><code>order_time_in_force</code></td>
+<td>配置订单的“生存策略”时间（GTC、FOK、IOC等）。详见 <a href="#understand-order_time_in_force">订单时间策略</a>。<br><strong>数据类型：</strong> 字典。</td>
+</tr>
+<tr>
+<td><code>position_adjustment_enable</code></td>
+<td>允许策略进行仓位调整（加仓或减仓）。详见 <a href="../strategy-callbacks/#adjust-trade-position">仓位调整</a>。<br><strong>默认：</strong> <code>false</code>。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>max_entry_position_adjustment</code></td>
+<td>每个开仓在第一笔仓位基础上的最大调整次数（数量），设为 <code>-1</code> 表示无限次调整。详见 <a href="../strategy-callbacks/#adjust-trade-position">仓位调整</a>。<br><strong>默认：</strong> <code>-1</code>。<br><strong>数据类型：</strong> 正整数或 -1。</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>交易所设置</strong></td>
+</tr>
+<tr>
+<td><code>exchange.name</code></td>
+<td><strong>必需。</strong> 要使用的交易所类名。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>exchange.key</code></td>
+<td>API密钥，仅在生产模式下必需。请妥善保管，勿公开泄露。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>exchange.secret</code></td>
+<td>API秘钥，仅在生产模式下必需。请妥善保管，勿公开泄露。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>exchange.password</code></td>
+<td>API密码，仅在生产模式下需要（部分交易所用密码API）。请妥善保管，勿泄露。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>exchange.uid</code></td>
+<td>API用户ID（uid），在部分交易所用。仅在生产模式下需提供。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>exchange.pair_whitelist</code></td>
+<td>机器人进行交易和回测时的白名单交易对。支持正则匹配，如 <code>.*/BTC</code>。不适用于 <code>VolumePairList</code>。详见 <a href="../plugins/#pairlists-and-pairlist-handlers">交易对列表插件</a>。<br><strong>数据类型：</strong> 列表。</td>
+</tr>
+<tr>
+<td><code>exchange.pair_blacklist</code></td>
+<td>绝对禁用的交易对列表。详见 <a href="../plugins/#pairlists-and-pairlist-handlers">插件</a>。<br><strong>数据类型：</strong> 列表。</td>
+</tr>
+<tr>
+<td><code>exchange.ccxt_config</code></td>
+<td>传递给ccxt实例的附加参数(同步&amp;异步)。通常用于配置额外的ccxt参数。不同交易所支持的参数可能不同，详见 <a href="https://docs.ccxt.com/#/README?id=overriding-exchange-properties-upon-instantiation">ccxt文档</a>。不要在此处放置敏感的API密钥，可能会出现在日志中。<br><strong>数据类型：</strong> 字典。</td>
+</tr>
+<tr>
+<td><code>exchange.ccxt_sync_config</code></td>
+<td>传递给同步ccxt实例的参数。详见 <a href="https://docs.ccxt.com/#/README?id=overriding-exchange-properties-upon-instantiation">ccxt文档</a>。<br><strong>数据类型：</strong> 字典。</td>
+</tr>
+<tr>
+<td><code>exchange.ccxt_async_config</code></td>
+<td>传递给异步ccxt实例的参数。详见 <a href="https://docs.ccxt.com/#/README?id=overriding-exchange-properties-upon-instantiation">ccxt文档</a>。<br><strong>数据类型：</strong> 字典。</td>
+</tr>
+<tr>
+<td><code>exchange.enable_ws</code></td>
+<td>是否启用Websocket。<br><a href="#consuming-exchange-websockets">详情</a>。<br><strong>默认：</strong> <code>true</code>。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>exchange.markets_refresh_interval</code></td>
+<td>市场信息刷新间隔（分钟）。<br><strong>默认：</strong> 60分钟。<br><strong>数据类型：</strong> 正整数。</td>
+</tr>
+<tr>
+<td><code>exchange.skip_open_order_update</code></td>
+<td>避免在启动时更新未成交订单（尤其在交易所不稳定时）<br><strong>默认：</strong> <code>false</code>。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>exchange.unknown_fee_rate</code></td>
+<td>计算手续费的备用值。用于部分费率非以主要交易币计的交易所。系统会将此值乘以手续费成本。<br><strong>默认：</strong> <code>None</code>。<br><strong>数据类型：</strong> 浮点数。</td>
+</tr>
+<tr>
+<td><code>exchange.log_responses</code></td>
+<td>记录交易所响应信息（调试用）。<br><strong>默认：</strong> <code>false</code>。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>exchange.only_from_ccxt</code></td>
+<td>禁止从 <code>data.binance.vision</code> 等第三方源下载数据。关闭此项能加快下载，但可能影响数据完整性。<br><strong>默认：</strong> <code>false</code>。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>experimental.block_bad_exchanges</code></td>
+<td>阻止已知不可用的交易所。除非你想测试，否则建议保持默认。<br><strong>默认：</strong> <code>true</code>。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>插件</strong></td>
+</tr>
+<tr>
+<td><code>edge.*</code></td>
+<td>详见 <a href="../edge/">edge配置文档</a>，描述所有可选配置选项。</td>
+</tr>
+<tr>
+<td><code>pairlists</code></td>
+<td>指定一个或多个交易对列表。详见 <a href="../plugins/#pairlists-and-pairlist-handlers">插件</a>。<br><strong>默认：</strong> <code>StaticPairList</code>。<br><strong>数据类型：</strong> 列表（字典）。</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>Telegram通知</strong></td>
+</tr>
+<tr>
+<td><code>telegram.enabled</code></td>
+<td>是否启用Telegram通知。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>telegram.token</code></td>
+<td>你的Telegram机器人Token。仅在 <code>enabled</code> 为<code>true</code>时需要。请妥善保管，勿公开泄露。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>telegram.chat_id</code></td>
+<td>你的Telegram账号ID。仅在 <code>enabled</code> 为<code>true</code>时需要。请妥善保管，勿公开泄露。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>telegram.balance_dust_level</code></td>
+<td>微尘水平（用stake货币计）。余额低于该值时， <code>/balance</code> 不显示。<br><strong>数据类型：</strong> 浮点数。</td>
+</tr>
+<tr>
+<td><code>telegram.reload</code></td>
+<td>是否允许在Telegram消息中使用“重新加载”按钮。<br><strong>默认：</strong> <code>true</code>。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>telegram.notification_settings.*</code></td>
+<td>详细的通知设置。详见 <a href="../telegram-usage/">Telegram使用文档</a>。<br><strong>数据类型：</strong> 字典。</td>
+</tr>
+<tr>
+<td><code>telegram.allow_custom_messages</code></td>
+<td>允许策略通过 <code>dataprovider.send_msg()</code> 发送自定义Telegram消息。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>Webhook通知</strong></td>
+</tr>
+<tr>
+<td><code>webhook.enabled</code></td>
+<td>是否启用Webhook通知。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>webhook.url</code></td>
+<td>Webhook的URL。仅在 <code>enabled</code> 为<code>true</code>时需要。详见 <a href="../webhook-config/">Webhook文档</a>。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>webhook.entry</code></td>
+<td>始始化请求的负载（进入信号）。仅在启用时需要。详见 <a href="../webhook-config/">Webhook文档</a>。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>webhook.entry_cancel</code></td>
+<td>取消入场订单时的负载。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>webhook.entry_fill</code></td>
+<td>入场订单成交时的负载。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>webhook.exit</code></td>
+<td>出场时的负载。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>webhook.exit_cancel</code></td>
+<td>取消出场订单时的负载。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>webhook.exit_fill</code></td>
+<td>出场订单成交时的负载。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>webhook.status</code></td>
+<td>状态请求的负载。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>webhook.allow_custom_messages</code></td>
+<td>允许策略通过 <code>dataprovider.send_msg()</code> 发送Webhook消息。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>REST API / FreqUI / 生产者-消费者</strong></td>
+</tr>
+<tr>
+<td><code>api_server.enabled</code></td>
+<td>允许启用API服务器。详见 <a href="../rest-api/">API服务器文档</a>。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>api_server.listen_ip_address</code></td>
+<td>绑定的IP地址。详见 <a href="../rest-api/">API服务器</a>。<br><strong>数据类型：</strong> IPv4地址。</td>
+</tr>
+<tr>
+<td><code>api_server.listen_port</code></td>
+<td>绑定端口，范围1024-65535。详见 <a href="../rest-api/">API服务器</a>。<br><strong>数据类型：</strong> 整数。</td>
+</tr>
+<tr>
+<td><code>api_server.verbosity</code></td>
+<td>日志详细程度。<code>info</code>会显示所有RPC调用；<code>error</code>只显示错误。详见 <a href="../rest-api/">API服务器</a>。<br><strong>数据类型：</strong> 枚举（<code>info</code>或<code>error</code>），默认<code>info</code>。</td>
+</tr>
+<tr>
+<td><code>api_server.username</code></td>
+<td>API服务器用户名（用于认证）。请保密不公开。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>api_server.password</code></td>
+<td>API密码（用于认证）。请保密不公开。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>api_server.ws_token</code></td>
+<td>WebSocket消息令牌（用以验证）。请妥善保管。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>bot_name</code></td>
+<td>机器人的名字，作为API参数传递。用于区分不同机器人。<br><strong>默认值：</strong><code>freqtrade</code>。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>external_message_consumer</code></td>
+<td>开启生产者-消费者模式（详见 <a href="../producer-consumer/">producer-consumer.md</a>）。<br><strong>数据类型：</strong> 字典。</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>其他</strong></td>
+</tr>
+<tr>
+<td><code>initial_state</code></td>
+<td>定义应启动的初始状态（<code>running</code>、<code>paused</code>、<code>stopped</code>）。如设为<code>stopped</code>，需通过 <code>/start</code> RPC显式启动。<br><strong>默认：</strong> <code>stopped</code>。<br><strong>数据类型：</strong> 枚举。</td>
+</tr>
+<tr>
+<td><code>force_entry_enable</code></td>
+<td>使能RPC强制开仓命令（<code>/forcelong</code>、<code>/forceshort</code>）。优化开仓。详见 <a href="#parameters-in-the-strategy">策略</a>。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>disable_dataframe_checks</code></td>
+<td>禁用策略返回的OHLCV数据的正确性检查。仅在明确知道自己在做什么时使用。详见 <a href="#parameters-in-the-strategy">参数</a>。<br><strong>默认：</strong> <code>False</code>。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>internals.process_throttle_secs</code></td>
+<td>设置单次机器人循环的最小时间间隔（秒）。<br><strong>默认：</strong> 5秒。<br><strong>数据类型：</strong> 正整数。</td>
+</tr>
+<tr>
+<td><code>internals.heartbeat_interval</code></td>
+<td>每隔N秒打印一次心跳消息，设为0则禁用。<br><strong>默认：</strong> 60秒。<br><strong>数据类型：</strong> 正整数或0。</td>
+</tr>
+<tr>
+<td><code>internals.sd_notify</code></td>
+<td>支持使用 <code>sd_notify</code> 协议通知 <code>systemd</code> 服务管理器机器人状态变化和存活心跳。详见 <a href="../advanced-setup/#configure-the-bot-running-as-a-systemd-service">高级设置</a>。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>strategy</code></td>
+<td><strong>必需。</strong> 指定策略类名。推荐在启动参数中通过 <code>--strategy NAME</code> 指定。<br><strong>数据类型：</strong> 类名字符串。</td>
+</tr>
+<tr>
+<td><code>strategy_path</code></td>
+<td>指定额外的策略查找路径（目录）。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>recursive_strategy_search</code></td>
+<td>设置为<code>true</code>时，会递归搜索 <code>user_data/strategies</code> 子目录中的策略文件。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>user_data_dir</code></td>
+<td>用户数据所在目录。<br><strong>默认：</strong> <code>./user_data/</code>。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>db_url</code></td>
+<td>数据库连接URL。注意：若<code>dry_run</code>为<code>true</code>，默认为<code>sqlite:///tradesv3.dryrun.sqlite</code>；否则为<code>sqlite:///tradesv3.sqlite</code>（生产环境）。<br><strong>数据类型：</strong> 字符串/SQLAlchemy连接字符串。</td>
+</tr>
+<tr>
+<td><code>logfile</code></td>
+<td>指定日志文件名。采用滚动策略，最多10个文件，每个最大1MB。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>add_config_files</code></td>
+<td>其他配置文件。会被加载并与当前配置合并，路径相对初始配置文件。<br><strong>默认：</strong> <code>[]</code>。<br><strong>数据类型：</strong> 字符串列表。</td>
+</tr>
+<tr>
+<td><code>dataformat_ohlcv</code></td>
+<td>存储历史K线（OHLCV）数据的格式（例如<code>feather</code>）。<br><strong>默认：</strong> <code>feather</code>。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>dataformat_trades</code></td>
+<td>存储历史交易数据的格式（例如<code>feather</code>）。<br><strong>默认：</strong> <code>feather</code>。<br><strong>数据类型：</strong> 字符串。</td>
+</tr>
+<tr>
+<td><code>reduce_df_footprint</code></td>
+<td>将所有数值列转成<code>float32</code>/<code>int32</code>，以降低内存和存储空间占用，减少回测和训练时间。详见 <a href="#parameters-in-the-strategy">参数</a>。<br><strong>默认：</strong> <code>False</code>。<br><strong>数据类型：</strong> 布尔值。</td>
+</tr>
+<tr>
+<td><code>log_config</code></td>
+<td>包含Python日志配置的字典。详见 <a href="../advanced-setup/#advanced-logging">高级设置</a>。<br><strong>数据类型：</strong> 字典。<br><strong>默认：</strong> <code>FtRichHandler</code>。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_8">策略中的参数<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h2>
+<p>以下参数可在配置文件或策略中设置。<br />
+配置文件中的参数值会覆盖策略中的设置。</p>
+<ul>
+<li><code>minimal_roi</code></li>
+<li><code>timeframe</code></li>
+<li><code>stoploss</code></li>
+<li><code>max_open_trades</code></li>
+<li><code>trailing_stop</code></li>
+<li><code>trailing_stop_positive</code></li>
+<li><code>trailing_stop_positive_offset</code></li>
+<li><code>trailing_only_offset_is_reached</code></li>
+<li><code>use_custom_stoploss</code></li>
+<li><code>process_only_new_candles</code></li>
+<li><code>order_types</code></li>
+<li><code>order_time_in_force</code></li>
+<li><code>unfilledtimeout</code></li>
+<li><code>disable_dataframe_checks</code></li>
+<li><code>use_exit_signal</code></li>
+<li><code>exit_profit_only</code></li>
+<li><code>exit_profit_offset</code></li>
+<li><code>ignore_roi_if_entry_signal</code></li>
+<li><code>ignore_buying_expired_candle_after</code></li>
+<li><code>position_adjustment_enable</code></li>
+<li><code>max_entry_position_adjustment</code></li>
+</ul>
+<h2 id="_9">配置每笔交易的投入金额<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h2>
+<p>有多种方法配置机器人每次交易所用的投入额度。<br />
+所有方法都遵循 <a href="#tradable-balance">可用余额配置</a> 规则，详见下文。</p>
+<h3 id="_10">最小交易额度<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h3>
+<p>最小投入金额依赖于交易所及交易对，一般在交易所的支持页面列出。</p>
+<p>举例：假设 XRP/USD 的最小可交易量是20 XRP（由交易所提供），且当前价格为0.6美元，<br />
+则买入该交易对的最小投入为 <code>20 * 0.6 ≈ 12$</code>。<br />
+该交易所对美元有最低订单限制（需大于10美元），但在此例中不适用。</p>
+<p>为了保证安全执行，Freqtrade不会允许以10.1美元的投入进行买入，<br />
+而是会确保有足够空间设立止损（包括由 <code>amount_reserve_percent</code> 设置的偏移，默认5%）比。</p>
+<p>考虑预留5%，那么最小投入约为：<code>12 * (1 + 0.05) ≈ 12.6$</code><br />
+如果再考虑在此基础上设置10%的止损，实际投入会变为：<code>12.6 / (1 - 0.1) ≈ 14$</code>。</p>
+<p>为了避免在较大止损时的计算偏差，实际允许的最小投入金额不会超过真实限制的50%。</p>
+<div class="admonition 警告">
+<p class="admonition-title">警告</p>
+<p>由于交易所的最大可用额度通常比较稳定且更新不频繁，某些交易对由于价格大幅上涨会显示较高的最小限制，该限制其实是价格变化带来的。<br />
+Freqtrade会调整投入额度以符合市场，但如果该值超过目标投入的30%，则会拒绝该交易。</p>
+</div>
+<h3 id="dry-run">Dry-run钱包<a class="headerlink" href="#dry-run" title="Permanent link">&para;</a></h3>
+<p>在Dry-Run模式下，机器人会使用模拟钱包进行交易模拟。<br />
+其起始余额由 <code>dry_run_wallet</code> 指定（默认为1000）。<br />
+对于复杂场景，也可以用字典指定每个货币的起始余额，例如：</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;dry_run_wallet&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;BTC&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;ETH&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;USDT&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>可以通过命令行参数（<code>--dry-run-wallet</code>）覆盖单个浮点值，但不能直接覆盖字典。<br />
+若用字典，必须在配置文件中设置。</p>
+<div class="admonition 注意">
+<p class="admonition-title">注意</p>
+<p>不在投入货币的余额将不会用于交易，但会显示在钱包余额中。<br />
+跨保证金交易所的余额也可能影响可用保证金的计算。</p>
+</div>
+<h3 id="_11">可交易余额<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h3>
+<p>默认情况下，机器人认为“总余额的99%”（即 <code>1%</code> 预留用于手续费）是可用的。 <br />
+当启用<a href="#dynamic-stake-amount">动态投入金额</a>时，会将总余额分配到 <code>max_open_trades</code> 个额度中。</p>
+<p>机器人会留出1%的余额用于交易手续费，所以默认不会用尽全部余额。</p>
+<p>你也可以通过设置 <code>tradable_balance_ratio</code> 来配置“未被动用的部分”。</p>
+<p>例如：你在交易所钱包中有10 ETH，如果设置<br />
+<code>tradable_balance_ratio=0.5</code>（50%），机器人将最多使用5 ETH进行交易，其余余额保持未动。</p>
+<div class="admonition 危险">
+<p class="admonition-title">危险</p>
+<p>在同一账户运行多个机器人时，不要使用此设置。请使用 <a href="#assign-available-capital">给机器人预留的资金</a>。</p>
+</div>
+<div class="admonition 警告">
+<p class="admonition-title">警告</p>
+<p><code>tradable_balance_ratio</code> 作用在“当前余额”上（可用余额+在交易中的余额）。<br />
+举例：假设起始余额为1000，<code>tradable_balance_ratio=0.99</code>，那么不一定总会剩下10本币。例如余额因亏损或提币减少到500，则剩余可能只有5。</p>
+</div>
+<h3 id="_12">分配可用资金<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h3>
+<p>为了充分利用多机器人在同一交易所的资金池，你可以为每个机器人设置单独的起始资本（<code>available_capital</code>），<br />
+适配策略是将初始资金平均分配到 <code>max_open_trades</code> 额度中。</p>
+<p>比如：你的账户有10000 USDT，想运行两个策略，将 <code>available_capital</code> 设置为5000，两者各得5000初始资金。<br />
+机器人会将这笔资金平分成最大开仓数的份额，盈利后会增加投入规模，但不会影响其他机器人。</p>
+<p>更改 <code>available_capital</code> 后需要重新加载配置，且变更部分会是之前价值与新值的差额。<br />
+若减小资金，将不会强制平仓，收益会在交易结束后体现到余额中。</p>
+<div class="admonition 警告">
+<p class="admonition-title">不兼容 <code>tradable_balance_ratio</code></p>
+<p>设置 <code>available_capital</code> 会覆盖 <code>tradable_balance_ratio</code> 配置。</p>
+</div>
+<h3 id="_13">修改最后一次投入金额<a class="headerlink" href="#_13" title="Permanent link">&para;</a></h3>
+<p>假设你有可交易余额为1000 USDT，<br />
+<code>stake_amount=400</code>，最大开仓数为3，<br />
+当已经有800 USDT（两笔400）交易在进行时，如剩余额只有200 USDT，就无法再开第三笔。</p>
+<p>此时，可以设置 <code>amend_last_stake_amount</code> 为 <code>True</code>，让机器人自动用剩余余额调整最后一笔的投入。</p>
+<p>示例：<br />
+- 交易1：400 USDT<br />
+- 交易2：400 USDT<br />
+- 交易3：用剩余余额200 USDT（调整为200 USDT投入）</p>
+<div class="admonition 注意">
+<p class="admonition-title">注意</p>
+<p>该功能仅在固定投入（Static stake）下有效。<br />
+在动态投入（Dynamic stake）模式下，余额会平均分配。</p>
+</div>
+<div class="admonition 注意">
+<p class="admonition-title">注意</p>
+<p>最小投入金额可以通过 <code>last_stake_amount_min_ratio</code> 配置，默认为0.5，即最低为 <code>stake_amount * 0.5</code>，避免投入过少难以交易。</p>
+</div>
+<h3 id="_14">固定投入金额<a class="headerlink" href="#_14" title="Permanent link">&para;</a></h3>
+<p><code>stake_amount</code> 固定配置每次交易的投入金额。<br />
+最小值建议查阅交易所支持的最低交易额度。</p>
+<p>此设置会和 <code>max_open_trades</code> 联合。如果最大开仓数为3，投入金额为0.05，则最大投入资金为0.15。如果配置为 <code>stake_amount=0.05</code> 及 <code>max_open_trades=3</code>。</p>
+<h3 id="_15">动态投入金额<a class="headerlink" href="#_15" title="Permanent link">&para;</a></h3>
+<p>设置为 <code>"unlimited"</code>，机器人会根据账户余额自动平分到 <code>max_open_trades</code> 份。<br />
+建议同时设置：<br />
+<code>"stake_amount": "unlimited"</code> 和 <code>tradable_balance_ratio=0.99</code>，以保证账户余额有一定余量。</p>
+<p>此时，单笔交易金额的计算公式为：<br />
+<div class="highlight"><pre><span></span><code><span class="n">currency_balance</span> <span class="o">/</span> <span class="p">(</span><span class="n">max_open_trades</span> <span class="o">-</span> <span class="n">current_open_trades</span><span class="p">)</span>
+</code></pre></div></p>
+<p>例如：在账户剩余余额为 <code>X</code>，允许最大 <code>max_open_trades</code>，则每笔交易金额为：<br />
+<code>X / (max_open_trades - 当前已开仓数)</code></p>
+<p>要启用全部余额（减去保留比例），可以设置：<br />
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;stake_amount&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;unlimited&quot;</span><span class="p">,</span>
+<span class="nt">&quot;tradable_balance_ratio&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.99</span><span class="p">,</span>
+</code></pre></div></p>
+<div class="admonition 提示">
+<p class="admonition-title">复利收益</p>
+<p>利用此配置，机器人会根据盈利情况自动调节投入规模（亏损时降低，盈利时升高），实现利润复利。</p>
+</div>
+<div class="admonition 注意">
+<p class="admonition-title">使用Dry-Run模式时</p>
+<p>在Dry-Run、回测或超参数调优时，<code>"stake_amount": "unlimited"</code>，余额是模拟的，会从 <code>dry_run_wallet</code> 初始余额开始演变。<br />
+推荐设置合理的 <code>dry_run_wallet</code>（例如：0.05、0.01BTC，或1000、100USDT），避免模拟交易大额资金或过小余额，导致结果偏差。</p>
+</div>
+<h3 id="_16">带仓位调整的动态投入金额<a class="headerlink" href="#_16" title="Permanent link">&para;</a></h3>
+<p>启用无限投入时，若需要仓位调整，还必须实现 <code>custom_stake_amount</code>，根据策略返回一个调整值。<br />
+一般建议在25%-50%区间内，具体依据策略定义的缓冲空间。</p>
+<p>例如：如果仓位调整允许额外两次买入，那么缓冲空间应为原始无限投入的66.7%；<br />
+如果允许一次买入，额度为原始的25%；<br />
+结果是：<br />
+- <code>custom_stake_amount</code> 返回提议规模的25%，允许余额保留75%作后续调整。</p>
+<h2 id="_17">订单使用的价格<a class="headerlink" href="#_17" title="Permanent link">&para;</a></h2>
+<p>普通订单的价格可以通过参数结构<code>entry_pricing</code>（建仓）和<code>exit_pricing</code>（平仓）进行控制。<br />
+价格总是在下单前即刻获取，无论是通过查询交易所的行情（tickers）还是使用订单簿（orderbook）数据。</p>
+<div class="admonition 注意">
+<p class="admonition-title">注意</p>
+<p>Freqtrade使用的订单簿数据是通过ccxt库的<code>fetch_order_book()</code>函数从交易所获取的，通常是来自L2聚合的订单簿数据，而行情数据是由ccxt库的<code>fetch_ticker()</code>或<code>fetch_tickers()</code>函数返回的结构。详情请参考ccxt库的<a href="https://github.com/ccxt/ccxt/wiki/Manual#market-data">文档</a>。</p>
+</div>
+<div class="admonition 警告">
+<p class="admonition-title">使用市价单</p>
+<p>使用市价单时，请务必阅读<a href="#market-order-pricing">市价单定价</a>部分。</p>
+</div>
+<h3 id="_18">建仓价格<a class="headerlink" href="#_18" title="Permanent link">&para;</a></h3>
+<h4 id="_19">价格方向设置<a class="headerlink" href="#_19" title="Permanent link">&para;</a></h4>
+<p>配置项<code>entry_pricing.price_side</code>定义了在买入时，机器人关注的订单簿一侧。</p>
+<p>以下展示了一个订单簿示意：</p>
+<div class="highlight"><pre><span></span><code>...
+103
+102
+101  # 卖价
+------------- 当前价差
+99   # 买价
+98
+97
+...
+</code></pre></div>
+<p>如果<code>entry_pricing.price_side</code>设置为<code>"bid"</code>，则机器人会以99作为建仓价格。<br />
+相反，如果设置为<code>"ask"</code>，则使用101作为建仓价格。</p>
+<p>这取决于订单方向（<em>多头</em>/<em>空头</em>），会产生不同的效果。因此建议使用<code>"same"</code>或<code>"other"</code>作为此配置值。<br />
+对应的定价矩阵如下所示：</p>
+<table>
+<thead>
+<tr>
+<th>方向</th>
+<th>订单类型</th>
+<th>设置</th>
+<th>价格</th>
+<th>是否穿越价差</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>多头</td>
+<td>买入</td>
+<td>ask</td>
+<td>101</td>
+<td>是</td>
+</tr>
+<tr>
+<td>多头</td>
+<td>买入</td>
+<td>bid</td>
+<td>99</td>
+<td>否</td>
+</tr>
+<tr>
+<td>多头</td>
+<td>买入</td>
+<td>same</td>
+<td>99</td>
+<td>否</td>
+</tr>
+<tr>
+<td>多头</td>
+<td>买入</td>
+<td>other</td>
+<td>101</td>
+<td>是</td>
+</tr>
+<tr>
+<td>空头</td>
+<td>卖出</td>
+<td>ask</td>
+<td>101</td>
+<td>否</td>
+</tr>
+<tr>
+<td>空头</td>
+<td>卖出</td>
+<td>bid</td>
+<td>99</td>
+<td>是</td>
+</tr>
+<tr>
+<td>空头</td>
+<td>卖出</td>
+<td>same</td>
+<td>101</td>
+<td>否</td>
+</tr>
+<tr>
+<td>空头</td>
+<td>卖出</td>
+<td>other</td>
+<td>99</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+<p>使用订单簿的另一侧通常能保证订单更快成交，但机器人也可能付出不必要的额外价格。<br />
+在使用限价买单时，很可能会发生taker费用而非maker费用。另外，订单簿的“另一侧”价格通常高于“买价”一侧的价格，因此此行为类似于市场价（但有最大价格限制）。</p>
+<h4 id="_20">开仓价格（启用订单簿时）<a class="headerlink" href="#_20" title="Permanent link">&para;</a></h4>
+<p>当开启订单簿（<code>entry_pricing.use_order_book=True</code>）进行建仓时，Freqtrade会从订单簿中提取<code>entry_pricing.order_book_top</code>条目，并以配置的订单簿<strong>对应侧</strong>（<code>entry_pricing.price_side</code>）的第<code>entry_pricing.order_book_top</code>个位置价格作为建仓价格。<br />
+1代表订单簿的最顶端（最优挂单），2代表第二个挂单，以此类推。</p>
+<h4 id="_21">开仓价格（未启用订单簿）<a class="headerlink" href="#_21" title="Permanent link">&para;</a></h4>
+<p>以下内容假设<code>side</code>为配置的<code>entry_pricing.price_side</code>（默认为<code>"same"</code>）。</p>
+<p>当未启用订单簿（<code>entry_pricing.use_order_book=False</code>）时，Freqtrade会选择行情中<code>side</code>方向的最佳价格，前提是该价格低于最近成交价（<code>last</code>）。<br />
+如果<code>side</code>价格高于<code>last</code>，则会根据参数<code>entry_pricing.price_last_balance</code>在<code>side</code>价格和<code>last</code>价格之间插值，得出建仓价格。</p>
+<p>参数<code>entry_pricing.price_last_balance</code>控制这个过程。<br />
+值为<code>0.0</code>表示完全使用<code>side</code>价格，<br />
+值为<code>1.0</code>表示完全使用<code>last</code>价格，<br />
+介于两者之间的值则在挂单价和最近成交价之间插值。</p>
+<h4 id="_22">观察市场深度<a class="headerlink" href="#_22" title="Permanent link">&para;</a></h4>
+<p>当启用市场深度检测（<code>entry_pricing.check_depth_of_market.enabled=True</code>）时，建仓信号会根据订单簿深度过滤（订单簿各侧的所有挂单金额总和）。</p>
+<p>订单簿的<code>bid</code>（买）一侧深度除以<code>ask</code>（卖）一侧深度得出一个比值，<br />
+然后与参数<code>entry_pricing.check_depth_of_market.bids_to_ask_delta</code>的值比较。<br />
+只有当订单簿深度差（delta）大于或等于设置值时，订单才会被执行。</p>
+<div class="admonition 注意">
+<p class="admonition-title">注意</p>
+<p>如果delta值低于1，意味着<code>ask</code>（卖）一侧的深度大于<code>bid</code>（买）一侧的深度；<br />
+如果delta值大于1，则相反（买侧深度大于卖侧深度）。</p>
+</div>
+<h3 id="_23">平仓价格<a class="headerlink" href="#_23" title="Permanent link">&para;</a></h3>
+<h4 id="_24">平仓价格方向<a class="headerlink" href="#_24" title="Permanent link">&para;</a></h4>
+<p>配置项<code>exit_pricing.price_side</code>定义了在平仓时，机器人关注的订单簿一侧。</p>
+<p>订单簿示意如下：</p>
+<div class="highlight"><pre><span></span><code>...
+103
+102
+101  # 卖价
+------------- 当前价差
+99   # 买价
+98
+97
+...
+</code></pre></div>
+<p>如果<code>exit_pricing.price_side</code>设置为<code>"ask"</code>，则使用101作为平仓价格。<br />
+如果设置为<code>"bid"</code>，则使用99作为平仓价格。</p>
+<p>订单方向（<em>多头</em>/<em>空头</em>）不同，会导致不同的计算结果。建议使用<code>"same"</code>或<code>"other"</code>配置值。<br />
+对应的定价矩阵如下所示：</p>
+<table>
+<thead>
+<tr>
+<th>方向</th>
+<th>订单类型</th>
+<th>设置</th>
+<th>价格</th>
+<th>是否穿越价差</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>多头</td>
+<td>卖出</td>
+<td>ask</td>
+<td>101</td>
+<td>否</td>
+</tr>
+<tr>
+<td>多头</td>
+<td>卖出</td>
+<td>bid</td>
+<td>99</td>
+<td>是</td>
+</tr>
+<tr>
+<td>多头</td>
+<td>卖出</td>
+<td>same</td>
+<td>101</td>
+<td>否</td>
+</tr>
+<tr>
+<td>多头</td>
+<td>卖出</td>
+<td>other</td>
+<td>99</td>
+<td>是</td>
+</tr>
+<tr>
+<td>空头</td>
+<td>买入</td>
+<td>ask</td>
+<td>101</td>
+<td>是</td>
+</tr>
+<tr>
+<td>空头</td>
+<td>买入</td>
+<td>bid</td>
+<td>99</td>
+<td>否</td>
+</tr>
+<tr>
+<td>空头</td>
+<td>买入</td>
+<td>same</td>
+<td>99</td>
+<td>否</td>
+</tr>
+<tr>
+<td>空头</td>
+<td>买入</td>
+<td>other</td>
+<td>101</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_25">开仓（平仓）启用订单簿时<a class="headerlink" href="#_25" title="Permanent link">&para;</a></h4>
+<p>启用订单簿（<code>exit_pricing.use_order_book=True</code>）时，Freqtrade会提取订单簿中<code>exit_pricing.order_book_top</code>条目，<br />
+并以<code>exit_pricing.order_book_top</code>指定的条目在配置的侧（<code>exit_pricing.price_side</code>）作为平仓价格。</p>
+<p>1代表订单簿的最顶端，2代表第二个挂单，依此类推。</p>
+<h4 id="_26">不启用订单簿时<a class="headerlink" href="#_26" title="Permanent link">&para;</a></h4>
+<p>以下内容假设<code>side</code>为配置的<code>exit_pricing.price_side</code>（默认为<code>"ask"</code>）。</p>
+<p>当未启用订单簿（<code>exit_pricing.use_order_book=False</code>）时，Freqtrade会选择行情中<code>side</code>方向的最佳价格，前提是该价格高于<code>last</code>成交价。<br />
+如果<code>side</code>价格低于<code>last</code>，则会根据<code>exit_pricing.price_last_balance</code>在<code>side</code>价格和<code>last</code>价格之间插值，计算出平仓价格。</p>
+<p>参数<code>exit_pricing.price_last_balance</code>的作用类似于建仓时的参数，值为<code>0.0</code>时使用<code>side</code>价格，值为<code>1.0</code>时使用<code>last</code>价格，两者之间的值进行插值。</p>
+<h3 id="_27">市价单定价<a class="headerlink" href="#_27" title="Permanent link">&para;</a></h3>
+<p>使用市价单时，价格应配置为订单簿的“正确”一侧，以实现合理的定价检测。<br />
+假设建仓和平仓都使用市价单，则应使用如下配置：</p>
+<div class="highlight"><pre><span></span><code>  &quot;order_types&quot;: {
+    &quot;entry&quot;: &quot;market&quot;,
+    &quot;exit&quot;: &quot;market&quot;
+    // ...
+  },
+  &quot;entry_pricing&quot;: {
+    &quot;price_side&quot;: &quot;other&quot;,
+    // ...
+  },
+  &quot;exit_pricing&quot;:{
+    &quot;price_side&quot;: &quot;other&quot;,
+    // ...
+  },
+</code></pre></div>
+<p>当然，如果只在一侧使用限价单，则可以采用不同的定价组合。</p>
+<h2 id="_28">其他配置细节<a class="headerlink" href="#_28" title="Permanent link">&para;</a></h2>
+<h3 id="minimal_roi">了解 minimal_roi<a class="headerlink" href="#minimal_roi" title="Permanent link">&para;</a></h3>
+<p><code>minimal_roi</code> 是一个JSON对象，键是持续时间（分钟），值是最大ROI比例。<br />
+示例：
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;minimal_roi&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;40&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w">    </span><span class="c1">// 40分钟后无盈利限制</span>
+<span class="w">    </span><span class="nt">&quot;30&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span><span class="w">   </span><span class="c1">// 30分钟内利润≥1%则退出</span>
+<span class="w">    </span><span class="nt">&quot;20&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.02</span><span class="p">,</span><span class="w">   </span><span class="c1">// 20分钟内利润≥2%则退出</span>
+<span class="w">    </span><span class="nt">&quot;0&quot;</span><span class="p">:</span><span class="w">  </span><span class="mf">0.04</span><span class="w">    </span><span class="c1">// 任何时候利润≥4%则立即退出</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p>大多数策略文件中已包含合理的 <code>minimal_roi</code> 设置。<br />
+此参数可在策略或配置中设置，配置中优先。如果未设置，则默认 <code>{"0": 10}</code>（即风险允许最大收益为1000%，实际几乎永不退出）。</p>
+<div class="admonition 注意">
+<p class="admonition-title">强制退出（force exit）时间限制</p>
+<p>使用 <code>"&lt;N&gt;": -1</code> 表示无论利润正负，在N分钟后强制退出交易。</p>
+</div>
+<h3 id="force_entry_enable">理解 force_entry_enable<a class="headerlink" href="#force_entry_enable" title="Permanent link">&para;</a></h3>
+<p><code>force_entry_enable</code> 开启后，可以通过Telegram或REST API使用 <code>/forcelong</code> <code>/forceshort</code> 命令强制开仓。<br />
+默认禁用，启用时会有警告。<br />
+此功能因策略不同可能有风险，请谨慎使用。</p>
+<p>详细操作请参阅 <a href="../telegram-usage/">Telegram文档</a>。</p>
+<h3 id="k">忽略过期K线信号<a class="headerlink" href="#k" title="Permanent link">&para;</a></h3>
+<p>在使用较长时间周期（如1小时以上）时，尤其当 <code>max_open_trades</code> 设置较低，<br />
+最后一根K线被处理时可能已过了用以产生买入信号的有效期。<br />
+此时，可以设定 <code>ignore_buying_expired_candle_after</code>，表示超过多少秒后，买入信号作废。</p>
+<p>示例：使用1小时周期，但只在前5分钟内买入，配置：
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="c1">//...</span>
+<span class="w">  </span><span class="nt">&quot;ignore_buying_expired_candle_after&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">300</span><span class="p">,</span>
+<span class="w">  </span><span class="c1">//...</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<div class="admonition 注意">
+<p class="admonition-title">注意</p>
+<p>该设置在每根新K线到来后会重置，不能阻止连续的多根K线触发信号。<br />
+最佳做法是用“触发”筛选买入信号，只在一个K线期间激活。</p>
+</div>
+<h3 id="order_types">理解 order_types<a class="headerlink" href="#order_types" title="Permanent link">&para;</a></h3>
+<p><code>order_types</code> 用于定义订单操作的类型（<code>entry</code>、<code>exit</code>、<code>stoploss</code>、<code>emergency_exit</code>、<code>force_exit</code>、<code>force_entry</code>等），以及止损在交易所的执行方式（市场或限价订单）。<br />
+还可以配置止损订单在交易所的“挂单”更新间隔。</p>
+<p>允许使用限价和市价订单进行入场、出场、止损等操作。<br />
+比如，止损可以在买入后立即用市价单挂出。</p>
+<p>配置在配置文件中的 <code>order_types</code> 会覆盖策略中的设置，<br />
+必须确保包含以下4个参数（否则机器人无法启动）：<br />
+- <code>entry</code><br />
+- <code>exit</code><br />
+- <code>stoploss</code><br />
+- <code>stoploss_on_exchange</code>  </p>
+<p>示例策略配置：
+<div class="highlight"><pre><span></span><code><span class="n">order_types</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;entry&quot;</span><span class="p">:</span> <span class="s2">&quot;limit&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;exit&quot;</span><span class="p">:</span> <span class="s2">&quot;limit&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;emergency_exit&quot;</span><span class="p">:</span> <span class="s2">&quot;market&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;force_entry&quot;</span><span class="p">:</span> <span class="s2">&quot;market&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;force_exit&quot;</span><span class="p">:</span> <span class="s2">&quot;market&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;stoploss&quot;</span><span class="p">:</span> <span class="s2">&quot;market&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;stoploss_on_exchange&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="s2">&quot;stoploss_on_exchange_interval&quot;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span>
+    <span class="s2">&quot;stoploss_on_exchange_limit_ratio&quot;</span><span class="p">:</span> <span class="mf">0.99</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p>示例配置：
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;order_types&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;entry&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;limit&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;exit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;limit&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;emergency_exit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;market&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;force_entry&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;market&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;force_exit&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;market&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;stoploss&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;market&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;stoploss_on_exchange&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;stoploss_on_exchange_interval&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<div class="admonition 警告">
+<p class="admonition-title">支持市价单</p>
+<p>并非所有交易所都支持市价订单。<br />
+若不支持，启动时会提示 <code>"Exchange &lt;交易所名&gt; does not support market orders."</code>，机器人将无法启动。</p>
+</div>
+<div class="admonition 警告">
+<p class="admonition-title">使用市价单</p>
+<p>使用市价单时务必谨慎，详见 <a href="#market-order-pricing">市场订单价格</a>部分。</p>
+</div>
+<div class="admonition 注意">
+<p class="admonition-title">交易所止损</p>
+<p><code>order_types.stoploss_on_exchange_interval</code>非强制。<br />
+若未明确了解操作，建议不要修改。</p>
+<p>若开启<code>stoploss_on_exchange</code>，且止损被交易所手动取消，机器人会自动挂出新的止损单。</p>
+</div>
+<div class="admonition 警告">
+<p class="admonition-title">order_types.stoploss_on_exchange 失败</p>
+<p>若在交易所挂止损失败，机器人会启动应急退出（默认用市价单平仓）。<br />
+可以通过配置 <code>order_types</code> 中的 <code>emergency_exit</code> 指定退出订单的类型，不过不建议更改。</p>
+</div>
+<h3 id="order_time_in_force">了解 order_time_in_force<a class="headerlink" href="#order_time_in_force" title="Permanent link">&para;</a></h3>
+<p><code>order_time_in_force</code> 定义订单在交易所的存活策略（GTC、FOK、IOC等），影响订单何时生效或自动取消。</p>
+<p>常用时间策略：</p>
+<p><strong>GTC（Good Till Canceled）</strong>：<br />
+订单会一直挂单，直到被取消或成交。</p>
+<p><strong>FOK（Fill Or Kill）</strong>：<br />
+订单未能立即全部成交，则会被自动取消。</p>
+<p><strong>IOC（Immediate Or Canceled）</strong>：<br />
+订单会尽快成交部分，剩余部分被取消。</p>
+<p><strong>PO（Post Only）</strong>：<br />
+只挂入“maak”模式（只能作为挂单放在订单簿），若未挂入则取消。</p>
+<h4 id="order_time_in_force_1"><code>order_time_in_force</code> 配置示例<a class="headerlink" href="#order_time_in_force_1" title="Permanent link">&para;</a></h4>
+<p>在配置或策略中，用字典指定入场和出场订单策略：
+<div class="highlight"><pre><span></span><code><span class="s2">&quot;order_time_in_force&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;entry&quot;</span><span class="p">:</span> <span class="s2">&quot;GTC&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;exit&quot;</span><span class="p">:</span> <span class="s2">&quot;GTC&quot;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<div class="admonition 警告">
+<p class="admonition-title">警告</p>
+<p>目前只支持部分交易所（如 Binance、Gate、Kucoin），其他交易所暂不支持。<br />
+修改前请确认自己是否了解其影响。</p>
+</div>
+<h3 id="_29">法币转换<a class="headerlink" href="#_29" title="Permanent link">&para;</a></h3>
+<p>Freqtrade 使用 Coingecko API 将加密货币价值转换为对应的法币，通过 <code>fiat_display_currency</code> 参数设置。</p>
+<p>如果完全移除 <code>fiat_display_currency</code>，则不会初始化Coingecko，也不会显示法币转换。这不会影响机器人正常运行。</p>
+<h4 id="forex_display_currency">forex_display_currency 可以取哪些值？<a class="headerlink" href="#forex_display_currency" title="Permanent link">&para;</a></h4>
+<p>支持多种法币（包括美元、欧元等）：</p>
+<div class="highlight"><pre><span></span><code><span class="s2">&quot;AUD&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;BRL&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;CAD&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;CHF&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;CLP&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;CNY&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;CZK&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;DKK&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;EUR&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;GBP&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;HKD&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;HUF&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;IDR&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ILS&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;INR&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;JPY&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;KRW&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;MXN&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;MYR&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;NOK&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;NZD&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;PHP&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;PKR&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;PLN&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;RUB&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;SEK&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;SGD&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;THB&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;TRY&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;TWD&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ZAR&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;USD&quot;</span>
+</code></pre></div>
+<p>也支持部分主流加密货币（如BTC、ETH、XRP等）：</p>
+<div class="highlight"><pre><span></span><code><span class="s2">&quot;BTC&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;ETH&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;XRP&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;LTC&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;BCH&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;BNB&quot;</span>
+</code></pre></div>
+<h4 id="coingecko">Coingecko调用频率限制<a class="headerlink" href="#coingecko" title="Permanent link">&para;</a></h4>
+<p>部分IP段会实施频率限制，若遇到此问题可在配置中添加API密钥：</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;fiat_display_currency&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;USD&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;coingecko&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;api_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;your-api&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;is_demo&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Freqtrade支持免费和专业版本的API密钥。</p>
+<p><strong>注意</strong>：API密钥非必要，仅用于交易报告中的币价转换。<br />
+大多数场景无需提供API密钥。</p>
+<h2 id="websocket">通过Websocket消费交易所数据<a class="headerlink" href="#websocket" title="Permanent link">&para;</a></h2>
+<p>Freqtrade可以通过 <code>ccxt.pro</code> 使用Websocket，确保数据实时可用。<br />
+若连接失败或禁用，会自动退回到REST API。</p>
+<p>默认启用Websocket <code>exchange.enable_ws</code>，如需禁用：</p>
+<div class="highlight"><pre><span></span><code>&quot;exchange&quot;: {
+    // ...
+    &quot;enable_ws&quot;: false,
+    // ...
+}
+</code></pre></div>
+<p>若需要使用代理（VPN等），请参照 <a href="#using-proxy-with-freqtrade">代理部分</a>。</p>
+<div class="admonition 信息">
+<p class="admonition-title">逐步推出</p>
+<p>功能逐步实现，目前只支持OHLCV数据流，且仅部分交易所支持，未来会逐步扩展。</p>
+</div>
+<h2 id="dry-run_1">使用Dry-Run（模拟）模式<a class="headerlink" href="#dry-run_1" title="Permanent link">&para;</a></h2>
+<p>建议初次使用时，用Dry-Run模式，观察机器人表现及策略效果，避免实际风险。</p>
+<p>操作步骤：</p>
+<ol>
+<li>修改 <code>config.json</code>，将 <code>dry_run</code> 设为 <code>true</code>  </li>
+<li>指定 <code>db_url</code>（如 <code>sqlite:///tradesv3.dryrun.sqlite</code>）  </li>
+<li>移除API密钥信息（或用空值/伪造值）  </li>
+</ol>
+<p>示例：
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;dry_run&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="nt">&quot;db_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sqlite:///tradesv3.dryrun.sqlite&quot;</span>
+</code></pre></div></p>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;exchange&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;binance&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>满足条件后即可切换到正式交易。</p>
+<div class="admonition 注意">
+<p class="admonition-title">注意</p>
+<p>Dry-Run时，会模拟钱包余额，起始值由 <code>dry_run_wallet</code> 设定（默认为1000）。  </p>
+</div>
+<h3 id="dry-run_2">Dry-Run的注意事项<a class="headerlink" href="#dry-run_2" title="Permanent link">&para;</a></h3>
+<ul>
+<li>API密钥可以提供也可以不提供（仅模拟操作，不影响账户）。  </li>
+<li>钱包余额 (<code>/balance</code>) 是模拟值。  </li>
+<li>订单模拟：未提交到交易所，仅在本地模拟确认。  </li>
+<li>市价订单按订单簿 volume 即时成交，最大滑点5%。  </li>
+<li>限价订单成交依价格和超时时间决定。  </li>
+<li>若订单价格偏离超过1%，系统会将限价单转成市价单立即成交。  </li>
+<li>若启用 <code>stoploss_on_exchange</code>，假设止损已成交。  </li>
+<li>未平仓订单（非已完成的订单）在重启后会保持，假设未被执行。</li>
+</ul>
+<h2 id="_30">切换到正式交易<a class="headerlink" href="#_30" title="Permanent link">&para;</a></h2>
+<p>切换至真实交易须保证：</p>
+<ol>
+<li>修改 <code>config.json</code>，将 <code>dry_run</code> 设为 <code>false</code>。  </li>
+<li>填入真实的API密钥信息（在交易所后台获取），不要用伪造的值。  </li>
+</ol>
+<p>示例：
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;exchange&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;binance&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;你的API Key&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;你的API Secret&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p>建议为安全起见，使用专用的API密钥和不同的配置文件。</p>
+<p><strong>强烈建议：</strong><br />
+不要与公共配置文件共享你的私密信息。</p>
+<h2 id="_31">配置交易所账户<a class="headerlink" href="#_31" title="Permanent link">&para;</a></h2>
+<p>在交易所后台创建API密钥。<br />
+通常只在正式交易模式（<code>production</code>）需要。</p>
+<p>运行在Dry-Run模式下，API密钥可以留空或用假数据。</p>
+<h2 id="_32">切换到正式模式<a class="headerlink" href="#_32" title="Permanent link">&para;</a></h2>
+<p>修改 <code>config.json</code>：</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;dry_run&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+</code></pre></div>
+<p>填入交易所API密钥（用真实的）：</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;exchange&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;binance&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;你的真实API Key&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;你的真实API Secret&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>阅读 <a href="../exchanges/">交易所文档</a>，了解可能的配置细节。</p>
+<h3 id="_33">保密建议<a class="headerlink" href="#_33" title="Permanent link">&para;</a></h3>
+<p>推荐使用第二份配置文件存放私密信息，譬如 <code>config-private.json</code>，<br />
+使用方法：</p>
+<div class="highlight"><pre><span></span><code>freqtrade<span class="w"> </span>trade<span class="w"> </span>--config<span class="w"> </span>user_data/config.json<span class="w"> </span>--config<span class="w"> </span>user_data/config-private.json<span class="w"> </span>&lt;...&gt;
+</code></pre></div>
+<p>重要：绝不要泄露你的私密配置或API密钥！</p>
+<h2 id="proxy">使用代理（Proxy）设置<a class="headerlink" href="#proxy" title="Permanent link">&para;</a></h2>
+<p>可通过环境变量设置代理（<code>HTTP_PROXY</code> 和 <code>HTTPS_PROXY</code>）：</p>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">HTTP_PROXY</span><span class="o">=</span><span class="s2">&quot;http://addr:port&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">HTTPS_PROXY</span><span class="o">=</span><span class="s2">&quot;http://addr:port&quot;</span>
+freqtrade
+</code></pre></div>
+<p>注意：交易所请求不受代理影响。</p>
+<h3 id="_34">为交易所请求配置代理<a class="headerlink" href="#_34" title="Permanent link">&para;</a></h3>
+<p>在 <code>ccxt</code> 配置中加入代理参数：</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="w"> </span>
+<span class="w">  </span><span class="nt">&quot;exchange&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;ccxt_config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;httpsProxy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://addr:port&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;wsProxy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://addr:port&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>详见 <a href="https://docs.ccxt.com/#/README?id=proxy">ccxt代理文档</a>。</p>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+    
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../bot-basics/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Freqtrade Basics">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Freqtrade Basics
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../strategy-101/" class="md-footer__link md-footer__link--next" aria-label="Next: Strategy Quickstart">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Strategy Quickstart
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate", "search.share", "content.code.copy", "navigation.top", "navigation.footer"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+        <script src="../javascripts/config.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

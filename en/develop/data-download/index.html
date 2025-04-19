@@ -1,0 +1,2602 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Freqtrade is a free and open source crypto trading bot written in Python, designed to support all major exchanges and be controlled via Telegram or builtin Web UI">
+      
+      
+      
+        <link rel="canonical" href="https://www.freqtrade.io/en/stable/data-download/">
+      
+      
+        <link rel="prev" href="../webhook-config/">
+      
+      
+        <link rel="next" href="../backtesting/">
+      
+      
+      <link rel="icon" href="../images/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.11">
+    
+    
+      
+        <title>Data Downloading - Freqtrade</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.4af4bdda.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/ft.extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-VH170LG9M5"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-VH170LG9M5",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-VH170LG9M5",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="tear">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Freqtrade" class="md-header__button md-logo" aria-label="Freqtrade" data-md-component="logo">
+      
+  <img src="../images/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Freqtrade
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Data Downloading
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="tear"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="blue-grey" data-md-color-accent="tear"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/freqtrade/freqtrade" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+
+  <!-- Main navigation -->
+  
+  
+  <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+    <div class="md-sidebar__scrollwrap">
+      <div class="md-sidebar__inner">
+        
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Freqtrade" class="md-nav__button md-logo" aria-label="Freqtrade" data-md-component="logo">
+      
+  <img src="../images/logo.png" alt="logo">
+
+    </a>
+    Freqtrade
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/freqtrade/freqtrade" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docker_quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Quickstart with Docker
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Installation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Linux/MacOS/Raspberry
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../windows_installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Windows
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bot-basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Freqtrade Basics
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-101/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-customization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy Customization
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-callbacks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy Callbacks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stoploss/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Stoploss
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Plugins
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bot-usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Start the bot
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Control the bot
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            Control the bot
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../telegram-usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Telegram
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freq-ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    freqUI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rest-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    REST API
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../webhook-config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Web Hook
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Data Downloading
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Data Downloading
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      获取回测和超参数优化所需的数据
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="获取回测和超参数优化所需的数据">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      使用示例
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      开始下载
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      其他注意事项
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      下载后续时间段的数据（覆盖新增）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      数据格式
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="数据格式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      数据格式对比
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pairs-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      交易对文件（Pairs File）
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#convert-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      子命令：convert-data
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="子命令：convert-data">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      转换数据示例
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#convert-trade-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      子命令：convert-trade-data
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="子命令：convert-trade-data">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      转换交易数据示例
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trades-to-ohlcv" class="md-nav__link">
+    <span class="md-ellipsis">
+      子命令：trades to ohlcv
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="子命令：trades to ohlcv">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ohlcv" class="md-nav__link">
+    <span class="md-ellipsis">
+      交易到 OHLCV 转换示例
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#list-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      子命令：list-data
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="子命令：list-data">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      示例：列出所有数据
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tick" class="md-nav__link">
+    <span class="md-ellipsis">
+      交易（tick）数据
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      下一步
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backtesting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Backtesting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hyperopt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Hyperopt
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_16" >
+        
+          
+          <label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    FreqAI
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_16_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_16">
+            <span class="md-nav__icon md-icon"></span>
+            FreqAI
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-parameter-table/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Parameter table
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-feature-engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Feature engineering
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-running/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Running FreqAI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-reinforcement-learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Reinforcement Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-developers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Developer guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../leverage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Short / Leverage
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Utility Sub-commands
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plotting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Plotting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exchanges/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Exchange-specific Notes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_21" >
+        
+          
+          <label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Data Analysis
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_21_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_21">
+            <span class="md-nav__icon md-icon"></span>
+            Data Analysis
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Jupyter Notebooks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy_analysis_example/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-backtesting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Backtest analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_22" >
+        
+          
+          <label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Advanced Topics
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_22_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_22">
+            <span class="md-nav__icon md-icon"></span>
+            Advanced Topics
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Advanced Post-installation Tasks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trade-object/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Trade Object
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lookahead-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Lookahead analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../recursive-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Recursive analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-advanced/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Advanced Strategy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-hyperopt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Advanced Hyperopt
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-orderflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Orderflow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../producer-consumer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Producer/Consumer mode
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sql_cheatsheet/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SQL Cheat-sheet
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../edge/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Edge Positioning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    FAQ
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy_migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy migration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../updating/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Updating Freqtrade
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deprecated/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Deprecated Features
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Contributors Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+      </div>
+    </div>
+  </div>
+  
+
+  <!-- Table of contents -->
+  
+  
+  <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+    <div class="md-sidebar__scrollwrap">
+      <div class="md-sidebar__inner">
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      获取回测和超参数优化所需的数据
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="获取回测和超参数优化所需的数据">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      使用示例
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      开始下载
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      其他注意事项
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      下载后续时间段的数据（覆盖新增）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      数据格式
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="数据格式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      数据格式对比
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pairs-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      交易对文件（Pairs File）
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#convert-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      子命令：convert-data
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="子命令：convert-data">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      转换数据示例
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#convert-trade-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      子命令：convert-trade-data
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="子命令：convert-trade-data">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      转换交易数据示例
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trades-to-ohlcv" class="md-nav__link">
+    <span class="md-ellipsis">
+      子命令：trades to ohlcv
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="子命令：trades to ohlcv">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ohlcv" class="md-nav__link">
+    <span class="md-ellipsis">
+      交易到 OHLCV 转换示例
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#list-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      子命令：list-data
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="子命令：list-data">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      示例：列出所有数据
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tick" class="md-nav__link">
+    <span class="md-ellipsis">
+      交易（tick）数据
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      下一步
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      </div>
+    </div>
+  </div>
+  
+
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="_1">数据下载<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<h2 id="_2">获取回测和超参数优化所需的数据<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>要下载用于回测和超优化的蜡烛图（OHLCV）数据，请使用 <code>freqtrade download-data</code> 命令。</p>
+<p>如果未指定其他参数，freqtrade 将默认下载过去30天的 <code>"1m"</code> 和 <code>"5m"</code> 时间框架的数据。<br />
+交易所和交易对信息将从 <code>config.json</code> 中读取（如果在参数中使用 <code>-c/--config</code> 指定）。<br />
+未提供配置文件时，<code>--exchange</code> 参数将变得必填。</p>
+<p>你可以使用相对时间范围（如 <code>--days 20</code>）或绝对起始日期（如 <code>--timerange 20200101-</code>）来指定数据时间段。<br />
+对于增量下载，建议使用相对时间方式。</p>
+<div class="admonition tip">
+<p class="admonition-title">提示：更新现有数据</p>
+<p>如果你的数据目录中已经有回测数据，并且希望将数据刷新至今天，freqtrade 会自动计算已有交易对的缺失时间段，然后从最新数据点开始下载，直到“现在”。此操作无需额外指定 <code>--days</code> 或 <code>--timerange</code> 参数。<br />
+该方式只会下载缺失部分的数据，保留已有数据。<br />
+如果在插入新交易对后需要更新（且没有对应数据），可以使用 <code>--new-pairs-days xx</code> 参数，指定新交易对的天数。如此会为新交易对下载完整天数，而旧交易对只会补充缺失数据。</p>
+</div>
+<h3 id="_3">使用示例<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<p>用法：freqtrade download-data [-h] [-v] [--no-color] [--logfile FILE] [-V]
+                                    [-c PATH] [-d PATH] [--userdir PATH]
+                                    [-p PAIRS [PAIRS ...]] [--pairs-file FILE]
+                                    [--days INT] [--new-pairs-days INT]
+                                    [--include-inactive-pairs]
+                                    [--timerange TIMERANGE] [--dl-trades]
+                                    [--convert] [--exchange EXCHANGE]
+                                    [-t TIMEFRAMES [TIMEFRAMES ...]] [--erase]
+                                    [--data-format-ohlcv {json,jsongz,feather,parquet}]
+                                    [--data-format-trades {json,jsongz,feather,parquet}]
+                                    [--trading-mode {spot,margin,futures}]
+                                    [--prepend]</p>
+<p>参数选项：
+  -h, --help            显示帮助信息并退出
+  -p PAIRS [PAIRS ...], --pairs PAIRS [PAIRS ...]
+                        将命令限制在这些交易对。交易对用空格分隔。
+  --pairs-file FILE     包含交易对列表的文件。优先于--pairs或配置中的交易对。
+  --days INT            下载给定天数的数据。
+  --new-pairs-days INT  下载新交易对的指定天数的数据。默认：<code>None</code>。
+  --include-inactive-pairs
+                        同时下载非活跃交易对的数据。
+  --timerange TIMERANGE
+                        指定使用的数据时间范围。
+  --dl-trades           下载交易数据而非OHLCV数据。
+  --convert             将已下载的交易数据转换为OHLCV数据。仅在结合<code>--dl-trades</code>使用时有效。对于没有历史OHLCV数据的交易所（例如Kraken），会自动转换。如果不提供此参数，将使用<code>trades-to-ohlcv</code>命令将交易数据转换为OHLCV数据。
+  --exchange EXCHANGE   交易所名称。仅在未提供配置文件时有效。
+  -t TIMEFRAMES [TIMEFRAMES ...], --timeframes TIMEFRAMES [TIMEFRAMES ...]
+                        指定要下载的时间周期。空格分隔。默认：<code>1m 5m</code>。
+  --erase               清除所选交易所/交易对/时间周期的所有现有数据。
+  --data-format-ohlcv {json,jsongz,feather,parquet}
+                        下载的K线（OHLCV）数据存储格式。(默认：<code>feather</code>)。
+  --data-format-trades {json,jsongz,feather,parquet}
+                        下载的交易数据存储格式。(默认：<code>feather</code>)。
+  --trading-mode {spot,margin,futures}, --tradingmode {spot,margin,futures}
+                        选择交易模式。
+  --prepend             允许数据前置添加（数据追加被禁用）。</p>
+<p>常用参数：
+  -v, --verbose         显示详细信息模式（-vv表示更多信息，-vvv表示显示所有消息）。
+  --no-color            禁用彩色显示，可能在将输出重定向到文件时有用。
+  --logfile FILE, --log-file FILE
+                        将日志记录到指定文件。特殊值包括：
+                        'syslog', 'journald'。详细信息请参阅文档。
+  -V, --version         显示程序版本号并退出。
+  -c PATH, --config PATH
+                        指定配置文件（默认：<code>userdir/config.json</code>或<code>config.json</code>，以存在的文件为准）。可以使用多个--config参数。也可以设置为<code>-</code>从标准输入读取配置。
+  -d PATH, --datadir PATH, --data-dir PATH
+                        历史回测数据所在目录路径。
+  --userdir PATH, --user-data-dir PATH
+                        用户数据目录路径。</p>
+<div class="admonition tip">
+<p class="admonition-title">下载某个行情货币的所有数据</p>
+<p>常常你会希望下载某个行情货币所有交易对的数据。可以使用下面的简写：
+<code>freqtrade download-data --exchange binance --pairs ".*/USDT" &lt;...&gt;</code>。<br />
+这会自动扩展为该交易所所有以USDT结尾的活跃交易对。<br />
+若还想下载已退市（非活跃）交易对的数据，可以加上 <code>--include-inactive-pairs</code>。</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">启动期</p>
+<p><code>download-data</code> 是一个策略无关的命令。其思想是在一次性下载大量数据后，逐步增加存储的数据量。</p>
+<p>因此，<code>download-data</code> 不考虑策略中定义的“启动期（startup-period）”。如果想在特定时间点开始回测，应额外下载对应时间的天数（同时考虑启动期）。</p>
+</div>
+<h3 id="_4">开始下载<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h3>
+<p>假设已有 <code>config.json</code> 文件，以下是简单示例。</p>
+<div class="highlight"><pre><span></span><code>freqtrade<span class="w"> </span>download-data<span class="w"> </span>--exchange<span class="w"> </span>binance
+</code></pre></div>
+<p>此命令将下载配置中定义的所有交易对的历史蜡烛图（OHLCV）数据。</p>
+<p>也可以直接指定交易对：</p>
+<div class="highlight"><pre><span></span><code>freqtrade<span class="w"> </span>download-data<span class="w"> </span>--exchange<span class="w"> </span>binance<span class="w"> </span>--pairs<span class="w"> </span>ETH/USDT<span class="w"> </span>XRP/USDT<span class="w"> </span>BTC/USDT
+</code></pre></div>
+<p>或者用正则表达式（此例为下载所有活跃的USDT交易对）：</p>
+<div class="highlight"><pre><span></span><code>freqtrade<span class="w"> </span>download-data<span class="w"> </span>--exchange<span class="w"> </span>binance<span class="w"> </span>--pairs<span class="w"> </span><span class="s2">&quot;.*/USDT&quot;</span>
+</code></pre></div>
+<h3 id="_5">其他注意事项<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
+<ul>
+<li>若想使用非默认的数据目录（例如：<code>user_data/data/some_directory</code>），请用 <code>--datadir</code> 参数：
+  <div class="highlight"><pre><span></span><code>--datadir<span class="w"> </span>user_data/data/some_directory
+</code></pre></div></li>
+<li>若要更改下载数据的交易所，可以用 <code>--exchange &lt;交易所&gt;</code> ，或指定不同的配置文件。</li>
+<li>若使用存放交易对信息的 <code>pairs.json</code> 文件，可用 <code>--pairs-file some_other_dir/pairs.json</code> 指定路径。</li>
+<li>若只想下载10天的数据（默认30天）：
+  <div class="highlight"><pre><span></span><code>--days<span class="w"> </span><span class="m">10</span>
+</code></pre></div></li>
+<li>若要从固定起点开始下载（比如2020年1月1日）：
+  <div class="highlight"><pre><span></span><code>--timerange<span class="w"> </span><span class="m">20200101</span>-
+</code></pre></div>
+  注意：如果已有对应时间段的数据，将只下载缺失部分。</li>
+<li>通过 <code>--timeframes</code> 参数还可以指定希望下载的时间框架，默认值为 <code>--timeframes 1m 5m</code>。</li>
+<li>要使用配置文件中的交易所、时间框架和交易对列表，使用 <code>-c/--config</code> 选项。这样脚本会用配置中的白名单，不必提供 <code>pairs.json</code>。</li>
+</ul>
+<details class="note">
+<summary>权限问题</summary>
+<p>如果你的配置目录 <code>user_data</code> 是由 Docker 创建的，可能会遇到如下权限错误：
+<div class="highlight"><pre><span></span><code>cp: cannot create regular file &#39;user_data/data/binance/pairs.json&#39;: Permission denied
+</code></pre></div>
+你可以通过下面的命令修正权限：
+<div class="highlight"><pre><span></span><code>sudo chown -R $UID:$GID user_data
+</code></pre></div></p>
+</details>
+<h3 id="_6">下载后续时间段的数据（覆盖新增）<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
+<p>假设你之前已下载了2022年的数据（<code>--timerange 20220101-</code>），现在想提前下载更早的数据进行回测，可以用 <code>--prepend</code> 参数配合 <code>--timerange</code> 指定结束日期。</p>
+<div class="highlight"><pre><span></span><code>freqtrade<span class="w"> </span>download-data<span class="w"> </span>--exchange<span class="w"> </span>binance<span class="w"> </span>--pairs<span class="w"> </span>ETH/USDT<span class="w"> </span>XRP/USDT<span class="w"> </span>BTC/USDT<span class="w"> </span>--prepend<span class="w"> </span>--timerange<span class="w"> </span><span class="m">20210101</span>-20220101
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>在此模式下，如果已有数据，Freqtrade 会忽略结束日期，自动将结束日期调整为已有数据的起始点。</p>
+</div>
+<h3 id="_7">数据格式<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
+<p>Freqtrade 目前支持以下数据格式：</p>
+<ul>
+<li><code>feather</code> — 基于 Apache Arrow 的数据格式</li>
+<li><code>json</code> — 普通文本 json 文件</li>
+<li><code>jsongz</code> — gzip 压缩版的 json 文件</li>
+<li><code>parquet</code> — 列式存储格式（仅OHLCV）</li>
+</ul>
+<p>默认情况下，OHLCV数据和交易数据都以 <code>feather</code> 格式存储。</p>
+<p>可以通过命令行参数 <code>--data-format-ohlcv</code> 和 <code>--data-format-trades</code> 分别改变存储格式。<br />
+若想持久化此设置，可在配置中添加如下内容，以免每次都指定参数：</p>
+<div class="highlight"><pre><span></span><code>    // ...
+    &quot;dataformat_ohlcv&quot;: &quot;feather&quot;,
+    &quot;dataformat_trades&quot;: &quot;feather&quot;,
+    // ...
+</code></pre></div>
+<p>如果在下载过程中改变了默认的数据格式，也需在配置文件中相应调整 <code>dataformat_ohlcv</code> 和 <code>dataformat_trades</code> 键值。</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>你可以使用 <a href="#sub-command-convert-data">convert-data</a> 和 <a href="#sub-command-convert-trade-data">convert-trade-data</a> 方法在不同格式间转换。</p>
+</div>
+<h4 id="_8">数据格式对比<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h4>
+<p>以下比较基于该数据和使用 Linux <code>time</code> 命令测得的结果。</p>
+<div class="highlight"><pre><span></span><code>找到6组交易对/时间框架组合。
++----------+-------------+--------+---------------------+---------------------+
+|     交易对 |   时间框架 |   类型 |                起点 |                  终点 |
+|----------+-------------+--------+---------------------+---------------------|
+| BTC/USDT |          5m |   现货 | 2017-08-17 04:00:00 | 2022-09-13 19:25:00 |
+| ETH/USDT |          1m |   现货 | 2017-08-17 04:00:00 | 2022-09-13 19:26:00 |
+| BTC/USDT |          1m |   现货 | 2017-08-17 04:00:00 | 2022-09-13 19:30:00 |
+| XRP/USDT |          5m |   现货 | 2018-05-04 08:10:00 | 2022-09-13 19:15:00 |
+| XRP/USDT |          1m |   现货 | 2018-05-04 08:11:00 | 2022-09-13 19:22:00 |
+| ETH/USDT |          5m |   现货 | 2017-08-17 04:00:00 | 2022-09-13 19:20:00 |
++----------+-------------+--------+---------------------+---------------------+
+</code></pre></div>
+<p>测时采用了强制读入内存的命令，以确保比较一致性。</p>
+<div class="highlight"><pre><span></span><code><span class="nb">time</span><span class="w"> </span>freqtrade<span class="w"> </span>list-data<span class="w"> </span>--show-timerange<span class="w"> </span>--data-format-ohlcv<span class="w"> </span>&lt;dataformat&gt;
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>格式</th>
+<th>文件大小</th>
+<th>耗时</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>feather</code></td>
+<td>72MB</td>
+<td>3.5秒</td>
+</tr>
+<tr>
+<td><code>json</code></td>
+<td>149MB</td>
+<td>25.6秒</td>
+</tr>
+<tr>
+<td><code>jsongz</code></td>
+<td>39MB</td>
+<td>27秒</td>
+</tr>
+<tr>
+<td><code>parquet</code></td>
+<td>83MB</td>
+<td>3.8秒</td>
+</tr>
+</tbody>
+</table>
+<p>大小数据来源为指定时间范围内BTC/USDT 1分钟现货交易对。<br />
+建议使用默认的 <code>feather</code> 或 <code>parquet</code> 格式，以获得较优的性能和存储平衡。</p>
+<h3 id="pairs-file">交易对文件（Pairs File）<a class="headerlink" href="#pairs-file" title="Permanent link">&para;</a></h3>
+<p>除了 <code>config.json</code> 中的白名单外，还可以使用 <code>pairs.json</code> 文件。</p>
+<p>以 Binance 为例：</p>
+<ul>
+<li>创建目录 <code>user_data/data/binance</code>，并将 <code>pairs.json</code> 文件放入其中。</li>
+<li>修改 <code>pairs.json</code>，列出你感兴趣的交易对。</li>
+</ul>
+<p>示例操作：</p>
+<div class="highlight"><pre><span></span><code>mkdir<span class="w"> </span>-p<span class="w"> </span>user_data/data/binance
+touch<span class="w"> </span>user_data/data/binance/pairs.json
+</code></pre></div>
+<p><code>pairs.json</code> 文件格式为一个简单的 json 数组。可以混合不同基础货币，但仅用于下载目的。</p>
+<div class="highlight"><pre><span></span><code><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;ETH/BTC&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;ETH/USDT&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;BTC/USDT&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;XRP/ETH&quot;</span>
+<span class="p">]</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>pairs.json</code> 文件仅在未加载配置（通过命名或 <code>--config</code>）的情况下使用。<br />
+如果希望强制使用此文件，可加参数 <code>--pairs-file pairs.json</code>。<br />
+推荐做法仍是使用配置中的交易对列表（通过 <code>exchange.pair_whitelist</code> 或配置中的 <code>pairs</code> 设置）。</p>
+</div>
+<h2 id="convert-data">子命令：convert-data<a class="headerlink" href="#convert-data" title="Permanent link">&para;</a></h2>
+<p>用法：freqtrade convert-data [-h] [-v] [--no-color] [--logfile FILE] [-V]
+                              [-c PATH] [-d PATH] [--userdir PATH]
+                              [-p PAIRS [PAIRS ...]] --format-from
+                              {json,jsongz,feather,parquet} --format-to
+                              {json,jsongz,feather,parquet} [--erase]
+                              [--exchange EXCHANGE]
+                              [-t TIMEFRAMES [TIMEFRAMES ...]]
+                              [--trading-mode {spot,margin,futures}]
+                              [--candle-types {spot,futures,mark,index,premiumIndex,funding_rate} [{spot,futures,mark,index,premiumIndex,funding_rate} ...]]</p>
+<p>选项：
+  -h, --help            显示此帮助信息并退出
+  -p PAIRS [PAIRS ...], --pairs PAIRS [PAIRS ...]
+                        将命令限制在这些交易对。交易对以空格分隔。
+  --format-from {json,jsongz,feather,parquet}
+                        数据转换的源格式。
+  --format-to {json,jsongz,feather,parquet}
+                        数据转换的目标格式。
+  --erase               清除所选交易所/交易对/时间框架的所有现有数据。
+  --exchange EXCHANGE   交易所名称。仅在未提供配置文件时有效。
+  -t TIMEFRAMES [TIMEFRAMES ...], --timeframes TIMEFRAMES [TIMEFRAMES ...]
+                        指定需要下载的行情时间周期。以空格分隔的列表。默认：<code>1m 5m</code>。
+  --trading-mode {spot,margin,futures}, --tradingmode {spot,margin,futures}
+                        选择交易模式
+  --candle-types {spot,futures,mark,index,premiumIndex,funding_rate} [{spot,futures,mark,index,premiumIndex,funding_rate} ...]
+                        选择要转换的K线类型。默认全部可用类型。</p>
+<p>常用参数：
+  -v, --verbose         显示详细信息模式（-vv 获取更多信息，-vvv 获取所有消息）。
+  --no-color            禁用超参数优化结果的彩色显示。若将输出重定向到文件可能很有用。
+  --logfile FILE, --log-file FILE
+                        将日志记录到指定文件。特殊值包括：'syslog'，'journald'。详见文档。
+  -V, --version         显示程序的版本号并退出
+  -c PATH, --config PATH
+                        指定配置文件（默认：<code>userdir/config.json</code>或存在的<code>config.json</code>）。可以使用多个 --config 选项。也可以设置为<code>-</code>从标准输入读取配置。
+  -d PATH, --datadir PATH, --data-dir PATH
+                        历史回测数据所在目录路径。
+  --userdir PATH, --user-data-dir PATH
+                        用户数据目录路径。</p>
+<h3 id="_9">转换数据示例<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h3>
+<p>以下命令将 <code>~/.freqtrade/data/binance</code> 目录下所有的蜡烛图（OHLCV）数据由 json 转换为 jsongz 格式，省空间。同时会删除原始 json 文件（<code>--erase</code> 参数）。</p>
+<div class="highlight"><pre><span></span><code>freqtrade<span class="w"> </span>convert-data<span class="w"> </span>--format-from<span class="w"> </span>json<span class="w"> </span>--format-to<span class="w"> </span>jsongz<span class="w"> </span>--datadir<span class="w"> </span>~/.freqtrade/data/binance<span class="w"> </span>-t<span class="w"> </span>5m<span class="w"> </span>15m<span class="w"> </span>--erase
+</code></pre></div>
+<h2 id="convert-trade-data">子命令：convert-trade-data<a class="headerlink" href="#convert-trade-data" title="Permanent link">&para;</a></h2>
+<p>用法：freqtrade convert-trade-data [-h] [-v] [--no-color] [--logfile FILE]
+                                      [-V] [-c PATH] [-d PATH] [--userdir PATH]
+                                      [-p PAIRS [PAIRS ...]] --format-from
+                                      {json,jsongz,feather,parquet,kraken_csv}
+                                      --format-to {json,jsongz,feather,parquet}
+                                      [--erase] [--exchange EXCHANGE]</p>
+<p>选项：
+  -h, --help            显示此帮助信息并退出
+  -p PAIRS [PAIRS ...], --pairs PAIRS [PAIRS ...]
+                        将命令限制为这些交易对。交易对之间用空格分隔。
+  --format-from {json,jsongz,feather,parquet,kraken_csv}
+                        源数据格式，用于数据转换。
+  --format-to {json,jsongz,feather,parquet}
+                        目标数据格式，用于数据转换。
+  --erase               清除所选交易所/交易对/时间周期的所有现有数据。
+  --exchange EXCHANGE   交易所名称。仅在未提供配置文件时有效。</p>
+<p>常用参数：
+  -v, --verbose         详细模式（-vv表示更详细，-vvv显示所有消息）。
+  --no-color            禁用超参数优化结果的颜色显示。如果你将输出重定向到文件，可能会有用。
+  --logfile FILE, --log-file FILE
+                        日志输出到指定文件。特殊值包括：
+                        'syslog'，'journald'。详情请查阅相关文档。
+  -V, --version         显示程序版本号并退出
+  -c PATH, --config PATH
+                        指定配置文件（默认：<code>userdir/config.json</code>或<code>config.json</code>，取决于哪个存在）。可以使用多个 --config 选项。也可以设置为 <code>-</code> 从标准输入读取配置。
+  -d PATH, --datadir PATH, --data-dir PATH
+                        历史回测数据所在目录路径。
+  --userdir PATH, --user-data-dir PATH
+                        用户数据目录路径。</p>
+<h3 id="_10">转换交易数据示例<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h3>
+<p>以下命令将 <code>~/.freqtrade/data/kraken</code> 目录中所有可用交易数据由 jsongz 转为 json，并删除原有的 jsongz 文件（<code>--erase</code>）：</p>
+<div class="highlight"><pre><span></span><code>freqtrade<span class="w"> </span>convert-trade-data<span class="w"> </span>--format-from<span class="w"> </span>jsongz<span class="w"> </span>--format-to<span class="w"> </span>json<span class="w"> </span>--datadir<span class="w"> </span>~/.freqtrade/data/kraken<span class="w"> </span>--erase
+</code></pre></div>
+<h2 id="trades-to-ohlcv">子命令：trades to ohlcv<a class="headerlink" href="#trades-to-ohlcv" title="Permanent link">&para;</a></h2>
+<p>当需要使用 <code>--dl-trades</code>（仅 Kraken 支持）来下载数据时，转换交易数据为 OHLCV 格式是最后一步。此命令可以多次为不同时间框架重复此步骤，无需重新下载数据。</p>
+<p>用法: freqtrade trades-to-ohlcv [-h] [-v] [--no-color] [--logfile FILE] [-V]
+                                   [-c PATH] [-d PATH] [--userdir PATH]
+                                   [-p PAIRS [PAIRS ...]]
+                                   [-t TIMEFRAMES [TIMEFRAMES ...]]
+                                   [--exchange EXCHANGE]
+                                   [--data-format-ohlcv {json,jsongz,feather,parquet}]
+                                   [--data-format-trades {json,jsongz,feather,parquet}]
+                                   [--trading-mode {spot,margin,futures}]</p>
+<p>选项:
+  -h, --help            显示此帮助信息并退出
+  -p PAIRS [PAIRS ...], --pairs PAIRS [PAIRS ...]
+                        将命令限制在这些交易对。交易对用空格分隔。
+  -t TIMEFRAMES [TIMEFRAMES ...], --timeframes TIMEFRAMES [TIMEFRAMES ...]
+                        指定要下载的币种时间框架。空格分隔的列表。默认：<code>1m 5m</code>。
+  --exchange EXCHANGE   交易所名称。仅在未提供配置文件时有效。
+  --data-format-ohlcv {json,jsongz,feather,parquet}
+                        下载的K线（OHLCV）数据的存储格式。
+                        （默认：<code>feather</code>）。
+  --data-format-trades {json,jsongz,feather,parquet}
+                        下载的交易数据的存储格式。（默认：<code>feather</code>）。
+  --trading-mode {spot,margin,futures}, --tradingmode {spot,margin,futures}
+                        选择交易模式</p>
+<p>常用参数:
+  -v, --verbose         详细模式（-vv表示更多信息，-vvv显示所有信息）
+  --no-color            禁用超频优化结果的彩色显示。如果将输出重定向到文件，这可能会有用。
+  --logfile FILE, --log-file FILE
+                        将日志记录到指定文件。特殊值为：
+                        'syslog'、'journald'。更多详情请参阅文档。
+  -V, --version         显示程序版本号并退出
+  -c PATH, --config PATH
+                        指定配置文件（默认：<code>userdir/config.json</code>或<code>config.json</code>（如果存在））。可以使用多个 --config 选项。也可以设置为 <code>-</code> 从标准输入读取配置。
+  -d PATH, --datadir PATH, --data-dir PATH
+                        历史回测数据目录路径。
+  --userdir PATH, --user-data-dir PATH
+                        用户数据目录路径。</p>
+<h3 id="ohlcv">交易到 OHLCV 转换示例<a class="headerlink" href="#ohlcv" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>freqtrade<span class="w"> </span>trades-to-ohlcv<span class="w"> </span>--exchange<span class="w"> </span>kraken<span class="w"> </span>-t<span class="w"> </span>5m<span class="w"> </span>1h<span class="w"> </span>1d<span class="w"> </span>--pairs<span class="w"> </span>BTC/EUR<span class="w"> </span>ETH/EUR
+</code></pre></div>
+<h2 id="list-data">子命令：list-data<a class="headerlink" href="#list-data" title="Permanent link">&para;</a></h2>
+<p>可以用 <code>list-data</code> 子命令列出已下载的数据。</p>
+<p>用法: freqtrade list-data [-h] [-v] [--no-color] [--logfile FILE] [-V]
+                                   [-c PATH] [-d PATH] [--userdir PATH]
+                                   [--exchange EXCHANGE]
+                                   [--data-format-ohlcv {json,jsongz,feather,parquet}]
+                                   [--data-format-trades {json,jsongz,feather,parquet}]
+                                   [--trades] [-p PAIRS [PAIRS ...]]
+                                   [--trading-mode {spot,margin,futures}]
+                                   [--show-timerange]</p>
+<p>选项:
+  -h, --help            显示帮助信息并退出
+  --exchange EXCHANGE   交易所名称。仅在未提供配置文件时有效。
+  --data-format-ohlcv {json,jsongz,feather,parquet}
+                        下载的蜡烛图（OHLCV）数据存储格式。
+                        （默认：<code>feather</code>）。
+  --data-format-trades {json,jsongz,feather,parquet}
+                        下载的交易数据存储格式。（默认：
+                        <code>feather</code>）。
+  --trades              处理交易数据而非OHLCV数据。
+  -p PAIRS [PAIRS ...], --pairs PAIRS [PAIRS ...]
+                        将命令限制在指定的交易对上。交易对用空格分隔。
+  --trading-mode {spot,margin,futures}, --tradingmode {spot,margin,futures}
+                        选择交易模式
+  --show-timerange      显示可用数据的时间范围。 （可能需要一些时间计算）。</p>
+<p>常用参数:
+  -v, --verbose         详细模式 (-vv 获取更多信息, -vvv 获取全部消息)。
+  --no-color            禁用超参数优化结果的彩色显示。如果你将输出重定向到文件，可能会有用。
+  --logfile FILE, --log-file FILE
+                        记录日志到指定文件。特殊值包括：
+                        'syslog'、'journald'。详情请参见相关文档。
+  -V, --version         显示程序版本号并退出
+  -c PATH, --config PATH
+                        指定配置文件（默认：<code>userdir/config.json</code> 或 <code>config.json</code>，取决于存在的文件）。可以使用多个 --config 选项。也可以设置为 <code>-</code> 从标准输入读取配置。
+  -d PATH, --datadir PATH, --data-dir PATH
+                        指定存放历史回测数据的目录路径。
+  --userdir PATH, --user-data-dir PATH
+                        指定用户数据目录路径。</p>
+<h3 id="_11">示例：列出所有数据<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>freqtrade<span class="w"> </span>list-data<span class="w"> </span>--userdir<span class="w"> </span>~/.freqtrade/user_data/
+
+<span class="w">              </span>发现33组交易对/时间框架组合。
+┏━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━┓
+┃<span class="w">          </span>交易对<span class="w"> </span>┃<span class="w">                                 </span>时间框架<span class="w"> </span>┃<span class="w"> </span>类型<span class="w"> </span>┃
+┡━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━┩
+│<span class="w">       </span>ADA/BTC<span class="w"> </span>│<span class="w">     </span>5m,<span class="w"> </span>15m,<span class="w"> </span>30m,<span class="w"> </span>1h,<span class="w"> </span>2h,<span class="w"> </span>4h,<span class="w"> </span>6h,<span class="w"> </span>12h,<span class="w"> </span>1d<span class="w"> </span>│<span class="w"> </span>现货<span class="w"> </span>│
+│<span class="w">       </span>ADA/ETH<span class="w"> </span>│<span class="w">     </span>5m,<span class="w"> </span>15m,<span class="w"> </span>30m,<span class="w"> </span>1h,<span class="w"> </span>2h,<span class="w"> </span>4h,<span class="w"> </span>6h,<span class="w"> </span>12h,<span class="w"> </span>1d<span class="w"> </span>│<span class="w"> </span>现货<span class="w"> </span>│
+│<span class="w">       </span>ETH/BTC<span class="w"> </span>│<span class="w">     </span>5m,<span class="w"> </span>15m,<span class="w"> </span>30m,<span class="w"> </span>1h,<span class="w"> </span>2h,<span class="w"> </span>4h,<span class="w"> </span>6h,<span class="w"> </span>12h,<span class="w"> </span>1d<span class="w"> </span>│<span class="w"> </span>现货<span class="w"> </span>│
+│<span class="w">      </span>ETH/USDT<span class="w"> </span>│<span class="w">                  </span>5m,<span class="w"> </span>15m,<span class="w"> </span>30m,<span class="w"> </span>1h,<span class="w"> </span>2h,<span class="w"> </span>4h<span class="w"> </span>│<span class="w"> </span>现货<span class="w"> </span>│
+└───────────────┴───────────────────────────────────────────┴──────┘
+</code></pre></div>
+<p>显示所有交易数据，包括起止时间范围：</p>
+<div class="highlight"><pre><span></span><code>&gt;<span class="w"> </span>freqtrade<span class="w"> </span>list-data<span class="w"> </span>--show<span class="w"> </span>--trades
+<span class="w">                     </span>发现1个交易对的交易数据。<span class="w">                     </span>
+┏━━━━━━━━━┳━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┓
+┃<span class="w">    </span>交易对<span class="w"> </span>┃<span class="w"> </span>类型<span class="w"> </span>┃<span class="w">                </span>起点<span class="w"> </span>┃<span class="w">                  </span>终点<span class="w"> </span>┃<span class="w"> </span>交易次数<span class="w"> </span>┃
+┡━━━━━━━━━╇━━━━━━╇━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━┤
+│<span class="w"> </span>XRP/ETH<span class="w"> </span>│<span class="w"> </span>现货<span class="w"> </span>│<span class="w"> </span><span class="m">2019</span>-10-11<span class="w"> </span><span class="m">00</span>:00:11<span class="w"> </span>│<span class="w"> </span><span class="m">2019</span>-10-13<span class="w"> </span><span class="m">11</span>:19:28<span class="w"> </span>│<span class="w">  </span><span class="m">12477</span><span class="w"> </span>│
+└─────────┴──────┴─────────────────────┴─────────────────────┴────────┘
+</code></pre></div>
+<h2 id="tick">交易（tick）数据<a class="headerlink" href="#tick" title="Permanent link">&para;</a></h2>
+<p>默认情况下，<code>download-data</code> 子命令下载蜡烛图（OHLCV）数据。<br />
+大部分交易所也通过API提供历史交易数据。  </p>
+<p>此类数据在需要多时间框架时尤其有用，因为只需一次下载，后续本地采样即可。</p>
+<p>由于此数据体积较大，默认采用 feather 格式存储，文件命名为 <code>&lt;pair&gt;-trades.feather</code>（如：<code>ETH_BTC-trades.feather</code>）。<br />
+支持增量模式，类似历史OHLCV数据， weekly <code>--days 8</code> 下载一次即可建立增量存储库。</p>
+<p>启用此模式只需添加 <code>--dl-trades</code> 参数。此操作会切换到下载交易数据。若同时使用 <code>--convert</code>，将自动进行重采样，并覆盖已有的OHLCV数据。</p>
+<div class="admonition warning">
+<p class="admonition-title">请勿使用</p>
+<p>除非你是 Kraken 用户（Kraken 不提供历史OHLCV数据），否则不建议使用。<br />
+许多其他交易所以充足的历史提供OHLCV数据，通过该方式下载多时间框架的速度会快很多。</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Kraken用户</p>
+<p>Kraken用户在下载前建议阅读 <a href="../exchanges/#historic-kraken-data">这个</a>。</p>
+</div>
+<p>示例调用：</p>
+<div class="highlight"><pre><span></span><code>freqtrade<span class="w"> </span>download-data<span class="w"> </span>--exchange<span class="w"> </span>kraken<span class="w"> </span>--pairs<span class="w"> </span>XRP/EUR<span class="w"> </span>ETH/EUR<span class="w"> </span>--days<span class="w"> </span><span class="m">20</span><span class="w"> </span>--dl-trades
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>虽然此方法采用异步调用，但速度会较慢，因为每次都需等待前次请求完成后生成下一次请求。</p>
+</div>
+<h2 id="_12">下一步<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h2>
+<p>恭喜，你已经下载了一些数据，可以开始 <a href="../backtesting/">回测</a> 你的策略了。</p>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+    
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../webhook-config/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Web Hook">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Web Hook
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../backtesting/" class="md-footer__link md-footer__link--next" aria-label="Next: Backtesting">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Backtesting
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate", "search.share", "content.code.copy", "navigation.top", "navigation.footer"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+        <script src="../javascripts/config.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

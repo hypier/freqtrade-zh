@@ -1,0 +1,3448 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Freqtrade is a free and open source crypto trading bot written in Python, designed to support all major exchanges and be controlled via Telegram or builtin Web UI">
+      
+      
+      
+        <link rel="canonical" href="https://www.freqtrade.io/en/stable/strategy-callbacks/">
+      
+      
+        <link rel="prev" href="../strategy-customization/">
+      
+      
+        <link rel="next" href="../stoploss/">
+      
+      
+      <link rel="icon" href="../images/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.11">
+    
+    
+      
+        <title>Strategy Callbacks - Freqtrade</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.4af4bdda.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/ft.extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-VH170LG9M5"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-VH170LG9M5",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-VH170LG9M5",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="tear">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Freqtrade" class="md-header__button md-logo" aria-label="Freqtrade" data-md-component="logo">
+      
+  <img src="../images/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Freqtrade
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Strategy Callbacks
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="tear"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="blue-grey" data-md-color-accent="tear"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/freqtrade/freqtrade" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+
+  <!-- Main navigation -->
+  
+  
+  <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+    <div class="md-sidebar__scrollwrap">
+      <div class="md-sidebar__inner">
+        
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Freqtrade" class="md-nav__button md-logo" aria-label="Freqtrade" data-md-component="logo">
+      
+  <img src="../images/logo.png" alt="logo">
+
+    </a>
+    Freqtrade
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/freqtrade/freqtrade" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docker_quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Quickstart with Docker
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Installation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Linux/MacOS/Raspberry
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../windows_installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Windows
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bot-basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Freqtrade Basics
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-101/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-customization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy Customization
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Strategy Callbacks
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy Callbacks
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      运行策略所需的导入
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bot" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bot 启动
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bot_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bot 循环开始
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      持仓规模管理
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      自定义离场信号
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      自定义止损
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="自定义止损">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      位置调整后再调节止损
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      自定义止损示例
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="自定义止损示例">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      利用自定义止损实现追踪止损
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      基于时间的追踪止损
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#after_fill" class="md-nav__link">
+    <span class="md-ellipsis">
+      基于时间且支持after_fill调整的止损
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      针对不同交易对设定不同止损
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      正偏移量追踪止损
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      阶梯式止损
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parabolic-sar" class="md-nav__link">
+    <span class="md-ellipsis">
+      利用指标作为绝对止损点（如Parabolic SAR示例）
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      常用止损计算辅助函数
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="常用止损计算辅助函数">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      相对于开仓价的止损值
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      绝对价格对应的止损百分比
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      自定义订单价格规则
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="自定义订单价格规则">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_17" class="md-nav__link">
+    <span class="md-ellipsis">
+      自定义订单入场和出场价格示例
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_18" class="md-nav__link">
+    <span class="md-ellipsis">
+      自定义订单超时规则
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="自定义订单超时规则">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_19" class="md-nav__link">
+    <span class="md-ellipsis">
+      自定义订单超时示例
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_20" class="md-nav__link">
+    <span class="md-ellipsis">
+      使用附加数据的超时示例
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_21" class="md-nav__link">
+    <span class="md-ellipsis">
+      交易确认
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="交易确认">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_22" class="md-nav__link">
+    <span class="md-ellipsis">
+      买入订单确认
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_23" class="md-nav__link">
+    <span class="md-ellipsis">
+      出场（卖出）订单确认
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_24" class="md-nav__link">
+    <span class="md-ellipsis">
+      调整持仓
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="调整持仓">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_25" class="md-nav__link">
+    <span class="md-ellipsis">
+      增仓示例
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_26" class="md-nav__link">
+    <span class="md-ellipsis">
+      调整调仓数额的算法
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_27" class="md-nav__link">
+    <span class="md-ellipsis">
+      调整订单价格
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="调整订单价格">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_28" class="md-nav__link">
+    <span class="md-ellipsis">
+      调整入场价格
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_29" class="md-nav__link">
+    <span class="md-ellipsis">
+      调整出场价格
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_30" class="md-nav__link">
+    <span class="md-ellipsis">
+      杠杆回调
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_31" class="md-nav__link">
+    <span class="md-ellipsis">
+      订单已成交回调
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stoploss/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Stoploss
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Plugins
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bot-usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Start the bot
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Control the bot
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            Control the bot
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../telegram-usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Telegram
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freq-ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    freqUI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rest-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    REST API
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../webhook-config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Web Hook
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-download/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Data Downloading
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backtesting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Backtesting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hyperopt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Hyperopt
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_16" >
+        
+          
+          <label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    FreqAI
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_16_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_16">
+            <span class="md-nav__icon md-icon"></span>
+            FreqAI
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-parameter-table/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Parameter table
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-feature-engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Feature engineering
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-running/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Running FreqAI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-reinforcement-learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Reinforcement Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-developers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Developer guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../leverage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Short / Leverage
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Utility Sub-commands
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plotting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Plotting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exchanges/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Exchange-specific Notes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_21" >
+        
+          
+          <label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Data Analysis
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_21_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_21">
+            <span class="md-nav__icon md-icon"></span>
+            Data Analysis
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Jupyter Notebooks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy_analysis_example/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-backtesting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Backtest analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_22" >
+        
+          
+          <label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Advanced Topics
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_22_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_22">
+            <span class="md-nav__icon md-icon"></span>
+            Advanced Topics
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-setup/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Advanced Post-installation Tasks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trade-object/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Trade Object
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lookahead-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Lookahead analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../recursive-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Recursive analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-advanced/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Advanced Strategy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-hyperopt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Advanced Hyperopt
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-orderflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Orderflow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../producer-consumer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Producer/Consumer mode
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sql_cheatsheet/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SQL Cheat-sheet
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../edge/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Edge Positioning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    FAQ
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy_migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy migration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../updating/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Updating Freqtrade
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deprecated/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Deprecated Features
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Contributors Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+      </div>
+    </div>
+  </div>
+  
+
+  <!-- Table of contents -->
+  
+  
+  <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+    <div class="md-sidebar__scrollwrap">
+      <div class="md-sidebar__inner">
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      运行策略所需的导入
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bot" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bot 启动
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bot_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bot 循环开始
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      持仓规模管理
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      自定义离场信号
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      自定义止损
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="自定义止损">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      位置调整后再调节止损
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      自定义止损示例
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="自定义止损示例">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      利用自定义止损实现追踪止损
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      基于时间的追踪止损
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#after_fill" class="md-nav__link">
+    <span class="md-ellipsis">
+      基于时间且支持after_fill调整的止损
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      针对不同交易对设定不同止损
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      正偏移量追踪止损
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      阶梯式止损
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parabolic-sar" class="md-nav__link">
+    <span class="md-ellipsis">
+      利用指标作为绝对止损点（如Parabolic SAR示例）
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      常用止损计算辅助函数
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="常用止损计算辅助函数">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_14" class="md-nav__link">
+    <span class="md-ellipsis">
+      相对于开仓价的止损值
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_15" class="md-nav__link">
+    <span class="md-ellipsis">
+      绝对价格对应的止损百分比
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_16" class="md-nav__link">
+    <span class="md-ellipsis">
+      自定义订单价格规则
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="自定义订单价格规则">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_17" class="md-nav__link">
+    <span class="md-ellipsis">
+      自定义订单入场和出场价格示例
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_18" class="md-nav__link">
+    <span class="md-ellipsis">
+      自定义订单超时规则
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="自定义订单超时规则">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_19" class="md-nav__link">
+    <span class="md-ellipsis">
+      自定义订单超时示例
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_20" class="md-nav__link">
+    <span class="md-ellipsis">
+      使用附加数据的超时示例
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_21" class="md-nav__link">
+    <span class="md-ellipsis">
+      交易确认
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="交易确认">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_22" class="md-nav__link">
+    <span class="md-ellipsis">
+      买入订单确认
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_23" class="md-nav__link">
+    <span class="md-ellipsis">
+      出场（卖出）订单确认
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_24" class="md-nav__link">
+    <span class="md-ellipsis">
+      调整持仓
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="调整持仓">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_25" class="md-nav__link">
+    <span class="md-ellipsis">
+      增仓示例
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_26" class="md-nav__link">
+    <span class="md-ellipsis">
+      调整调仓数额的算法
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_27" class="md-nav__link">
+    <span class="md-ellipsis">
+      调整订单价格
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="调整订单价格">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_28" class="md-nav__link">
+    <span class="md-ellipsis">
+      调整入场价格
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_29" class="md-nav__link">
+    <span class="md-ellipsis">
+      调整出场价格
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_30" class="md-nav__link">
+    <span class="md-ellipsis">
+      杠杆回调
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_31" class="md-nav__link">
+    <span class="md-ellipsis">
+      订单已成交回调
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      </div>
+    </div>
+  </div>
+  
+
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="_1">策略回调函数<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<p>虽然主要的策略函数（<code>populate_indicators()</code>、<code>populate_entry_trend()</code>、<code>populate_exit_trend()</code>）应以向量化的方式使用，并且仅在<strong>回测时</strong>调用 <a href="../bot-basics/#backtesting-hyperopt-execution-logic">backtesting</a> 中调用一次，但回调函数则是在“需要时”调用。</p>
+<p>因此，避免在回调函数中进行繁重的计算，以免影响操作的实时性。根据使用的回调类型不同，它们可能在进场/离场时调用，或在持仓期间持续调用。</p>
+<p>目前已支持的回调函数包括：</p>
+<ul>
+<li><a href="#bot-start"><code>bot_start()</code></a></li>
+<li><a href="#bot-loop-start"><code>bot_loop_start()</code></a></li>
+<li><a href="#stake-size-management"><code>custom_stake_amount()</code></a></li>
+<li><a href="#custom-exit-signal"><code>custom_exit()</code></a></li>
+<li><a href="#custom-stoploss"><code>custom_stoploss()</code></a></li>
+<li><a href="#custom-order-price-rules"><code>custom_entry_price()</code> 和 <code>custom_exit_price()</code></a></li>
+<li><a href="#custom-order-timeout-rules"><code>check_entry_timeout()</code> 和 <code>check_exit_timeout()</code></a></li>
+<li><a href="#trade-entry-buy-order-confirmation"><code>confirm_trade_entry()</code></a></li>
+<li><a href="#trade-exit-sell-order-confirmation"><code>confirm_trade_exit()</code></a></li>
+<li><a href="#adjust-trade-position"><code>adjust_trade_position()</code></a></li>
+<li><a href="#adjust-entry-price"><code>adjust_entry_price()</code></a></li>
+<li><a href="#leverage-callback"><code>leverage()</code></a></li>
+<li><a href="#order-filled-callback"><code>order_filled()</code></a></li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">回调调用序列</p>
+<p>实际调用顺序可在 <a href="../bot-basics/#bot-execution-logic">bot-basics</a> 中查看。</p>
+</div>
+<h2 id="_2">运行策略所需的导入<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>在创建策略时，你需要导入必要的模块和类。以下导入是策略所需的基本内容：</p>
+<p>默认情况下，我们建议使用以下导入作为策略的基础：
+这将涵盖所有使频繁交易（freqtrade）功能正常运行的导入。
+当然，你可以根据策略需要添加更多的导入。</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># flake8: noqa: F401</span>
+<span class="c1"># isort: skip_file</span>
+<span class="c1"># --- 请勿删除以下导入 ---</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">timezone</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataFrame</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">freqtrade.strategy</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">IStrategy</span><span class="p">,</span>
+    <span class="n">Trade</span><span class="p">,</span> 
+    <span class="n">Order</span><span class="p">,</span>
+    <span class="n">PairLocks</span><span class="p">,</span>
+    <span class="n">informative</span><span class="p">,</span>  <span class="c1"># @informative 装饰器</span>
+    <span class="c1"># 超参数（Hyperopt）相关</span>
+    <span class="n">BooleanParameter</span><span class="p">,</span>
+    <span class="n">CategoricalParameter</span><span class="p">,</span>
+    <span class="n">DecimalParameter</span><span class="p">,</span>
+    <span class="n">IntParameter</span><span class="p">,</span>
+    <span class="n">RealParameter</span><span class="p">,</span>
+    <span class="c1"># 时间框架辅助函数</span>
+    <span class="n">timeframe_to_minutes</span><span class="p">,</span>
+    <span class="n">timeframe_to_next_date</span><span class="p">,</span>
+    <span class="n">timeframe_to_prev_date</span><span class="p">,</span>
+    <span class="c1"># 策略辅助函数</span>
+    <span class="n">merge_informative_pair</span><span class="p">,</span>
+    <span class="n">stoploss_from_absolute</span><span class="p">,</span>
+    <span class="n">stoploss_from_open</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># --------------------------------</span>
+<span class="c1"># 在这里添加你的库导入</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">talib.abstract</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ta</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">technical</span><span class="w"> </span><span class="kn">import</span> <span class="n">qtpylib</span>
+</code></pre></div>
+<h2 id="bot">Bot 启动<a class="headerlink" href="#bot" title="Permanent link">&para;</a></h2>
+<p>当策略加载完成时，系统会调用一次这个简单的回调函数。<br />
+它可用于执行仅需运行一次的操作，且在数据提供器（dataprovider）和钱包（wallet）设置完成之后执行。</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AwesomeStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
+
+    <span class="c1"># ... populate_* 方法</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">bot_start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        仅在实例化后调用一次。</span>
+<span class="sd">        :param **kwargs:**：确保保留此参数，避免更新策略时出错。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;runmode&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;live&quot;</span><span class="p">,</span> <span class="s2">&quot;dry_run&quot;</span><span class="p">):</span>
+            <span class="c1"># 绑定到类实例，以便在其他方法中使用</span>
+            <span class="c1"># 在populate_*方法中也能用</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">custom_remote_data</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://some_remote_source.example.com&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>在超参数优化（hyperopt）过程中，此函数在启动时只会调用一次。</p>
+<h2 id="bot_1">Bot 循环开始<a class="headerlink" href="#bot_1" title="Permanent link">&para;</a></h2>
+<p>每次在 dry/live 模式下（大致每 5 秒，除非配置不同），在每轮循环开始时调用；在回测/超参数优化模式下，每个蜡烷线（candle）开始时调用。<br />
+此回调可以用来执行与配对无关的计算（比如加载外部数据）等。</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 预定义导入</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AwesomeStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
+
+    <span class="c1"># ... populate_* 方法</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">bot_loop_start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        每轮循环（一次）开始时调用。</span>
+<span class="sd">        可以用来执行与配对无关的任务</span>
+<span class="sd">        （比如加载一些远程资源以进行比较）</span>
+<span class="sd">        :param current_time: datetime对象，表示当前时间</span>
+<span class="sd">        :param **kwargs:**：确保保留此参数，避免更新策略时出错。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;runmode&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;live&quot;</span><span class="p">,</span> <span class="s2">&quot;dry_run&quot;</span><span class="p">):</span>
+            <span class="c1"># 绑定到类实例，以便在其他方法中使用</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remote_data</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://some_remote_source.example.com&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="_3">持仓规模管理<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<p>在开启新交易之前调用，便于在下单时管理仓位大小。</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 预定义导入</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AwesomeStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">custom_stake_amount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">current_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                            <span class="n">proposed_stake</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">min_stake</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">max_stake</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                            <span class="n">leverage</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">entry_tag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">side</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+
+        <span class="n">dataframe</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">get_analyzed_dataframe</span><span class="p">(</span><span class="n">pair</span><span class="o">=</span><span class="n">pair</span><span class="p">,</span> <span class="n">timeframe</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeframe</span><span class="p">)</span>
+        <span class="n">current_candle</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">current_candle</span><span class="p">[</span><span class="s2">&quot;fastk_rsi_1h&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">current_candle</span><span class="p">[</span><span class="s2">&quot;fastd_rsi_1h&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;stake_amount&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;unlimited&quot;</span><span class="p">:</span>
+                <span class="c1"># 在有利条件下，利用复利模式，全部可用资金</span>
+                <span class="k">return</span> <span class="n">max_stake</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># 利润复投，静态仓位不变</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wallets</span><span class="o">.</span><span class="n">get_total_stake_amount</span><span class="p">()</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;max_open_trades&quot;</span><span class="p">]</span>
+
+        <span class="c1"># 使用默认的仓位</span>
+        <span class="k">return</span> <span class="n">proposed_stake</span>
+</code></pre></div>
+<p>如果你的代码抛出异常，Freqtrade会回退到<code>proposed_stake</code>的值。异常会被记录。</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>你无需确保 <code>min_stake &lt;= 返回值 &lt;= max_stake</code>，返回值会被限制在支持范围内，且日志会记录。</p>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>返回 <code>0</code> 或 <code>None</code> 表示不要开仓（不下单）。</p>
+</div>
+<h2 id="_4">自定义离场信号<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<p>在每个调节周期（大约每 5 秒）检测已开的仓位，可调用该函数决定是否卖出。<br />
+支持定义自定义的退出信号，表示应卖出对应仓位。特别适合根据不同条件自定义退出策略，或基于交易数据作出退出决策。</p>
+<p>例如，使用此函数实现1:2的风险收益比ROI。</p>
+<p><strong>注意：</strong>用 <code>custom_exit()</code> 代替 stoploss 并不推荐。相较于 <code>custom_stoploss()</code> ，<code>custom_exit()</code>不支持在交易所托管止损，效果较差。<br />
+它更像是“在蜡烛上”设置退出信号的方式——但实际上，<code>custom_stoploss()</code>能更好地实现此功能，同时还能在交易所设置止损。</p>
+<div class="admonition 备注">
+<p class="admonition-title">备注</p>
+<p>从此方法返回（非空的）<code>字符串</code>或<code>True</code>，等同于在指定时间的蜡烛上设定退出信号。<br />
+若已设定退出信号或退出信号已禁用（<code>use_exit_signal=False</code>），此方法不会被调用。<br />
+<code>字符串</code>最大长度为64字符，超出会被截断到64字符。<br />
+<code>custom_exit()</code>会忽略<code>exit_profit_only</code>参数，即使有新入场信号，仍会调用。</p>
+</div>
+<p>举例：依据当前利润判断，退出持仓（如持仓超过一天的交易）：</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 预定义导入</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AwesomeStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">custom_exit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trade</span><span class="p">:</span> <span class="n">Trade</span><span class="p">,</span> <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">current_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                    <span class="n">current_profit</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">dataframe</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">get_analyzed_dataframe</span><span class="p">(</span><span class="n">pair</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeframe</span><span class="p">)</span>
+        <span class="n">last_candle</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+
+        <span class="c1"># 利润超过20%时，RSI&lt;80即卖</span>
+        <span class="k">if</span> <span class="n">current_profit</span> <span class="o">&gt;</span> <span class="mf">0.2</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">last_candle</span><span class="p">[</span><span class="s2">&quot;rsi&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">80</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;rsi_below_80&quot;</span>
+
+        <span class="c1"># 资金收益在2%到10%之间，当EMA长线在EMA短线之上时卖出</span>
+        <span class="k">if</span> <span class="mf">0.02</span> <span class="o">&lt;</span> <span class="n">current_profit</span> <span class="o">&lt;</span> <span class="mf">0.1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">last_candle</span><span class="p">[</span><span class="s2">&quot;emalong&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">last_candle</span><span class="p">[</span><span class="s2">&quot;emashort&quot;</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="s2">&quot;ema_long_below_80&quot;</span>
+
+        <span class="c1"># 盈亏以亏损持仓超过一天时卖出</span>
+        <span class="k">if</span> <span class="n">current_profit</span> <span class="o">&lt;</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="p">(</span><span class="n">current_time</span> <span class="o">-</span> <span class="n">trade</span><span class="o">.</span><span class="n">open_date_utc</span><span class="p">)</span><span class="o">.</span><span class="n">days</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;unclog&quot;</span>
+</code></pre></div>
+<p>更多关于DataFrame在策略回调中的用法，可以参考<a href="../strategy-advanced/#dataframe-access">Dataframe访问</a>。</p>
+<h2 id="_5">自定义止损<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<p>在每次持仓（大约每5秒）检测，直到仓位平掉。</p>
+<p>启用方式：在策略配置中设置 <code>use_custom_stoploss=True</code>。</p>
+<p>止损价只会向上移动——如果从 <code>custom_stoploss()</code> 返回的值导致止损价低于之前的值，则被忽略。<br />
+传统止损（<code>stoploss</code>）值作为绝对底线，确保不会低于设定值（在第一次调用前设定），依然需要配置。</p>
+<p>由于自定义止损和常规止损类似，行为也类似“追踪止损（trailing stop）”，因此退出时的<code>exit_reason</code>会标记为 <code>"trailing_stop_loss"</code>。</p>
+<p>此函数返回值为比例类型（浮点数）：<br />
+例如，当前价为 200 美元，返回 <code>0.02</code>，则止损价为 2%低于当前价，即196美元。</p>
+<p>在回测中，<code>current_rate</code> 和 <code>current_profit</code>均基于蜡烛最高价（空头仓为最低价）进行计算，止损价格以蜡烛最低（多头）或最高（空头）为依据。</p>
+<p>返回值的绝对值会被使用（符号忽略）：<br />
+返回 <code>0.05</code> 和 <code>-0.05</code> 的效果相同，均代表止损在当前价格下方5%；<br />
+返回<code>None</code>表示“不变”，这是在你不想改动止损时最安全的返回值。<br />
+<code>NaN</code>或<code>inf</code>值视为无效，会被忽略。</p>
+<p>挂单在交易所上的止损行为类似于<code>trailing_stop</code>，会根据<code>stoploss_on_exchange_interval</code>的配置定期更新（详见<a href="../stoploss/#stop-loss-on-exchangefreq">交易所止损</a>）。</p>
+<p>!!! 备注 “日期时间使用”
+    所有与时间相关的计算应基于<code>current_time</code>，避免直接用<code>datetime.now()</code>或<code>datetime.utcnow()</code>，否则会影响回测支持。</p>
+<p>!!! Tip “追踪止损”
+    建议在使用自定义止损时关闭<code>trailing_stop</code>，两者可以同时工作，但可能导致追踪止损在某些情况下向上移动，与你的自定义函数目标不符而发生冲突。</p>
+<h3 id="_6">位置调整后再调节止损<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
+<p>根据策略需求，在<a href="#adjust-trade-position">调整持仓</a>后，可能需要对止损价进行调整。<br />
+此时，freqtrade会在订单成交后再次调用<code>custom_stoploss()</code>，传入参数<code>after_fill=True</code>，允许策略在任意方向调整止损（也可扩大止损与当前价的距离，避免被限制）。</p>
+<p>!!! 备注 “向后兼容”<br />
+    只有在<code>custom_stoploss()</code>定义中包含<code>after_fill</code>参数，才会调用此额外的调节。<br />
+    这不会影响现有已运行的策略。</p>
+<h3 id="_7">自定义止损示例<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
+<p>以下示例介绍利用自定义止损函数实现多种策略，当然可以灵活组合。</p>
+<h4 id="_8">利用自定义止损实现追踪止损<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h4>
+<p>模拟4%的追踪止损（最高价追踪）非常简单：</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 预定义导入</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AwesomeStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
+
+    <span class="c1"># ... populate_* 方法</span>
+
+    <span class="n">use_custom_stoploss</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">custom_stoploss</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">trade</span><span class="p">:</span> <span class="n">Trade</span><span class="p">,</span>
+        <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+        <span class="n">current_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">current_profit</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">after_fill</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        自定义止损逻辑，返回相对于当前报价的距离（比值）</span>
+<span class="sd">        例如返回 -0.05 表示止损为当前价5%以下</span>
+<span class="sd">        自定义止损不会低于 `self.stoploss`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mf">0.04</span>
+</code></pre></div>
+<h4 id="_9">基于时间的追踪止损<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h4>
+<p>前60分钟使用原始止损值，之后变为10%的追踪止损，2小时后（120分钟）变为5%的追踪止损。</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 预定义导入</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AwesomeStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
+
+    <span class="c1"># ... populate_* 方法</span>
+
+    <span class="n">use_custom_stoploss</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">custom_stoploss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trade</span><span class="p">:</span> <span class="n">Trade</span><span class="p">,</span> <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+                        <span class="n">current_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">current_profit</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">after_fill</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                        <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="c1"># 时间从长到短排序，先检测最大时间（120分钟）</span>
+        <span class="k">if</span> <span class="n">current_time</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">trade</span><span class="o">.</span><span class="n">open_date_utc</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mf">0.05</span>
+        <span class="k">elif</span> <span class="n">current_time</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">trade</span><span class="o">.</span><span class="n">open_date_utc</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mf">0.10</span>
+        <span class="k">return</span> <span class="kc">None</span>
+</code></pre></div>
+<h4 id="after_fill">基于时间且支持<code>after_fill</code>调整的止损<a class="headerlink" href="#after_fill" title="Permanent link">&para;</a></h4>
+<p>结合时间和多订单填充情况：</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 预定义导入</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AwesomeStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
+
+    <span class="c1"># ... populate_* 方法</span>
+
+    <span class="n">use_custom_stoploss</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">custom_stoploss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trade</span><span class="p">:</span> <span class="n">Trade</span><span class="p">,</span> <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+                        <span class="n">current_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">current_profit</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">after_fill</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                        <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">after_fill</span><span class="p">:</span>
+            <span class="c1"># 订单填充后，将止损设为低于新开仓价的10%</span>
+            <span class="k">return</span> <span class="n">stoploss_from_open</span><span class="p">(</span><span class="mf">0.10</span><span class="p">,</span> <span class="n">current_profit</span><span class="p">,</span> <span class="n">is_short</span><span class="o">=</span><span class="n">trade</span><span class="o">.</span><span class="n">is_short</span><span class="p">,</span> <span class="n">leverage</span><span class="o">=</span><span class="n">trade</span><span class="o">.</span><span class="n">leverage</span><span class="p">)</span>
+        <span class="c1"># 时间判断</span>
+        <span class="k">if</span> <span class="n">current_time</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">trade</span><span class="o">.</span><span class="n">open_date_utc</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mf">0.05</span>
+        <span class="k">elif</span> <span class="n">current_time</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">trade</span><span class="o">.</span><span class="n">open_date_utc</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mf">0.10</span>
+        <span class="k">return</span> <span class="kc">None</span>
+</code></pre></div>
+<h4 id="_10">针对不同交易对设定不同止损<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h4>
+<p>对不同交易对采用不同止损策略。例如，<code>ETH/BTC</code> 和 <code>XRP/BTC</code> 使用10%的追踪止损，<code>LTC/BTC</code> 使用5%，其他都用15%。</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 预定义导入</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AwesomeStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
+
+    <span class="c1"># ... populate_* 方法</span>
+
+    <span class="n">use_custom_stoploss</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">custom_stoploss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trade</span><span class="p">:</span> <span class="n">Trade</span><span class="p">,</span> <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+                        <span class="n">current_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">current_profit</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">after_fill</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                        <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">pair</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;ETH/BTC&quot;</span><span class="p">,</span> <span class="s2">&quot;XRP/BTC&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mf">0.10</span>
+        <span class="k">elif</span> <span class="n">pair</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;LTC/BTC&quot;</span><span class="p">,):</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mf">0.05</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mf">0.15</span>
+</code></pre></div>
+<h4 id="_11">正偏移量追踪止损<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h4>
+<p>当利润超过4%后开始追踪止损，为当前利润的50%，最小2.5%，最大5%。</p>
+<p>注意：止损只允许变大（向上移动），低于当前止损的值会被忽略。</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 预定义导入</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AwesomeStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
+
+    <span class="c1"># ... populate_* 方法</span>
+
+    <span class="n">use_custom_stoploss</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">custom_stoploss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trade</span><span class="p">:</span> <span class="n">Trade</span><span class="p">,</span> <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+                        <span class="n">current_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">current_profit</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">after_fill</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                        <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">current_profit</span> <span class="o">&lt;</span> <span class="mf">0.04</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># 继续用原止损</span>
+        <span class="c1"># 达到利润偏移后，根据利润设定新的止损</span>
+        <span class="n">desired_stoploss</span> <span class="o">=</span> <span class="n">current_profit</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="c1"># 最小2.5%，最大5%</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">desired_stoploss</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">),</span> <span class="mf">0.025</span><span class="p">)</span>
+</code></pre></div>
+<h4 id="_12">阶梯式止损<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h4>
+<p>避免连续追踪，设定固定的止损线，根据利润水平变化。</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 预定义导入</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AwesomeStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
+
+    <span class="c1"># ... populate_* 方法</span>
+
+    <span class="n">use_custom_stoploss</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">custom_stoploss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trade</span><span class="p">:</span> <span class="n">Trade</span><span class="p">,</span> <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+                        <span class="n">current_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">current_profit</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">after_fill</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                        <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="c1"># 从高到低判断，确保用最严格的止损条件</span>
+        <span class="k">if</span> <span class="n">current_profit</span> <span class="o">&gt;</span> <span class="mf">0.40</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">stoploss_from_open</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">current_profit</span><span class="p">,</span> <span class="n">is_short</span><span class="o">=</span><span class="n">trade</span><span class="o">.</span><span class="n">is_short</span><span class="p">,</span> <span class="n">leverage</span><span class="o">=</span><span class="n">trade</span><span class="o">.</span><span class="n">leverage</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">current_profit</span> <span class="o">&gt;</span> <span class="mf">0.25</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">stoploss_from_open</span><span class="p">(</span><span class="mf">0.15</span><span class="p">,</span> <span class="n">current_profit</span><span class="p">,</span> <span class="n">is_short</span><span class="o">=</span><span class="n">trade</span><span class="o">.</span><span class="n">is_short</span><span class="p">,</span> <span class="n">leverage</span><span class="o">=</span><span class="n">trade</span><span class="o">.</span><span class="n">leverage</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">current_profit</span> <span class="o">&gt;</span> <span class="mf">0.20</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">stoploss_from_open</span><span class="p">(</span><span class="mf">0.07</span><span class="p">,</span> <span class="n">current_profit</span><span class="p">,</span> <span class="n">is_short</span><span class="o">=</span><span class="n">trade</span><span class="o">.</span><span class="n">is_short</span><span class="p">,</span> <span class="n">leverage</span><span class="o">=</span><span class="n">trade</span><span class="o">.</span><span class="n">leverage</span><span class="p">)</span>
+        <span class="c1"># 超出范围就保持当前止损不变</span>
+        <span class="k">return</span> <span class="kc">None</span>
+</code></pre></div>
+<h4 id="parabolic-sar">利用指标作为绝对止损点（如Parabolic SAR示例）<a class="headerlink" href="#parabolic-sar" title="Permanent link">&para;</a></h4>
+<p>可以依据某些指标的绝对值作为止损点，例如Parabolic SAR。</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 预定义导入</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AwesomeStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">populate_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+        <span class="c1"># ... 其他指标</span>
+        <span class="n">dataframe</span><span class="p">[</span><span class="s2">&quot;sar&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">SAR</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+
+    <span class="n">use_custom_stoploss</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">custom_stoploss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trade</span><span class="p">:</span> <span class="n">Trade</span><span class="p">,</span> <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+                        <span class="n">current_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">current_profit</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">after_fill</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                        <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="n">dataframe</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">get_analyzed_dataframe</span><span class="p">(</span><span class="n">pair</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeframe</span><span class="p">)</span>
+        <span class="n">last_candle</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+
+        <span class="c1"># 使用parabolic SAR值作为绝对止损点</span>
+        <span class="n">stoploss_price</span> <span class="o">=</span> <span class="n">last_candle</span><span class="p">[</span><span class="s2">&quot;sar&quot;</span><span class="p">]</span>
+
+        <span class="c1"># 转换为比例（相对当前价格）</span>
+        <span class="k">if</span> <span class="n">stoploss_price</span> <span class="o">&lt;</span> <span class="n">current_rate</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">stoploss_from_absolute</span><span class="p">(</span><span class="n">stoploss_price</span><span class="p">,</span> <span class="n">current_rate</span><span class="p">,</span> <span class="n">is_short</span><span class="o">=</span><span class="n">trade</span><span class="o">.</span><span class="n">is_short</span><span class="p">)</span>
+        <span class="c1"># 不变化</span>
+        <span class="k">return</span> <span class="kc">None</span>
+</code></pre></div>
+<p>更多策略细节请参考<a href="../strategy-advanced/#dataframe-access">Dataframe访问</a>。</p>
+<hr />
+<h2 id="_13">常用止损计算辅助函数<a class="headerlink" href="#_13" title="Permanent link">&para;</a></h2>
+<h3 id="_14">相对于开仓价的止损值<a class="headerlink" href="#_14" title="Permanent link">&para;</a></h3>
+<p><code>custom_stoploss()</code>返回值应是相对<code>current_rate</code>的比例值，但有时希望相对<code>入场价</code>设定止损。<br />
+此时可以用<code>stoploss_from_open()</code>辅助函数，根据入场价与目标止损比例，计算出对应的相对比例（比值），由<code>custom_stoploss()</code>返回。</p>
+<p>??? 举例：“返回相对于入场价的止损比例代码示例”</p>
+<p>假设：</p>
+<ul>
+<li>入场价为100美元（<code>open_price=100</code>）</li>
+<li>当前价为121美元（<code>current_price=121</code>，<code>current_profit=0.21</code>）</li>
+</ul>
+<p>如果想设置突破入场价7%的止损点，可调用：<code>stoploss_from_open(0.07, current_profit, False)</code>，返回值约为0.1157（11.57%）<br />
+意味着止损位为121 * (1 - 0.1157) ≈ 107美元，正好是比100美元高7%。</p>
+<p>此函数会考虑杠杆（<code>leverage</code>），例如10倍杠杆实际止损则为0.7%（0.7% * 10）。</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 预定义导入</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AwesomeStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
+
+    <span class="c1"># ... populate_* 方法</span>
+
+    <span class="n">use_custom_stoploss</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">custom_stoploss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trade</span><span class="p">:</span> <span class="n">Trade</span><span class="p">,</span> <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+                        <span class="n">current_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">current_profit</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">after_fill</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                        <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="c1"># 利润超过10%，保持止损在7%上方</span>
+        <span class="k">if</span> <span class="n">current_profit</span> <span class="o">&gt;</span> <span class="mf">0.10</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">stoploss_from_open</span><span class="p">(</span><span class="mf">0.07</span><span class="p">,</span> <span class="n">current_profit</span><span class="p">,</span> <span class="n">is_short</span><span class="o">=</span><span class="n">trade</span><span class="o">.</span><span class="n">is_short</span><span class="p">,</span> <span class="n">leverage</span><span class="o">=</span><span class="n">trade</span><span class="o">.</span><span class="n">leverage</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="mi">1</span>  <span class="c1"># 未超过则返回默认值</span>
+
+<span class="c1"># 详细用法参考文档中 [Custom Stoploss](strategy-callbacks.md#custom-stoploss)</span>
+</code></pre></div>
+<div class="admonition 备注">
+<p class="admonition-title">备注</p>
+<p>输入非法参数可能导致“CustomStoploss未返回有效止损”警告。<br />
+比如，<code>current_profit</code>低于设置的<code>open_relative_stop</code>，会阻止平仓（阻塞条件由<code>confirm_trade_exit()</code>决定）。<br />
+避免此问题：不要阻挡止损卖出（在<code>confirm_trade_exit()</code>中检查<code>exit_reason</code>），或用<code>return stoploss_from_open(...) or 1</code>，可确保不改变止损。</p>
+</div>
+<h3 id="_15">绝对价格对应的止损百分比<a class="headerlink" href="#_15" title="Permanent link">&para;</a></h3>
+<p><code>custom_stoploss()</code>返回值始终是相对于<code>current_rate</code>的比例。<br />
+若需要以绝对价格设定止损，需用<code>stop_rate</code>辅助计算对应比例。</p>
+<p>举例：<br />
+想在当前价格下2倍ATR之下设止损，可调用：<br />
+<code>stoploss_from_absolute(current_rate + (side * candle["atr"] * 2), current_rate=current_rate, is_short=trade.is_short, leverage=trade.leverage)</code></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 预定义导入</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AwesomeStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
+
+    <span class="n">use_custom_stoploss</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">populate_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataFrame</span><span class="p">:</span>
+        <span class="c1"># ... 其他指标</span>
+        <span class="n">dataframe</span><span class="p">[</span><span class="s2">&quot;atr&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ta</span><span class="o">.</span><span class="n">ATR</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">timeperiod</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dataframe</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">custom_stoploss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trade</span><span class="p">:</span> <span class="n">Trade</span><span class="p">,</span> <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+                        <span class="n">current_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">current_profit</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">after_fill</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                        <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">dataframe</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">get_analyzed_dataframe</span><span class="p">(</span><span class="n">pair</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeframe</span><span class="p">)</span>
+        <span class="n">trade_date</span> <span class="o">=</span> <span class="n">timeframe_to_prev_date</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeframe</span><span class="p">,</span> <span class="n">trade</span><span class="o">.</span><span class="n">open_date_utc</span><span class="p">)</span>
+        <span class="n">candle</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+        <span class="n">side</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">trade</span><span class="o">.</span><span class="n">is_short</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">return</span> <span class="n">stoploss_from_absolute</span><span class="p">(</span><span class="n">current_rate</span> <span class="o">+</span> <span class="p">(</span><span class="n">side</span> <span class="o">*</span> <span class="n">candle</span><span class="p">[</span><span class="s2">&quot;atr&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">),</span> 
+                                      <span class="n">current_rate</span><span class="o">=</span><span class="n">current_rate</span><span class="p">,</span> 
+                                      <span class="n">is_short</span><span class="o">=</span><span class="n">trade</span><span class="o">.</span><span class="n">is_short</span><span class="p">,</span>
+                                      <span class="n">leverage</span><span class="o">=</span><span class="n">trade</span><span class="o">.</span><span class="n">leverage</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<h2 id="_16">自定义订单价格规则<a class="headerlink" href="#_16" title="Permanent link">&para;</a></h2>
+<p>默认情况下，Freqtrade会使用订单簿（orderbook）中的价格自动设定订单价格（详见<a href="../configuration/#prices-used-for-orders">价格配置</a>）。<br />
+但你也可以基于自己的策略定义自定义的挂单价格。</p>
+<p>在策略中实现<code>custom_entry_price()</code> 和 <code>custom_exit_price()</code>两个方法，即可自定义入场/出场的订单价格。</p>
+<p>这两个方法在挂单提交到交易所之前调用。</p>
+<div class="admonition 备注">
+<p class="admonition-title">备注</p>
+<p>如果你的自定义价格函数返回<code>None</code>或无效值，系统会回退使用<code>proposed_rate</code>，即基于默认配置的价格。</p>
+</div>
+<div class="admonition 备注">
+<p class="admonition-title">备注</p>
+<p>使用<code>custom_entry_price()</code>时，首次关联此策略的订单生成后，<code>trade</code>参数值为<code>None</code>。</p>
+</div>
+<h3 id="_17">自定义订单入场和出场价格示例<a class="headerlink" href="#_17" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 预定义导入</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AwesomeStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
+
+    <span class="c1"># ... 其他 populate_* 方法</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">custom_entry_price</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trade</span><span class="p">:</span> <span class="n">Trade</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">proposed_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                           <span class="n">entry_tag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">side</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="n">dataframe</span><span class="p">,</span> <span class="n">last_updated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">get_analyzed_dataframe</span><span class="p">(</span><span class="n">pair</span><span class="o">=</span><span class="n">pair</span><span class="p">,</span> <span class="n">timeframe</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeframe</span><span class="p">)</span>
+        <span class="n">new_entryprice</span> <span class="o">=</span> <span class="n">dataframe</span><span class="p">[</span><span class="s2">&quot;bollinger_10_lowerband&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">iat</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">new_entryprice</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">custom_exit_price</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trade</span><span class="p">:</span> <span class="n">Trade</span><span class="p">,</span>
+                          <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">proposed_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                          <span class="n">current_profit</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">exit_tag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="n">dataframe</span><span class="p">,</span> <span class="n">last_updated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">get_analyzed_dataframe</span><span class="p">(</span><span class="n">pair</span><span class="o">=</span><span class="n">pair</span><span class="p">,</span> <span class="n">timeframe</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeframe</span><span class="p">)</span>
+        <span class="n">new_exitprice</span> <span class="o">=</span> <span class="n">dataframe</span><span class="p">[</span><span class="s2">&quot;bollinger_10_upperband&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">iat</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">new_exitprice</span>
+</code></pre></div>
+<div class="admonition 警告">
+<p class="admonition-title">警告</p>
+<p>修改订单价格仅影响限价订单（limit orders），实际应用中可能导致很多不成交订单。<br />
+默认情况下，最大支持的价格偏差为当前价的2%，可以在配置中通过<code>custom_price_max_distance_ratio</code>参数修改。<br />
+<strong>示例</strong>：<br />
+假设 <code>new_entryprice</code> 为97，<code>proposed_rate</code> 为100，且<code>custom_price_max_distance_ratio</code>设为2%，<br />
+则实际采纳的自定义入场价格为98（比 proposal 低2%），即在允许范围内。</p>
+</div>
+<div class="admonition 警告">
+<p class="admonition-title">回测支持</p>
+<p>自定义价格在回测中支持（从2021.12开始），订单会在价格落在蜡烛的最低/最高值范围内成交。<br />
+但未立即成交的订单会受到常规超时机制的限制，每个蜡烛线检测一次。<br />
+<code>custom_exit_price()</code>只在出场（sell）订单（出场信号、主动退出、部分退出）时调用，其他出场类型会用默认价格。</p>
+</div>
+<hr />
+<h2 id="_18">自定义订单超时规则<a class="headerlink" href="#_18" title="Permanent link">&para;</a></h2>
+<p>可以通过时间设定订单超时，配置文件中的<code>unfilledtimeout</code>参数也支持，但Freqtrade还支持定义自定义的超时回调函数，基于自定义条件判断订单是否超时。</p>
+<div class="admonition 备注">
+<p class="admonition-title">备注</p>
+<p>回测时，订单在价格落在蜡烛最低/最高范围内会自动成交。<br />
+未立即成交的订单会由超时机制（每蜡烛线检测一次）处理。<br />
+如订单未成交，定义的超时回调会被调用。</p>
+</div>
+<h3 id="_19">自定义订单超时示例<a class="headerlink" href="#_19" title="Permanent link">&para;</a></h3>
+<p>该示例为每个未成交订单调用，利用不同价格条件设置超时机制。<br />
+适合高价资产设置较短超时，低价资产留更多时间。</p>
+<p>返回<code>True</code>表示订单被取消，返回<code>False</code>表示订单继续待成交。</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 预定义导入</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AwesomeStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
+
+    <span class="c1"># ... 其他 populate_* 方法</span>
+
+    <span class="c1"># 设置超时时间为25小时（最大超时时间为24小时，因此这里设置为更长时间）</span>
+    <span class="n">unfilledtimeout</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;entry&quot;</span><span class="p">:</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">25</span><span class="p">,</span>
+        <span class="s2">&quot;exit&quot;</span><span class="p">:</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">25</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_entry_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trade</span><span class="p">:</span> <span class="n">Trade</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Order</span><span class="p">,</span>
+                            <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">trade</span><span class="o">.</span><span class="n">open_rate</span> <span class="o">&gt;</span> <span class="mi">100</span> <span class="ow">and</span> <span class="n">trade</span><span class="o">.</span><span class="n">open_date_utc</span> <span class="o">&lt;</span> <span class="n">current_time</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">trade</span><span class="o">.</span><span class="n">open_rate</span> <span class="o">&gt;</span> <span class="mi">10</span> <span class="ow">and</span> <span class="n">trade</span><span class="o">.</span><span class="n">open_date_utc</span> <span class="o">&lt;</span> <span class="n">current_time</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">trade</span><span class="o">.</span><span class="n">open_rate</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">trade</span><span class="o">.</span><span class="n">open_date_utc</span> <span class="o">&lt;</span> <span class="n">current_time</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">24</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_exit_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trade</span><span class="p">:</span> <span class="n">Trade</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Order</span><span class="p">,</span>
+                           <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">trade</span><span class="o">.</span><span class="n">open_rate</span> <span class="o">&gt;</span> <span class="mi">100</span> <span class="ow">and</span> <span class="n">trade</span><span class="o">.</span><span class="n">open_date_utc</span> <span class="o">&lt;</span> <span class="n">current_time</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">trade</span><span class="o">.</span><span class="n">open_rate</span> <span class="o">&gt;</span> <span class="mi">10</span> <span class="ow">and</span> <span class="n">trade</span><span class="o">.</span><span class="n">open_date_utc</span> <span class="o">&lt;</span> <span class="n">current_time</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">trade</span><span class="o">.</span><span class="n">open_rate</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">trade</span><span class="o">.</span><span class="n">open_date_utc</span> <span class="o">&lt;</span> <span class="n">current_time</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">hours</span><span class="o">=</span><span class="mi">24</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+</code></pre></div>
+<div class="admonition 备注">
+<p class="admonition-title">备注</p>
+<p>上述示例中，<code>unfilledtimeout</code>必须设置超时时间大于24小时，否则会优先触发。</p>
+</div>
+<hr />
+<h3 id="_20">使用附加数据的超时示例<a class="headerlink" href="#_20" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 预定义导入</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AwesomeStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
+
+    <span class="c1"># ... 其他 populate_* 方法</span>
+
+    <span class="n">unfilledtimeout</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;entry&quot;</span><span class="p">:</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">25</span><span class="p">,</span>
+        <span class="s2">&quot;exit&quot;</span><span class="p">:</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">25</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_entry_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trade</span><span class="p">:</span> <span class="n">Trade</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Order</span><span class="p">,</span>
+                            <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="n">ob</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">orderbook</span><span class="p">(</span><span class="n">pair</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">current_price</span> <span class="o">=</span> <span class="n">ob</span><span class="p">[</span><span class="s2">&quot;bids&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># 若当前价格比订单价高出2%以上，则取消订单</span>
+        <span class="k">if</span> <span class="n">current_price</span> <span class="o">&gt;</span> <span class="n">order</span><span class="o">.</span><span class="n">price</span> <span class="o">*</span> <span class="mf">1.02</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_exit_timeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trade</span><span class="p">:</span> <span class="n">Trade</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Order</span><span class="p">,</span>
+                           <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="n">ob</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">orderbook</span><span class="p">(</span><span class="n">pair</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">current_price</span> <span class="o">=</span> <span class="n">ob</span><span class="p">[</span><span class="s2">&quot;asks&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># 若当前价格比订单价低出2%以上，则取消订单</span>
+        <span class="k">if</span> <span class="n">current_price</span> <span class="o">&lt;</span> <span class="n">order</span><span class="o">.</span><span class="n">price</span> <span class="o">*</span> <span class="mf">0.98</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+</code></pre></div>
+<hr />
+<h2 id="_21">交易确认<a class="headerlink" href="#_21" title="Permanent link">&para;</a></h2>
+<p>在订单下达之前，确认交易（买入或卖出）是否成立。</p>
+<h3 id="_22">买入订单确认<a class="headerlink" href="#_22" title="Permanent link">&para;</a></h3>
+<p><code>confirm_trade_entry()</code>在订单提交的最后时刻被调用，可用以提前撤销订单（比如预期价格变化不符合要求等）。</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 预定义导入</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AwesomeStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
+
+    <span class="c1"># ... 其他 populate_* 方法</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">confirm_trade_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">order_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">amount</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                            <span class="n">time_in_force</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">entry_tag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+                            <span class="n">side</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        在下入场（买入、开多）订单之前调用。</span>
+<span class="sd">        时间敏感，不要在此进行耗时积累或网络请求。</span>
+
+<span class="sd">        详细文档参考：https://www.freqtrade.io/en/latest/strategy-advanced/</span>
+
+<span class="sd">        若策略未实现此方法，默认返回True（始终确认）。</span>
+<span class="sd">        :param pair: 即将买入/做空的交易对</span>
+<span class="sd">        :param order_type: 订单类型（如限制(limit)或市价(market)）</span>
+<span class="sd">        :param amount: 目标货币数量</span>
+<span class="sd">        :param rate: 换算价格（限价订单时采用此价格，市价订单此参数无影响）</span>
+<span class="sd">        :param time_in_force: 持续时间（如GTC，默认为“有效直到取消”）</span>
+<span class="sd">        :param current_time: 当前时间（datetime对象）</span>
+<span class="sd">        :param entry_tag: 可选的买入标签（buy_tag），有用于识别</span>
+<span class="sd">        :param side: &quot;long&quot;或&quot;short&quot;，表示拟议交易方向</span>
+<span class="sd">        :param **kwargs: 其他参数</span>
+<span class="sd">        :return: True表示确认订单，False表示取消</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">True</span>
+</code></pre></div>
+<h3 id="_23">出场（卖出）订单确认<a class="headerlink" href="#_23" title="Permanent link">&para;</a></h3>
+<p><code>confirm_trade_exit()</code>在订单提交的最后时刻调用，可用以撤销不合理的出场请求。</p>
+<p>同一轮循环中，可能会多次调用此函数，以不同出场原因处理。</p>
+<p>出场原因（如果有）会按下列顺序调用：<br />
+<code>exit_signal</code> / <code>custom_exit</code> —&gt; <code>stop_loss</code> —&gt; <code>roi</code> —&gt; <code>trailing_stop_loss</code></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 预定义导入</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AwesomeStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
+
+    <span class="c1"># ... 其他 populate_* 方法</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">confirm_trade_exit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trade</span><span class="p">:</span> <span class="n">Trade</span><span class="p">,</span> <span class="n">order_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">amount</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                           <span class="n">rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">time_in_force</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">exit_reason</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                           <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        在提交平仓（卖出）订单之前调用。</span>
+<span class="sd">        亦可多次调用，依据不同退出原因。</span>
+
+<span class="sd">        详细文档参考：https://www.freqtrade.io/en/latest/strategy-advanced/</span>
+
+<span class="sd">        若未实现，默认返回True。</span>
+<span class="sd">        :param pair: 交易对</span>
+<span class="sd">        :param trade: 交易对象</span>
+<span class="sd">        :param order_type: 订单类型（限价或市价）</span>
+<span class="sd">        :param amount: 订单交易量</span>
+<span class="sd">        :param rate: 订单价格</span>
+<span class="sd">        :param time_in_force: 持续时间</span>
+<span class="sd">        :param exit_reason: 退出原因（可为：[&quot;roi&quot;, &quot;stop_loss&quot;, &quot;stoploss_on_exchange&quot;, &quot;trailing_stop_loss&quot;, &quot;exit_signal&quot;, &quot;force_exit&quot;, &quot;emergency_exit&quot;]）</span>
+<span class="sd">        :param current_time: 当前时间（datetime）</span>
+<span class="sd">        :param **kwargs: 其他参数</span>
+<span class="sd">        :return: True/False</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 拒绝在亏损条件下强制平仓</span>
+        <span class="k">if</span> <span class="n">exit_reason</span> <span class="o">==</span> <span class="s2">&quot;force_exit&quot;</span> <span class="ow">and</span> <span class="n">trade</span><span class="o">.</span><span class="n">calc_profit_ratio</span><span class="p">(</span><span class="n">rate</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+</code></pre></div>
+<div class="admonition 警告">
+<p class="admonition-title">警告</p>
+<p><code>confirm_trade_exit()</code>可能阻止止损操作，导致亏损扩大（被阻止的止损将无法执行）。<br />
+交易所的强制清仓（liquidation）不会调用此函数，因其由交易所强制执行，不可拒绝。</p>
+</div>
+<hr />
+<h2 id="_24">调整持仓<a class="headerlink" href="#_24" title="Permanent link">&para;</a></h2>
+<p>开启<code>position_adjustment_enable</code>策略属性后，策略可以使用<code>adjust_trade_position()</code>回调函数。<br />
+（默认禁用，启用时系统会有警告。）<br />
+此函数可用于在仓位内进行额外下单（如DCA、增减仓等），而不会影响最大开仓数（<code>max_open_trades</code>）。</p>
+<p>此回调会在订单（买入或卖出）等待执行时被调用，若订单的数量、价格、方向变化，会取消原订单，重新下单，还会自动取消部分成交订单。</p>
+<p>此函数会在持仓期间频繁调用，建议实现高效。</p>
+<p>仓位调节始终沿持仓方向操作（正值增仓，负值减仓），但不支持调整杠杆。<br />
+返回的仓位数值为“预期仓位数量（stake_amount）”，在调用时，仓位参数未考虑杠杆效果。</p>
+<p>仓位在<code>trade.stake_amount</code>中实时更新，每次操作（新仓或部分平仓）都会更新。</p>
+<div class="admonition 警告">
+<p class="admonition-title">松散逻辑</p>
+<p>在 dry/live 测试时，此函数会每隔<code>throttle_process_secs</code>（默认5秒）调用一次。<br />
+某些策略（如“当最后蜡烛RSI&lt;30时增仓”）可能导致无限循环（每5秒重复多次入仓，可能因资金不足或达到最大调仓限制停止）。</p>
+<p>同理，部分平仓时也可能频繁调用，需保证逻辑严谨，避免陷入无限循环。</p>
+</div>
+<div class="admonition 警告">
+<p class="admonition-title">性能考虑</p>
+<p>频繁调仓可能会影响策略性能，尤其是在长时间运行且调仓频次高的情况下。<br />
+每次调仓会产生额外的内存和计算负担。建议合理规划调仓条件，避免过度频繁操作。</p>
+</div>
+<div class="admonition 警告">
+<p class="admonition-title">回测注意</p>
+<p>在回测中，此函数会针对每个蜡烛调用，可能拖慢运行速度。<br />
+也可能导致实盘与回测结果不一致（回测每蜡烛调一次，实盘可以多次调仓）。</p>
+</div>
+<h3 id="_25">增仓示例<a class="headerlink" href="#_25" title="Permanent link">&para;</a></h3>
+<p>策略在满足条件时返回一个正值，表示增仓（买入或做多）。</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 预定义导入</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">DigDeeperStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
+
+    <span class="n">position_adjustment_enable</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># 高跌幅下采取DCA，设置较高止损</span>
+    <span class="n">stoploss</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.30</span>
+
+    <span class="c1"># 其他 populate_* 方法</span>
+
+    <span class="c1"># 最大追加次数</span>
+    <span class="n">max_entry_position_adjustment</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="c1"># 说明：该参数后续会解释</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">custom_stake_amount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">current_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                            <span class="n">proposed_stake</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">min_stake</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">max_stake</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                            <span class="n">leverage</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">entry_tag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">side</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="c1"># 预留大部分资金应对后续DCA</span>
+        <span class="k">return</span> <span class="n">proposed_stake</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_dca_multiplier</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">adjust_trade_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trade</span><span class="p">:</span> <span class="n">Trade</span><span class="p">,</span> <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+                              <span class="n">current_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">current_profit</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                              <span class="n">min_stake</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">max_stake</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                              <span class="n">current_entry_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">current_exit_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                              <span class="n">current_entry_profit</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">current_exit_profit</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                              <span class="o">**</span><span class="n">kwargs</span>
+                              <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        根据条件调整仓位。返回值为：  </span>
+<span class="sd">        - 正数：增仓（买入）  </span>
+<span class="sd">        - 负数：减仓（卖出）  </span>
+<span class="sd">        - None：不操作  </span>
+<span class="sd">        - 也可返回元组：(调仓数量，调仓原因标签)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># 若订单未执行完毕，则不调仓</span>
+        <span class="k">if</span> <span class="n">trade</span><span class="o">.</span><span class="n">has_open_orders</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># 利润超5%，无成功平仓，部分平仓一半</span>
+        <span class="k">if</span> <span class="n">current_profit</span> <span class="o">&gt;</span> <span class="mf">0.05</span> <span class="ow">and</span> <span class="n">trade</span><span class="o">.</span><span class="n">nr_of_successful_exits</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="n">trade</span><span class="o">.</span><span class="n">stake_amount</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="s2">&quot;half_profit_5%&quot;</span>
+
+        <span class="c1"># 利润在-5%到0%之间，不操作</span>
+        <span class="k">if</span> <span class="n">current_profit</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mf">0.05</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># 获取行情蜡烛数据，判断价格是否上涨</span>
+        <span class="n">dataframe</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">get_analyzed_dataframe</span><span class="p">(</span><span class="n">trade</span><span class="o">.</span><span class="n">pair</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeframe</span><span class="p">)</span>
+        <span class="n">last_candle</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+        <span class="n">previous_candle</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">last_candle</span><span class="p">[</span><span class="s2">&quot;close&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">previous_candle</span><span class="p">[</span><span class="s2">&quot;close&quot;</span><span class="p">]:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># 获取已成功的入场订单（已全额成交）</span>
+        <span class="n">filled_entries</span> <span class="o">=</span> <span class="n">trade</span><span class="o">.</span><span class="n">select_filled_orders</span><span class="p">(</span><span class="n">trade</span><span class="o">.</span><span class="n">entry_side</span><span class="p">)</span>
+        <span class="n">count_of_entries</span> <span class="o">=</span> <span class="n">trade</span><span class="o">.</span><span class="n">nr_of_successful_entries</span>
+
+        <span class="c1"># 最多再追加3次逐步增仓（共4次）</span>
+        <span class="c1"># 初始买入1倍仓</span>
+        <span class="c1"># 利润跌至-5%，补仓1.25倍，目标平均利润为-2.2%</span>
+        <span class="c1"># 再跌-5%，补仓1.5倍</span>
+        <span class="c1"># 再跌-5%，补仓1.75倍</span>
+        <span class="c1"># 最终仓位：1 + 1.25 + 1.5 + 1.75 = 5.5倍</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">stake_amount</span> <span class="o">=</span> <span class="n">filled_entries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stake_amount_filled</span>
+            <span class="n">stake_amount</span> <span class="o">=</span> <span class="n">stake_amount</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">count_of_entries</span> <span class="o">*</span> <span class="mf">0.25</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">stake_amount</span><span class="p">,</span> <span class="s2">&quot;1/3rd_increase&quot;</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="kc">None</span>
+</code></pre></div>
+<h3 id="_26">调整调仓数额的算法<a class="headerlink" href="#_26" title="Permanent link">&para;</a></h3>
+<ul>
+<li>开仓价：用加权平均计算</li>
+<li>平仓：不影响开仓价</li>
+<li>部分平仓：用公式 <code>部分平仓数量 = 负数仓位 * 交易量 / 仓位总值</code>，不考虑盈亏，只由<code>trade.amount</code>和<code>trade.stake_amount</code>决定。</li>
+</ul>
+<p>示例：<br />
+买入2个SHITCOIN/USDT，开仓价50美元，仓位值100 USDT。<br />
+涨到200美元，想卖出一半，即50美元部分，返回-50（表示减仓为50 USDT），<br />
+计算：<code>50 * 2 / 100 = 1</code>（卖出1个SHITCOIN），<br />
+范围判断：负仓位不能超过总仓位，否则会发生错误。</p>
+<p>再如，当前价200美元，仓位价值400美元，想产生部分平仓，取出100美元：<br />
+部分平仓数量 = <code>-100 * trade.stake_amount / trade.amount</code><br />
+其中：<br />
+- <code>trade.amount</code>：持仓数量<br />
+- <code>trade.stake_amount</code>：当前仓位值  </p>
+<p>注意：止损仍按开仓价计算，不会随盈亏变化。</p>
+<p>!!! 警告 “止损计算”
+    止损是基于开仓时的价格，<strong>不考虑平均价格</strong>。<br />
+    常规止损规则（不能向下）依然有效。<br />
+    位置调整（调仓）时，止损会随之调整，但会受到限制。</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 预定义导入</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">StoplossDCA</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
+
+    <span class="n">position_adjustment_enable</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="n">stoploss</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.30</span>
+
+    <span class="c1"># ...其他populate_*方法</span>
+
+    <span class="n">max_entry_position_adjustment</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">max_dca_multiplier</span> <span class="o">=</span> <span class="mf">5.5</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">custom_stake_amount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">current_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                            <span class="n">proposed_stake</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">min_stake</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">max_stake</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                            <span class="n">leverage</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">entry_tag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">side</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="c1"># 留出大部分资金应对后续DCA</span>
+        <span class="k">return</span> <span class="n">proposed_stake</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_dca_multiplier</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">adjust_trade_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trade</span><span class="p">:</span> <span class="n">Trade</span><span class="p">,</span> <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+                              <span class="n">current_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">current_profit</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                              <span class="n">min_stake</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">max_stake</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                              <span class="n">current_entry_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">current_exit_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                              <span class="n">current_entry_profit</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">current_exit_profit</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                              <span class="o">**</span><span class="n">kwargs</span>
+                              <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        调仓逻辑，返回调整仓位（正值增仓，负值减仓）。</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">trade</span><span class="o">.</span><span class="n">has_open_orders</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># 利润超过5%，卖出一半</span>
+        <span class="k">if</span> <span class="n">current_profit</span> <span class="o">&gt;</span> <span class="mf">0.05</span> <span class="ow">and</span> <span class="n">trade</span><span class="o">.</span><span class="n">nr_of_successful_exits</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="n">trade</span><span class="o">.</span><span class="n">stake_amount</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="s2">&quot;half_profit_5%&quot;</span>
+
+        <span class="c1"># 利润在-5%到零之间，不操作</span>
+        <span class="k">if</span> <span class="n">current_profit</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mf">0.05</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># 判断价格趋势</span>
+        <span class="n">dataframe</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">get_analyzed_dataframe</span><span class="p">(</span><span class="n">trade</span><span class="o">.</span><span class="n">pair</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeframe</span><span class="p">)</span>
+        <span class="n">last_candle</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+        <span class="n">previous_candle</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">last_candle</span><span class="p">[</span><span class="s2">&quot;close&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">previous_candle</span><span class="p">[</span><span class="s2">&quot;close&quot;</span><span class="p">]:</span>
+            <span class="k">return</span>
+
+        <span class="n">filled_entries</span> <span class="o">=</span> <span class="n">trade</span><span class="o">.</span><span class="n">select_filled_orders</span><span class="p">(</span><span class="n">trade</span><span class="o">.</span><span class="n">entry_side</span><span class="p">)</span>
+        <span class="n">count_of_entries</span> <span class="o">=</span> <span class="n">trade</span><span class="o">.</span><span class="n">nr_of_successful_entries</span>
+
+        <span class="c1"># 允许最多3次逐步增仓</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">stake_amount</span> <span class="o">=</span> <span class="n">filled_entries</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">stake_amount_filled</span>
+            <span class="n">stake_amount</span> <span class="o">=</span> <span class="n">stake_amount</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">count_of_entries</span> <span class="o">*</span> <span class="mf">0.25</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">stake_amount</span><span class="p">,</span> <span class="s2">&quot;1/3rd_increase&quot;</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="kc">None</span>
+</code></pre></div>
+<hr />
+<h2 id="_27">调整订单价格<a class="headerlink" href="#_27" title="Permanent link">&para;</a></h2>
+<p><code>adjust_order_price()</code>回调允许你在蜡烛到来时，动态调整挂单价格（若订单已有且状态未完全成交或未超时），<br />
+每个订单在每次蜡烛检测中最多调整一次。<br />
+快速执行时间点：通常在下一蜡烛开始时。</p>
+<p>注意：<code>custom_entry_price()</code> 与 <code>custom_exit_price()</code> 依然决定了订单初始价格，此回调主要用来追踪价格变化。</p>
+<p>返回值为：<br />
+- <code>None</code>：取消订单（订单会被取消，价格不再调整）<br />
+- 其他价格：更新订单价格为该值，订单不会被取消。</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 预定义导入</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AwesomeStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
+
+    <span class="c1"># ... 其他 populate_* 方法</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">adjust_order_price</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">trade</span><span class="p">:</span> <span class="n">Trade</span><span class="p">,</span>
+        <span class="n">order</span><span class="p">:</span> <span class="n">Order</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span>
+        <span class="n">proposed_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">current_order_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">entry_tag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">side</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">is_entry</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        动态调整订单价格的逻辑。返回希望的新价格。</span>
+<span class="sd">        仅在订单已挂出（未完全成交/未超时）且在蜡烛范围内时调用。</span>
+
+<span class="sd">        详见文档：https://www.freqtrade.io/en/latest/strategy-callbacks/</span>
+
+<span class="sd">        若未实现该方法，则返回`current_order_rate`，订单维持不变。</span>
+<span class="sd">        返回`None`则取消订单，不再挂单。</span>
+
+<span class="sd">        :param pair: 当前分析的交易对</span>
+<span class="sd">        :param trade: 交易对象</span>
+<span class="sd">        :param order: 订单对象</span>
+<span class="sd">        :param current_time: 当前时间（datetime）</span>
+<span class="sd">        :param proposed_rate: 根据定价策略计算的建议价格</span>
+<span class="sd">        :param current_order_rate: 当前订单价格</span>
+<span class="sd">        :param entry_tag: 订单标签（买入标签）</span>
+<span class="sd">        :param side: &#39;long&#39;或&#39;short&#39;，交易方向</span>
+<span class="sd">        :param is_entry: 是否为入场订单，若为出场订单，值为False</span>
+<span class="sd">        :param **kwargs: 其他参数</span>
+<span class="sd">        :return: 返回新价格（float），或None取消订单</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># 示例：针对BTC/USDT，前10分钟内，若订单标签为long_sma200，限制订单价格</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">is_entry</span>
+            <span class="ow">and</span> <span class="n">pair</span> <span class="o">==</span> <span class="s2">&quot;BTC/USDT&quot;</span> 
+            <span class="ow">and</span> <span class="n">entry_tag</span> <span class="o">==</span> <span class="s2">&quot;long_sma200&quot;</span> 
+            <span class="ow">and</span> <span class="n">side</span> <span class="o">==</span> <span class="s2">&quot;long&quot;</span> 
+            <span class="ow">and</span> <span class="p">(</span><span class="n">current_time</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">10</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="n">trade</span><span class="o">.</span><span class="n">open_date_utc</span>
+        <span class="p">):</span>
+            <span class="c1"># 如果订单已成交超过一半，取消订单</span>
+            <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">filled</span> <span class="o">&gt;</span> <span class="n">order</span><span class="o">.</span><span class="n">remaining</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dataframe</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">get_analyzed_dataframe</span><span class="p">(</span><span class="n">pair</span><span class="o">=</span><span class="n">pair</span><span class="p">,</span> <span class="n">timeframe</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeframe</span><span class="p">)</span>
+                <span class="n">current_candle</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">current_candle</span><span class="p">[</span><span class="s2">&quot;sma_200&quot;</span><span class="p">]</span>
+        <span class="c1"># 默认：保持原有订单价格</span>
+        <span class="k">return</span> <span class="n">current_order_rate</span>
+</code></pre></div>
+<p>!!! 警告 “与<code>adjust_*_price()</code>不兼容”<br />
+    若同时实现<code>adjust_order_price()</code>和<code>adjust_entry_price()</code>/<code>adjust_exit_price()</code>，系统只调用<code>adjust_order_price()</code>，<br />
+    不支持同时使用，二者应二选一或拆分。<br />
+    不能混用，否则启动时会报错。</p>
+<h3 id="_28">调整入场价格<a class="headerlink" href="#_28" title="Permanent link">&para;</a></h3>
+<p><code>adjust_entry_price()</code>专用于调节挂出挂单的入场限价订单，行为与<code>adjust_order_price()</code>类似，只在入场订单时调用。<br />
+开仓时的价格由<code>custom_entry_price()</code>设定，<code>adjust_entry_price()</code>可在开仓期间动态调整。</p>
+<p>开仓时间持续不变（<code>trade.open_date_utc</code>保持第一次挂单时间），需确保在其他回调中考虑到此点。</p>
+<h3 id="_29">调整出场价格<a class="headerlink" href="#_29" title="Permanent link">&para;</a></h3>
+<p><code>adjust_exit_price()</code>用于调整止盈止损订单，行为类似，只在出场订单时调用。</p>
+<h2 id="_30">杠杆回调<a class="headerlink" href="#_30" title="Permanent link">&para;</a></h2>
+<p>在允许杠杆交易的市场（如期货）中，返回值即为杠杆倍数（默认为1），否则此方法会被忽略。</p>
+<p>杠杆效果：用本金乘以杠杆倍数，控制仓位。如：本金为500 USDT，杠杆3倍，实际仓位为1500 USDT。</p>
+<p>超出<code>max_leverage</code>的值会被限制。  </p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 预定义导入</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AwesomeStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">leverage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">current_rate</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                 <span class="n">proposed_leverage</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">max_leverage</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">entry_tag</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">side</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        调整杠杆倍数，仅在期货市场有效。</span>
+
+<span class="sd">        :param pair: 交易对</span>
+<span class="sd">        :param current_time: 当前时间</span>
+<span class="sd">        :param current_rate: 当前价格</span>
+<span class="sd">        :param proposed_leverage: 系统建议的杠杆</span>
+<span class="sd">        :param max_leverage: 上限</span>
+<span class="sd">        :param entry_tag: 标签（可选）</span>
+<span class="sd">        :param side: 交易方向（long/short）</span>
+<span class="sd">        :return: 实际杠杆倍数（1.0~max_leverage）</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mf">1.0</span>
+</code></pre></div>
+<p>利润和止损/ROI计算都包括杠杆倍数。例如10%的止损在10倍杠杆下，实际触发点为1%下跌。</p>
+<h2 id="_31">订单已成交回调<a class="headerlink" href="#_31" title="Permanent link">&para;</a></h2>
+<p><code>order_filled()</code>在订单成交时调用，用于执行一些后续操作（如记录蜡烛最高价等）。</p>
+<p>可支持所有订单类型（入场、出场、止损、调仓）。</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 预定义导入</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AwesomeStrategy</span><span class="p">(</span><span class="n">IStrategy</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">order_filled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pair</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">trade</span><span class="p">:</span> <span class="n">Trade</span><span class="p">,</span> <span class="n">order</span><span class="p">:</span> <span class="n">Order</span><span class="p">,</span> <span class="n">current_time</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        订单成交后调用。可做状态跟踪、数据存储等。</span>
+<span class="sd">        :param pair: 交易对</span>
+<span class="sd">        :param trade: 交易对象</span>
+<span class="sd">        :param order: 订单对象</span>
+<span class="sd">        :param current_time: 当前时间</span>
+<span class="sd">        :param **kwargs: 其他参数</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 获取行情蜡烛数据</span>
+        <span class="n">dataframe</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dp</span><span class="o">.</span><span class="n">get_analyzed_dataframe</span><span class="p">(</span><span class="n">trade</span><span class="o">.</span><span class="n">pair</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeframe</span><span class="p">)</span>
+        <span class="n">last_candle</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+        <span class="c1"># 若为第一次成功入场订单，存储最高价信息</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">trade</span><span class="o">.</span><span class="n">nr_of_successful_entries</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">ft_order_side</span> <span class="o">==</span> <span class="n">trade</span><span class="o">.</span><span class="n">entry_side</span><span class="p">):</span>
+            <span class="n">trade</span><span class="o">.</span><span class="n">set_custom_data</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">&quot;entry_candle_high&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">last_candle</span><span class="p">[</span><span class="s2">&quot;high&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="kc">None</span>
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+    
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../strategy-customization/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Strategy Customization">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Strategy Customization
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../stoploss/" class="md-footer__link md-footer__link--next" aria-label="Next: Stoploss">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Stoploss
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate", "search.share", "content.code.copy", "navigation.top", "navigation.footer"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+        <script src="../javascripts/config.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>

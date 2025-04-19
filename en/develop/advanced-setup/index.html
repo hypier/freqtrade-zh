@@ -1,0 +1,2418 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Freqtrade is a free and open source crypto trading bot written in Python, designed to support all major exchanges and be controlled via Telegram or builtin Web UI">
+      
+      
+      
+        <link rel="canonical" href="https://www.freqtrade.io/en/stable/advanced-setup/">
+      
+      
+        <link rel="prev" href="../advanced-backtesting/">
+      
+      
+        <link rel="next" href="../trade-object/">
+      
+      
+      <link rel="icon" href="../images/logo.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.11">
+    
+    
+      
+        <title>Advanced Post-installation Tasks - Freqtrade</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.4af4bdda.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/ft.extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-VH170LG9M5"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-VH170LG9M5",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-VH170LG9M5",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="tear">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Freqtrade" class="md-header__button md-logo" aria-label="Freqtrade" data-md-component="logo">
+      
+  <img src="../images/logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Freqtrade
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Advanced Post-installation Tasks
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="tear"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="blue-grey" data-md-color-accent="tear"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/freqtrade/freqtrade" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+
+  <!-- Main navigation -->
+  
+  
+  <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+    <div class="md-sidebar__scrollwrap">
+      <div class="md-sidebar__inner">
+        
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Freqtrade" class="md-nav__button md-logo" aria-label="Freqtrade" data-md-component="logo">
+      
+  <img src="../images/logo.png" alt="logo">
+
+    </a>
+    Freqtrade
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/freqtrade/freqtrade" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docker_quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Quickstart with Docker
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Installation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Linux/MacOS/Raspberry
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../windows_installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Windows
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bot-basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Freqtrade Basics
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-101/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy Quickstart
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-customization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy Customization
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-callbacks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy Callbacks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stoploss/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Stoploss
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Plugins
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bot-usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Start the bot
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" >
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Control the bot
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            Control the bot
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../telegram-usage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Telegram
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freq-ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    freqUI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../rest-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    REST API
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../webhook-config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Web Hook
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-download/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Data Downloading
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backtesting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Backtesting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hyperopt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Hyperopt
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_16" >
+        
+          
+          <label class="md-nav__link" for="__nav_16" id="__nav_16_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    FreqAI
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_16_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_16">
+            <span class="md-nav__icon md-icon"></span>
+            FreqAI
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Introduction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-parameter-table/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Parameter table
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-feature-engineering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Feature engineering
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-running/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Running FreqAI
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-reinforcement-learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Reinforcement Learning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../freqai-developers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Developer guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../leverage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Short / Leverage
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Utility Sub-commands
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plotting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Plotting
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exchanges/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Exchange-specific Notes
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_21" >
+        
+          
+          <label class="md-nav__link" for="__nav_21" id="__nav_21_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Data Analysis
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_21_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_21">
+            <span class="md-nav__icon md-icon"></span>
+            Data Analysis
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Jupyter Notebooks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy_analysis_example/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-backtesting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Backtest analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_22" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_22" id="__nav_22_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Advanced Topics
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_22_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_22">
+            <span class="md-nav__icon md-icon"></span>
+            Advanced Topics
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Advanced Post-installation Tasks
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Advanced Post-installation Tasks
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#freqtrade" class="md-nav__link">
+    <span class="md-ellipsis">
+      在同一台机器上运行多个Freqtrade实例
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="在同一台机器上运行多个Freqtrade实例">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      需要考虑的事项
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      不同的数据库文件
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      使用Docker运行多实例
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      使用其他数据库系统
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="使用其他数据库系统">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#postgresql" class="md-nav__link">
+    <span class="md-ellipsis">
+      PostgreSQL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mariadb-mysql" class="md-nav__link">
+    <span class="md-ellipsis">
+      MariaDB / MySQL
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#systemd" class="md-nav__link">
+    <span class="md-ellipsis">
+      将机器人配置为systemd服务运行
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      高级日志设置
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="高级日志设置">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syslog" class="md-nav__link">
+    <span class="md-ellipsis">
+      发送到syslog
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="发送到syslog">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syslog_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syslog使用说明
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#syslog_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      syslog地址配置
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#journald" class="md-nav__link">
+    <span class="md-ellipsis">
+      发送到journald
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#json" class="md-nav__link">
+    <span class="md-ellipsis">
+      JSON格式的日志
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../trade-object/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Trade Object
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../lookahead-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Lookahead analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../recursive-analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Recursive analysis
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy-advanced/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Advanced Strategy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-hyperopt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Advanced Hyperopt
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced-orderflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Orderflow
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../producer-consumer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Producer/Consumer mode
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sql_cheatsheet/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    SQL Cheat-sheet
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../edge/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Edge Positioning
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    FAQ
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy_migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Strategy migration
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../updating/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Updating Freqtrade
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deprecated/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Deprecated Features
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../developer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Contributors Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+      </div>
+    </div>
+  </div>
+  
+
+  <!-- Table of contents -->
+  
+  
+  <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+    <div class="md-sidebar__scrollwrap">
+      <div class="md-sidebar__inner">
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#freqtrade" class="md-nav__link">
+    <span class="md-ellipsis">
+      在同一台机器上运行多个Freqtrade实例
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="在同一台机器上运行多个Freqtrade实例">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      需要考虑的事项
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      不同的数据库文件
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#docker" class="md-nav__link">
+    <span class="md-ellipsis">
+      使用Docker运行多实例
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      使用其他数据库系统
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="使用其他数据库系统">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#postgresql" class="md-nav__link">
+    <span class="md-ellipsis">
+      PostgreSQL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mariadb-mysql" class="md-nav__link">
+    <span class="md-ellipsis">
+      MariaDB / MySQL
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#systemd" class="md-nav__link">
+    <span class="md-ellipsis">
+      将机器人配置为systemd服务运行
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      高级日志设置
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="高级日志设置">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syslog" class="md-nav__link">
+    <span class="md-ellipsis">
+      发送到syslog
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="发送到syslog">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syslog_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syslog使用说明
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#syslog_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      syslog地址配置
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#journald" class="md-nav__link">
+    <span class="md-ellipsis">
+      发送到journald
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#json" class="md-nav__link">
+    <span class="md-ellipsis">
+      JSON格式的日志
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      </div>
+    </div>
+  </div>
+  
+
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="_1">高级安装后任务<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h1>
+<p>本文档介绍一些在机器人安装后可以执行的高级任务和配置选项，在某些环境下可能会有所帮助。</p>
+<p>如果你不清楚这里提到的内容是什么意思，可能你其实不需要这些操作。</p>
+<h2 id="freqtrade">在同一台机器上运行多个Freqtrade实例<a class="headerlink" href="#freqtrade" title="Permanent link">&para;</a></h2>
+<p>本节将向你展示如何在同一台设备上同时运行多个机器人。</p>
+<h3 id="_2">需要考虑的事项<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h3>
+<ul>
+<li>使用不同的数据库文件。</li>
+<li>使用不同的Telegram机器人（需要多个不同的配置文件；仅在启用Telegram时适用）。</li>
+<li>使用不同的端口（仅在启用Freqtrade REST API网络服务器时适用）。</li>
+</ul>
+<h3 id="_3">不同的数据库文件<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<p>为了跟踪你的交易、利润等信息，freqtrade使用一个SQLite数据库，存储各种类型的信息，比如你过去的交易和你目前持有的仓位。这让你可以检测到你的盈利情况，更重要的是，即使机器人进程重启或意外终止，也能持续跟踪活动。</p>
+<p>Freqtrade默认会为模拟交易（dry-run）和实盘交易使用不同的数据库文件（前提是配置中和命令行参数中都没有指定database-url）。
+对于实盘模式，默认数据库为<code>tradesv3.sqlite</code>；模拟交易则为<code>tradesv3.dryrun.sqlite</code>。</p>
+<p>指定这些文件路径的可选参数是<code>--db-url</code>，它需要一个有效的SQLAlchemy URL。
+因此，当你只用配置和策略参数在Dry-run模式下启动机器人时，以下两个命令效果是相同的：</p>
+<div class="highlight"><pre><span></span><code>freqtrade<span class="w"> </span>trade<span class="w"> </span>-c<span class="w"> </span>MyConfig.json<span class="w"> </span>-s<span class="w"> </span>MyStrategy
+<span class="c1"># 等同于</span>
+freqtrade<span class="w"> </span>trade<span class="w"> </span>-c<span class="w"> </span>MyConfig.json<span class="w"> </span>-s<span class="w"> </span>MyStrategy<span class="w"> </span>--db-url<span class="w"> </span>sqlite:///tradesv3.dryrun.sqlite
+</code></pre></div>
+<p>这意味着如果你在两个不同的终端上运行trade命令，例如测试在USDT和BTC两种不同的交易场景，你必须使用不同的数据库。</p>
+<p>如果你指定了一个不存在的数据库URL，freqtrade会自动创建一个同名的数据库文件。因此，假如你想用两个不同的stake货币（比如BTC和USDT）测试自定义策略，可以在两个终端中使用如下命令：</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 终端1：</span>
+freqtrade<span class="w"> </span>trade<span class="w"> </span>-c<span class="w"> </span>MyConfigBTC.json<span class="w"> </span>-s<span class="w"> </span>MyCustomStrategy<span class="w"> </span>--db-url<span class="w"> </span>sqlite:///user_data/tradesBTC.dryrun.sqlite
+<span class="c1"># 终端2：</span>
+freqtrade<span class="w"> </span>trade<span class="w"> </span>-c<span class="w"> </span>MyConfigUSDT.json<span class="w"> </span>-s<span class="w"> </span>MyCustomStrategy<span class="w"> </span>--db-url<span class="w"> </span>sqlite:///user_data/tradesUSDT.dryrun.sqlite
+</code></pre></div>
+<p>反过来，如果你想在生产环境中做相同的事情，也需要创建至少一个新的数据库（除了默认的那个），并指定“实盘”数据库的路径，例如：</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># 终端1：</span>
+freqtrade<span class="w"> </span>trade<span class="w"> </span>-c<span class="w"> </span>MyConfigBTC.json<span class="w"> </span>-s<span class="w"> </span>MyCustomStrategy<span class="w"> </span>--db-url<span class="w"> </span>sqlite:///user_data/tradesBTC.live.sqlite
+<span class="c1"># 终端2：</span>
+freqtrade<span class="w"> </span>trade<span class="w"> </span>-c<span class="w"> </span>MyConfigUSDT.json<span class="w"> </span>-s<span class="w"> </span>MyCustomStrategy<span class="w"> </span>--db-url<span class="w"> </span>sqlite:///user_data/tradesUSDT.live.sqlite
+</code></pre></div>
+<p>关于如何手动进入或删除交易记录的更详细信息，请参考<a href="../sql_cheatsheet/">SQL Cheatsheet</a>。</p>
+<h3 id="docker">使用Docker运行多实例<a class="headerlink" href="#docker" title="Permanent link">&para;</a></h3>
+<p>想用Docker运行多个freqtrade实例，你需要编辑<code>docker-compose.yml</code>文件，将所有想要作为独立服务的实例添加进去。记住，你可以把配置拆分成多个文件，建议考虑模块化管理，这样如果要修改所有机器人的某个共通部分，只需修改一个配置文件即可。</p>
+<p>示例配置如下：</p>
+<div class="highlight"><pre><span></span><code><span class="nn">---</span>
+<span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3&#39;</span>
+<span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">freqtrade1</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">freqtradeorg/freqtrade:stable</span>
+<span class="w">    </span><span class="c1"># image: freqtradeorg/freqtrade:develop</span>
+<span class="w">    </span><span class="c1"># 使用绘图镜像</span>
+<span class="w">    </span><span class="c1"># image: freqtradeorg/freqtrade:develop_plot</span>
+<span class="w">    </span><span class="c1"># 构建步骤——仅在需要额外依赖时使用</span>
+<span class="w">    </span><span class="c1"># build:</span>
+<span class="w">    </span><span class="c1">#   context: .</span>
+<span class="w">    </span><span class="c1">#   dockerfile: &quot;./docker/Dockerfile.custom&quot;</span>
+<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always</span>
+<span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">freqtrade1</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;./user_data:/freqtrade/user_data&quot;</span>
+<span class="w">    </span><span class="c1"># 绑定接口端口（仅本地访问）</span>
+<span class="w">    </span><span class="c1"># 请在启用前阅读 https://www.freqtrade.io/en/latest/rest-api/ 文档</span>
+<span class="w">    </span><span class="c1"># 启用此项会暴露API端口</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">     </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;127.0.0.1:8080:8080&quot;</span>
+<span class="w">    </span><span class="c1"># 启动命令</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
+<span class="w">      </span><span class="no">trade</span>
+<span class="w">      </span><span class="no">--logfile /freqtrade/user_data/logs/freqtrade1.log</span>
+<span class="w">      </span><span class="no">--db-url sqlite:////freqtrade/user_data/tradesv3_freqtrade1.sqlite</span>
+<span class="w">      </span><span class="no">--config /freqtrade/user_data/config.json</span>
+<span class="w">      </span><span class="no">--config /freqtrade/user_data/config.freqtrade1.json</span>
+<span class="w">      </span><span class="no">--strategy SampleStrategy</span>
+
+<span class="w">  </span><span class="nt">freqtrade2</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">freqtradeorg/freqtrade:stable</span>
+<span class="w">    </span><span class="c1"># image: freqtradeorg/freqtrade:develop</span>
+<span class="w">    </span><span class="c1"># 使用绘图镜像</span>
+<span class="w">    </span><span class="c1"># image: freqtradeorg/freqtrade:develop_plot</span>
+<span class="w">    </span><span class="c1"># 构建步骤——仅在需要额外依赖时使用</span>
+<span class="w">    </span><span class="c1"># build:</span>
+<span class="w">    </span><span class="c1">#   context: .</span>
+<span class="w">    </span><span class="c1">#   dockerfile: &quot;./docker/Dockerfile.custom&quot;</span>
+<span class="w">    </span><span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">always</span>
+<span class="w">    </span><span class="nt">container_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">freqtrade2</span>
+<span class="w">    </span><span class="nt">volumes</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;./user_data:/freqtrade/user_data&quot;</span>
+<span class="w">    </span><span class="c1"># 绑定接口端口（仅本地访问）</span>
+<span class="w">    </span><span class="c1"># 请在启用前阅读 https://www.freqtrade.io/en/latest/rest-api/ 文档</span>
+<span class="w">    </span><span class="c1"># 启用此项会暴露API端口</span>
+<span class="w">    </span><span class="nt">ports</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;127.0.0.1:8081:8080&quot;</span>
+<span class="w">    </span><span class="c1"># 启动命令</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;</span>
+<span class="w">      </span><span class="no">trade</span>
+<span class="w">      </span><span class="no">--logfile /freqtrade/user_data/logs/freqtrade2.log</span>
+<span class="w">      </span><span class="no">--db-url sqlite:////freqtrade/user_data/tradesv3_freqtrade2.sqlite</span>
+<span class="w">      </span><span class="no">--config /freqtrade/user_data/config.json</span>
+<span class="w">      </span><span class="no">--config /freqtrade/user_data/config.freqtrade2.json</span>
+<span class="w">      </span><span class="no">--strategy SampleStrategy</span>
+</code></pre></div>
+<p>你可以采用任何你喜欢的命名规则，freqtrade1和2仅为示例。注意，每个实例都需要使用不同的数据库文件、端口映射和Telegram配置。</p>
+<h2 id="_4">使用其他数据库系统<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<p>Freqtrade基于SQLAlchemy，支持多种数据库系统，因此理论上支持多种数据库。
+Freqtrade不依赖或额外安装数据库驱动程序，请参考<a href="https://docs.sqlalchemy.org/en/14/core/engines.html#database-urls">SQLAlchemy官方文档</a>获取不同数据库系统的安装说明。</p>
+<p>已测试并确认可以与Freqtrade配合使用的数据库包括：</p>
+<ul>
+<li>sqlite（默认）</li>
+<li>PostgreSQL</li>
+<li>MariaDB</li>
+</ul>
+<div class="admonition 警告">
+<p class="admonition-title">警告</p>
+<p>使用以下任意数据库系统，意味着你应具备相应系统的管理能力。Freqtrade团队不会提供关于这些数据库系统的安装、维护（或备份）方面的支持。</p>
+</div>
+<h3 id="postgresql">PostgreSQL<a class="headerlink" href="#postgresql" title="Permanent link">&para;</a></h3>
+<p>安装：
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>psycopg2-binary
+</code></pre></div></p>
+<p>使用：
+<div class="highlight"><pre><span></span><code>...<span class="w"> </span>--db-url<span class="w"> </span>postgresql+psycopg2://&lt;用户名&gt;:&lt;密码&gt;@localhost:5432/&lt;数据库名&gt;
+</code></pre></div></p>
+<p>Freqtrade在启动时会自动创建所需的表。</p>
+<p>如果你运行多个实例，必须为每个实例设置不同的数据库，或者使用不同的用户/模式。</p>
+<h3 id="mariadb-mysql">MariaDB / MySQL<a class="headerlink" href="#mariadb-mysql" title="Permanent link">&para;</a></h3>
+<p>Freqtrade支持MariaDB，且依赖SQLAlchemy。</p>
+<p>安装：
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>pymysql
+</code></pre></div></p>
+<p>使用：
+<div class="highlight"><pre><span></span><code>...<span class="w"> </span>--db-url<span class="w"> </span>mysql+pymysql://&lt;用户名&gt;:&lt;密码&gt;@localhost:3306/&lt;数据库名&gt;
+</code></pre></div></p>
+<h2 id="systemd">将机器人配置为systemd服务运行<a class="headerlink" href="#systemd" title="Permanent link">&para;</a></h2>
+<p>将<code>freqtrade.service</code>文件复制到你的systemd用户目录（通常是<code>~/.config/systemd/user</code>），并根据你的实际情况修改<code>WorkingDirectory</code>和<code>ExecStart</code>。</p>
+<div class="admonition 注意">
+<p class="admonition-title">注意</p>
+<p>某些系统（如Raspbian）不会从用户目录加载服务单元文件。在这种情况下，将<code>freqtrade.service</code>复制到<code>/etc/systemd/user/</code>（需要超级用户权限）后再使用。</p>
+</div>
+<p>之后，你可以用以下命令启动守护进程：</p>
+<div class="highlight"><pre><span></span><code>systemctl<span class="w"> </span>--user<span class="w"> </span>start<span class="w"> </span>freqtrade
+</code></pre></div>
+<p>如果希望在用户注销后还能保持运行，需要启用<code>linger</code>：</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>loginctl<span class="w"> </span>enable-linger<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$USER</span><span class="s2">&quot;</span>
+</code></pre></div>
+<p>如果你以服务方式运行机器人，可以利用systemd的服务管理功能，将其作为软件看门狗，监控freqtrade状态并在失败时自动重启。前提是，在配置中启用了<code>internals.sd_notify</code>参数或使用<code>--sd-notify</code>命令行参数，机器人会通过sd_notify协议向systemd发送心跳并报告状态（运行中、暂停或停止）。</p>
+<p><code>freqtrade.service.watchdog</code>文件包含了使用systemd作为看门狗的示例服务单元配置。</p>
+<div class="admonition 注意">
+<p class="admonition-title">注意</p>
+<p>如果机器人在Docker容器中运行，sd_notify协议将无法正常工作。</p>
+</div>
+<h2 id="_5">高级日志设置<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<p>Freqtrade使用Python默认的日志模块。
+Python允许进行详细的<a href="https://docs.python.org/3/library/logging.config.html#logging.config.dictConfig">日志配置</a>，远超本文档所能覆盖的内容。</p>
+<p>如果没有提供<code>log_config</code>参数，则会使用默认的彩色终端输出。使用<code>--logfile logfile.log</code>会启用滚动文件处理器（RotatingFileHandler）。
+如果你对日志格式不满意，或者对默认的滚动文件处理器配置不满意，可以自行定制日志。</p>
+<p>默认配置的大致示意如下——包括文件处理器，但未启用：</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;log_config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;formatters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="hll"><span class="w">          </span><span class="nt">&quot;basic&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span class="hll"><span class="w">              </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;%(message)s&quot;</span>
+</span><span class="hll"><span class="w">          </span><span class="p">},</span>
+</span><span class="w">          </span><span class="nt">&quot;standard&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">              </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;%(asctime)s - %(name)s - %(levelname)s - %(message)s&quot;</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;handlers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="hll"><span class="w">          </span><span class="nt">&quot;console&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span class="hll"><span class="w">              </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;freqtrade.loggers.ft_rich_handler.FtRichHandler&quot;</span><span class="p">,</span>
+</span><span class="hll"><span class="w">              </span><span class="nt">&quot;formatter&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;basic&quot;</span>
+</span><span class="hll"><span class="w">          </span><span class="p">},</span>
+</span><span class="w">          </span><span class="nt">&quot;file&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">              </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;logging.handlers.RotatingFileHandler&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;formatter&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;standard&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="c1">// &quot;filename&quot;: &quot;someRandomLogFile.log&quot;,</span>
+<span class="w">              </span><span class="nt">&quot;maxBytes&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10485760</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;backupCount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">      </span><span class="p">},</span>
+<span class="w">      </span><span class="nt">&quot;root&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;handlers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="hll"><span class="w">              </span><span class="s2">&quot;console&quot;</span><span class="p">,</span>
+</span><span class="w">              </span><span class="c1">// &quot;file&quot;</span>
+<span class="w">          </span><span class="p">],</span>
+<span class="w">          </span><span class="nt">&quot;level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;INFO&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>!!! 提示“高亮部分”
+   上述代码块中的高亮行定义了Rich日志处理器，两者相互关联。<br />
+<code>"standard"</code>格式化器和<code>"file"</code>处理器属于FileHandler。</p>
+<p>每个处理器必须绑定一个已定义的格式化器（按名称），且其类必须是存在的合法日志类。
+要启用某个处理器，必须在<code>root</code>部分的<code>handlers</code>列表中添加。而如果省略此部分，freqtrade就不会输出任何日志（即使定义了处理器，也不会生效）。</p>
+<p>!!! 小技巧“显式日志配置”
+   建议将日志配置单独抽离到主配置之外，通过<a href="../configuration/#multiple-configuration-files">多配置文件</a>功能载入，避免重复代码。</p>
+<hr />
+<p>在许多Linux系统中，你可以将机器人配置为向<code>syslog</code>或<code>journald</code>系统服务发送日志信息。在Windows上，也可以将日志发送到远程<code>syslog</code>服务器。<code>--logfile</code>命令行参数的特殊值可实现这一功能。</p>
+<h3 id="syslog">发送到syslog<a class="headerlink" href="#syslog" title="Permanent link">&para;</a></h3>
+<p>使用<code>"log_config"</code>配置项来设置，将Freqtrade日志信息发往本地或远程syslog。</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="c1">// ...</span>
+<span class="w">  </span><span class="nt">&quot;log_config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;formatters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;syslog_fmt&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;%(name)s - %(levelname)s - %(message)s&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;handlers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// 其他处理器？ </span>
+<span class="w">      </span><span class="nt">&quot;syslog&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;logging.handlers.SysLogHandler&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;formatter&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;syslog_fmt&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="c1">// 可以用其他地址代替</span>
+<span class="w">          </span><span class="nt">&quot;address&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/dev/log&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;root&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;handlers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="c1">// 其他处理器</span>
+<span class="w">        </span><span class="s2">&quot;syslog&quot;</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a href="#advanced-logging">其他高级日志处理器</a>也可以配置，以实现例如在控制台中输出日志。</p>
+<h4 id="syslog_1">Syslog使用说明<a class="headerlink" href="#syslog_1" title="Permanent link">&para;</a></h4>
+<p>日志消息会发送到<code>syslog</code>的<code>user</code>系统组。可以用如下命令查看：</p>
+<ul>
+<li><code>tail -f /var/log/user</code></li>
+<li>或在安装了图形界面的系统上，使用“日志文件查看器”等工具。</li>
+</ul>
+<p>在许多系统中，<code>syslog</code>（如<code>rsyslog</code>）会从<code>journald</code>中采集数据（反之亦然），可以同时用<code>journalctl</code>和专业的syslog查看工具查看消息。你可以根据需要任意组合。</p>
+<p>在<code>rsyslog</code>中，可以将机器人日志重定向到专门的日志文件，例如在配置文件（如<code>/etc/rsyslog.d/50-default.conf</code>）末尾添加：</p>
+<div class="highlight"><pre><span></span><code>if $programname startswith &quot;freqtrade&quot; then -/var/log/freqtrade.log
+</code></pre></div>
+<p>如果启用<code>Reduce</code>模式，系统会减少重复信息。例如，多条心跳消息会合并为一条，除非有别的事件发生。这可以在<code>/etc/rsyslog.conf</code>中设置：</p>
+<div class="highlight"><pre><span></span><code># 去重过滤
+$RepeatedMsgReduction on
+</code></pre></div>
+<h4 id="syslog_2">syslog地址配置<a class="headerlink" href="#syslog_2" title="Permanent link">&para;</a></h4>
+<p>syslog地址可以是Unix域套接字（socket文件路径），也可以是IP和端口组成的UDP套接字，比如：</p>
+<ul>
+<li><code>"address": "/dev/log"</code> —— 使用<code>/dev/log</code>套接字，将日志发到syslog（rsyslog），多数系统支持。</li>
+<li><code>"address": "/var/run/syslog"</code> —— 使用<code>/var/run/syslog</code>套接字（MacOS下常用）。</li>
+<li><code>"address": "localhost:514"</code> —— 通过UDP端口514，将日志发往本地syslog。</li>
+<li><code>"address": "&lt;ip&gt;:514"</code> —— 远程IP地址和514端口的syslog。</li>
+</ul>
+<p>!!! 信息“已废弃——命令行配置syslog”</p>
+<p><code>--logfile syslog:&lt;syslog_address&gt;</code> —— 通过指定<code>&lt;syslog_address&gt;</code>，将日志消息发往syslog。</p>
+<p>syslog地址可为Unix套接字路径或IP+端口组合，示例如下：</p>
+<ul>
+<li><code>--logfile syslog:/dev/log</code> —— 适用大部分系统的标准配置。</li>
+<li><code>--logfile syslog</code> —— 等同于上面，默认路径为<code>/dev/log</code>。</li>
+<li><code>--logfile syslog:/var/run/syslog</code> —— MacOS下使用。</li>
+<li><code>--logfile syslog:localhost:514</code> —— 远程发到本地或远程syslog。</li>
+<li><code>--logfile syslog:&lt;ip&gt;:514</code> —— 远程发往指定IP的syslog服务器。</li>
+</ul>
+<h3 id="journald">发送到journald<a class="headerlink" href="#journald" title="Permanent link">&para;</a></h3>
+<p>需要安装Python包<code>cysystemd</code>（<code>pip install cysystemd</code>），但此包在Windows上不可用。因此，Windows平台无法使用journald日志功能。</p>
+<p>要将Freqtrade日志发往<code>journald</code>，在配置中加入：</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="c1">// ...</span>
+<span class="w">  </span><span class="nt">&quot;log_config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;formatters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;journald_fmt&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;%(name)s - %(levelname)s - %(message)s&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;handlers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// 其他处理器？ </span>
+<span class="w">      </span><span class="nt">&quot;journald&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;cysystemd.journal.JournaldLogHandler&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;formatter&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;journald_fmt&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;root&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;handlers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="c1">// ..</span>
+<span class="w">        </span><span class="s2">&quot;journald&quot;</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><a href="#advanced-logging">其他高级日志处理器</a>也可配置，以实现控制台输出等。</p>
+<p>日志消息会发往<code>journald</code>的<code>user</code>系统组，查看方法包括：</p>
+<ul>
+<li><code>journalctl -f</code> —— 监控<code>journald</code>中的所有日志（包括Freqtrade）。</li>
+<li><code>journalctl -f -u freqtrade.service</code> —— 当机器人以<code>systemd</code>服务方式运行时用此命令。</li>
+</ul>
+<p>此外，<code>journalctl</code>提供丰富的过滤选项，详情请参考其手册。</p>
+<p>在许多系统中，<code>syslog</code>和<code>journald</code>会互相同步，既可用<code>--logfile syslog</code>也可用<code>--logfile journald</code>，两者的日志都可用<code>journalctl</code>和syslog查看。</p>
+<p>!!! 信息“已废弃——命令行配置journald”
+欲将频交易机器人日志发给<code>journald</code>，使用如下参数：</p>
+<p><code>--logfile journald</code> —— 发送日志到<code>journald</code>。</p>
+<h3 id="json">JSON格式的日志<a class="headerlink" href="#json" title="Permanent link">&para;</a></h3>
+<p>你还可以将默认输出格式改为JSON。<code>"fmt_dict"</code>属性定义了输出的键名，与Python的<code>logging.LogRecord</code>属性对应（详见<a href="https://docs.python.org/3/library/logging.html#logrecord-attributes">Python官方文档</a>）。</p>
+<p>示例配置如下，默认输出会改为JSON格式，也可结合<code>RotatingFileHandler</code>使用，但建议保持一种便于阅读的格式。</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="c1">// ...</span>
+<span class="w">  </span><span class="nt">&quot;log_config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;formatters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">       </span><span class="nt">&quot;json&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;()&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;freqtrade.loggers.json_formatter.JsonFormatter&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;fmt_dict&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">              </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;asctime&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;levelname&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;logger&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;name&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;message&quot;</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;handlers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="c1">// 其他处理器？ </span>
+<span class="w">      </span><span class="nt">&quot;jsonStream&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;class&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;logging.StreamHandler&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;formatter&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;json&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;root&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;handlers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="c1">// ..</span>
+<span class="w">        </span><span class="s2">&quot;jsonStream&quot;</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+    
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../advanced-backtesting/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Backtest analysis">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Backtest analysis
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../trade-object/" class="md-footer__link md-footer__link--next" aria-label="Next: Trade Object">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Trade Object
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["content.code.annotate", "search.share", "content.code.copy", "navigation.top", "navigation.footer"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+        <script src="../javascripts/config.js"></script>
+      
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
