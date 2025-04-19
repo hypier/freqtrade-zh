@@ -1,10 +1,10 @@
-## Highlighted changes
+## 高亮变更
 
 - ...
 
-### How to update
+### 如何更新
 
-As always, you can update your bot using one of the following commands:
+一如既往，您可以使用以下任一命令更新您的机器人：
 
 #### docker-compose
 
@@ -13,14 +13,14 @@ docker-compose pull
 docker-compose up -d
 ```
 
-#### Installation via setup script
+#### 通过安装脚本进行安装
 
 ```
-# Deactivate venv and run 
+# 退出虚拟环境并运行
 ./setup.sh --update
 ```
 
-#### Plain native installation
+#### 纯本机安装
 
 ```
 git pull
@@ -28,10 +28,10 @@ pip install -U -r requirements.txt
 ```
 
 <details>
-<summary>Expand full changelog</summary>
+<summary>展开完整变更日志</summary>
 
 ```
-<Paste your changelog here>
+<在此粘贴您的变更日志>
 ```
 
 </details>

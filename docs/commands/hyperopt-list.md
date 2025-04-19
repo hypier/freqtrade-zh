@@ -1,62 +1,54 @@
-```
-usage: freqtrade hyperopt-list [-h] [-v] [--no-color] [--logfile FILE] [-V]
-                               [-c PATH] [-d PATH] [--userdir PATH] [--best]
-                               [--profitable] [--min-trades INT]
-                               [--max-trades INT] [--min-avg-time FLOAT]
-                               [--max-avg-time FLOAT] [--min-avg-profit FLOAT]
-                               [--max-avg-profit FLOAT]
-                               [--min-total-profit FLOAT]
-                               [--max-total-profit FLOAT]
-                               [--min-objective FLOAT] [--max-objective FLOAT]
-                               [--print-json] [--no-details]
-                               [--hyperopt-filename FILENAME]
-                               [--export-csv FILE]
+用法：freqtrade hyperopt-list [-h] [-v] [--no-color] [--logfile FILE] [-V]
+                                    [-c PATH] [-d PATH] [--userdir PATH] [--best]
+                                    [--profitable] [--min-trades INT]
+                                    [--max-trades INT] [--min-avg-time FLOAT]
+                                    [--max-avg-time FLOAT] [--min-avg-profit FLOAT]
+                                    [--max-avg-profit FLOAT]
+                                    [--min-total-profit FLOAT]
+                                    [--max-total-profit FLOAT]
+                                    [--min-objective FLOAT] [--max-objective FLOAT]
+                                    [--print-json] [--no-details]
+                                    [--hyperopt-filename FILENAME]
+                                    [--export-csv FILE]
 
-options:
-  -h, --help            show this help message and exit
-  --best                Select only best epochs.
-  --profitable          Select only profitable epochs.
-  --min-trades INT      Select epochs with more than INT trades.
-  --max-trades INT      Select epochs with less than INT trades.
-  --min-avg-time FLOAT  Select epochs above average time.
-  --max-avg-time FLOAT  Select epochs below average time.
+参数选项：
+  -h, --help            显示帮助信息并退出
+  --best                只选择最佳轮次。
+  --profitable          只选择盈利的轮次。
+  --min-trades INT      选择交易次数多于 INT 次的轮次。
+  --max-trades INT      选择交易次数少于 INT 次的轮次。
+  --min-avg-time FLOAT  选择平均时间高于此值的轮次。
+  --max-avg-time FLOAT  选择平均时间低于此值的轮次。
   --min-avg-profit FLOAT
-                        Select epochs above average profit.
+                        选择平均利润高于此值的轮次。
   --max-avg-profit FLOAT
-                        Select epochs below average profit.
+                        选择平均利润低于此值的轮次。
   --min-total-profit FLOAT
-                        Select epochs above total profit.
+                        选择总利润高于此值的轮次。
   --max-total-profit FLOAT
-                        Select epochs below total profit.
+                        选择总利润低于此值的轮次。
   --min-objective FLOAT
-                        Select epochs above objective.
+                        选择目标值高于此的轮次。
   --max-objective FLOAT
-                        Select epochs below objective.
-  --print-json          Print output in JSON format.
-  --no-details          Do not print best epoch details.
+                        选择目标值低于此的轮次。
+  --print-json          使用JSON格式输出。
+  --no-details          不显示最佳轮次的详细信息。
   --hyperopt-filename FILENAME
-                        Hyperopt result filename.Example: `--hyperopt-
-                        filename=hyperopt_results_2020-09-27_16-20-48.pickle`
-  --export-csv FILE     Export to CSV-File. This will disable table print.
-                        Example: --export-csv hyperopt.csv
+                        超参数调优结果文件名。例如：`--hyperopt-filename=hyperopt_results_2020-09-27_16-20-48.pickle`
+  --export-csv FILE     导出为CSV文件。此操作将禁用表格打印。例子：--export-csv hyperopt.csv
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
+常用参数：
+  -v, --verbose         详细模式（-vv显示更多信息，-vvv显示全部信息）。
+  --no-color            禁用超参数调优结果的彩色显示。如果你将输出重定向到文件，这可能会有用。
   --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        'syslog', 'journald'. See the documentation for more
-                        details.
-  -V, --version         show program's version number and exit
+                        指定日志文件路径。常用值有：
+                        'syslog', 'journald'。详见相关文档。
+  -V, --version         显示程序版本号并退出
   -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
+                        指定配置文件（默认：`userdir/config.json`或
+                        `config.json`，取决于存在哪个文件）。可以使用多个--config。
+                        可以设置为`-`，从标准输入读取配置。
   -d PATH, --datadir PATH, --data-dir PATH
-                        Path to directory with historical backtesting data.
+                        指向存放历史回测数据的目录路径。
   --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
-
-```
+                        用户数据目录路径。

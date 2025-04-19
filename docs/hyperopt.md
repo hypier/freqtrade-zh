@@ -1,129 +1,128 @@
-# Hyperopt
+# Hyperopt（超参数优化）
 
-This page explains how to tune your strategy by finding the optimal
-parameters, a process called hyperparameter optimization. The bot uses algorithms included in the `scikit-optimize` package to accomplish this.
-The search will burn all your CPU cores, make your laptop sound like a fighter jet and still take a long time.
+本页面介绍如何通过寻找最优参数来调优你的策略，这个过程称为超参数优化。机器人使用包含在 `scikit-optimize` 包中的算法来实现。  
+搜索过程会耗尽你的所有CPU核数，让你的笔记本电脑发出如战斗机般的声音，并且仍然需要较长时间。
 
-In general, the search for best parameters starts with a few random combinations (see [below](#reproducible-results) for more details) and then uses Bayesian search with a ML regressor algorithm (currently ExtraTreesRegressor) to quickly find a combination of parameters in the search hyperspace that minimizes the value of the [loss function](#loss-functions).
+一般来说，最佳参数的搜索从一些随机组合开始（详见[下面](#reproducible-results)的详细说明），然后使用带有ML回归器算法（目前为ExtraTreesRegressor）的贝叶斯搜索，以快速在搜索超空间中找到能最小化[损失函数](#loss-functions)值的参数组合。
 
-Hyperopt requires historic data to be available, just as backtesting does (hyperopt runs backtesting many times with different parameters).
-To learn how to get data for the pairs and exchange you're interested in, head over to the [Data Downloading](data-download.md) section of the documentation.
+Hyperopt需要历史数据支持，就像回测一样（hyperopt会用不同参数多次运行回测）。  
+如果你想了解如何获取感兴趣的交易对和交易所的数据，可以查看文档中的[数据下载](data-download.md)章节。
 
-!!! Bug
-    Hyperopt can crash when used with only 1 CPU Core as found out in [Issue #1133](https://github.com/freqtrade/freqtrade/issues/1133)
+!!! 警告
+    当只使用1个CPU核时，Hyperopt可能会崩溃，正如在[问题#1133](https://github.com/freqtrade/freqtrade/issues/1133)中发现的那样。
 
-!!! Note
-    Since 2021.4 release you no longer have to write a separate hyperopt class, but can configure the parameters directly in the strategy.
-    The legacy method was supported up to 2021.8 and has been removed in 2021.9.
+!!! 注意
+    自2021.4版本起，你不再需要单独编写hyperopt类，而可以直接在策略中配置参数。  
+    旧的方法一直支持到2021.8版本，但在2021.9被移除。
 
-## Install hyperopt dependencies
+## 安装hyperopt依赖
 
-Since Hyperopt dependencies are not needed to run the bot itself, are heavy, can not be easily built on some platforms (like Raspberry PI), they are not installed by default. Before you run Hyperopt, you need to install the corresponding dependencies, as described in this section below.
+由于Hyperopt依赖与运行机器人本身无关，且依赖较大且在某些平台（如树莓派）上难以构建，因此默认未安装。  
+在你运行hyperopt之前，需要安装对应的依赖，具体方法如下。
 
-!!! Note
-    Since Hyperopt is a resource intensive process, running it on a Raspberry Pi is not recommended nor supported.
+!!! 注意
+    由于Hyperopt是资源密集型的操作，不建议也不支持在树莓派上运行。
 
 ### Docker
 
-The docker-image includes hyperopt dependencies, no further action needed.
+包含hyperopt依赖的docker镜像，无需额外操作。
 
-### Easy installation script (setup.sh) / Manual installation
+### 简便安装脚本（setup.sh）/手动安装
 
 ```bash
 source .venv/bin/activate
 pip install -r requirements-hyperopt.txt
 ```
 
-## Hyperopt command reference
+## Hyperopt命令参考
 
 --8<-- "commands/hyperopt.md"
 
-### Hyperopt checklist
+### Hyperopt基本检查列表
 
-Checklist on all tasks / possibilities in hyperopt
+列出hyperopt所有任务／可能性清单
 
-Depending on the space you want to optimize, only some of the below are required:
+根据你想优化的空间（search space），以下只需部分功能：
 
-* define parameters with `space='buy'` - for entry signal optimization
-* define parameters with `space='sell'` - for exit signal optimization
+* 定义参数为 `space='buy'` — 用于入场信号优化
+* 定义参数为 `space='sell'` — 用于离场信号优化
 
-!!! Note
-    `populate_indicators` needs to create all indicators any of the spaces may use, otherwise hyperopt will not work.
+!!! 注意
+    `populate_indicators`需要创建所有可能用到的指标，否则hyperopt将无法正常工作。
 
-Rarely you may also need to create a [nested class](advanced-hyperopt.md#overriding-pre-defined-spaces) named `HyperOpt` and implement
+很少情况下，可能还需要创建一个[嵌套类](advanced-hyperopt.md#overriding-pre-defined-spaces)，名为 `HyperOpt` 并实现：
 
-* `roi_space` - for custom ROI optimization (if you need the ranges for the ROI parameters in the optimization hyperspace that differ from default)
-* `generate_roi_table` - for custom ROI optimization (if you need the ranges for the values in the ROI table that differ from default or the number of entries (steps) in the ROI table which differs from the default 4 steps)
-* `stoploss_space` - for custom stoploss optimization (if you need the range for the stoploss parameter in the optimization hyperspace that differs from default)
-* `trailing_space` - for custom trailing stop optimization (if you need the ranges for the trailing stop parameters in the optimization hyperspace that differ from default)
-* `max_open_trades_space` - for custom max_open_trades optimization (if you need the ranges for the max_open_trades parameter in the optimization hyperspace that differ from default)
+* `roi_space` — 用于自定义ROI优化（如果你需要的ROI参数范围不同于默认）
+* `generate_roi_table` — 用于自定义ROI表（如果你需要调整ROI值范围或ROI表的步数，默认为4步）
+* `stoploss_space` — 用于自定义止损参数（范围不同于默认时）
+* `trailing_space` — 用于自定义后续跟踪止损参数范围
+* `max_open_trades_space` — 用于自定义最大开启交易数（范围不同于默认）
 
-!!! Tip "Quickly optimize ROI, stoploss and trailing stoploss"
-    You can quickly optimize the spaces `roi`, `stoploss` and `trailing` without changing anything in your strategy.
+!!! 提示 "快速优化ROI、止损和跟踪止损"
+    你可以无需更改策略内容，快速优化`roi`、`stoploss`和`trailing`空间。
 
-    ``` bash
-    # Have a working strategy at hand.
+    ```bash
+    # 你已有一个正常工作的策略
     freqtrade hyperopt --hyperopt-loss SharpeHyperOptLossDaily --spaces roi stoploss trailing --strategy MyWorkingStrategy --config config.json -e 100
     ```
 
-### Hyperopt execution logic
+### Hyperopt执行逻辑
 
-Hyperopt will first load your data into memory and will then run `populate_indicators()` once per Pair to generate all indicators, unless `--analyze-per-epoch` is specified.
+Hyperopt首先会将你的数据加载到内存，然后对于每一个交易对调用一次`populate_indicators()`以生成所有指标，除非指定了`--analyze-per-epoch`。
 
-Hyperopt will then spawn into different processes (number of processors, or `-j <n>`), and run backtesting over and over again, changing the parameters that are part of the `--spaces` defined.
+之后，Hyperopt会启动多个进程（可通过`-j <n>`指定核数），不断进行回测，改变定义在 `--spaces` 中的参数。
 
-For every new set of parameters, freqtrade will run first `populate_entry_trend()` followed by `populate_exit_trend()`, and then run the regular backtesting process to simulate trades.
+每次参数集变化后，freqtrade会先运行`populate_entry_trend()`，再运行`populate_exit_trend()`，最后进行常规的回测，模拟交易。
 
-After backtesting, the results are passed into the [loss function](#loss-functions), which will evaluate if this result was better or worse than previous results.  
-Based on the loss function result, hyperopt will determine the next set of parameters to try in the next round of backtesting.
+回测结束后，结果会输入到[损失函数](#loss-functions)，用以评估此结果优劣。  
+基于损失函数的结果，hyperopt会决定下一轮回测时要尝试的参数组合。
 
-### Configure your Guards and Triggers
+### 配置你的守护条件（Guards）和触发器（Triggers）
 
-There are two places you need to change in your strategy file to add a new buy hyperopt for testing:
+在策略文件中，需要更改两个地方来添加新的买入hyperopt：
 
-* Define the parameters at the class level hyperopt shall be optimizing.
-* Within `populate_entry_trend()` - use defined parameter values instead of raw constants.
+* 在类层面定义参数，hyperopt会优化这些参数。
+* 在`populate_entry_trend()`中，使用定义的参数值替代硬编码的常量。
 
-There you have two different types of indicators: 1. `guards` and 2. `triggers`.
+你会遇到两种指标类型：1. `guards`（守护条件）和2. `triggers`（触发器）。
 
-1. Guards are conditions like "never buy if ADX < 10", or never buy if current price is over EMA10.
-2. Triggers are ones that actually trigger buy in specific moment, like "buy when EMA5 crosses over EMA10" or "buy when close price touches lower Bollinger band".
+1. Guards是条件，比如"永不买入如果ADX<10"或"当前价格高于EMA10"。
+2. Triggers是真正触发买入的条件，例如"EMA5上穿EMA10"或"收盘价触碰布林带下轨"。
 
-!!! Hint "Guards and Triggers"
-    Technically, there is no difference between Guards and Triggers.  
-    However, this guide will make this distinction to make it clear that signals should not be "sticking".
-    Sticking signals are signals that are active for multiple candles. This can lead into entering a signal late (right before the signal disappears - which means that the chance of success is a lot lower than right at the beginning).
+!!! 提示 "Guards和Triggers"
+    从技术角度，Guards和Triggers没有本质区别。  
+    但为了避免混淆，本文会特别区分，以强调这些信号不应“黏着”在一起。  
+    持续的信号意味着它们在多根蜡烛上都保持激活，可能导致迟进入信号（信号快消失时入场），成功概率较低。
 
-Hyper-optimization will, for each epoch round, pick one trigger and possibly multiple guards.
+Hyper-optimization在每一轮（epoch）会为每个trigger选一个trigger并可能多个guards。
 
-#### Exit signal optimization
+#### 离场信号优化
 
-Similar to the entry-signal above, exit-signals can also be optimized.
-Place the corresponding settings into the following methods
+类似入场信号，离场信号也可以优化，将相关设置放入以下位置：
 
-* Define the parameters at the class level hyperopt shall be optimizing, either naming them `sell_*`, or by explicitly defining `space='sell'`.
-* Within `populate_exit_trend()` - use defined parameter values instead of raw constants.
+* 在类层面定义参数，hyperopt会优化这些参数，参数名可以以`sell_*`开头，或显式定义`space='sell'`。
+* 在`populate_exit_trend()`中，使用参数值替代硬编码。
 
-The configuration and rules are the same than for buy signals.
+规则和配置与买入信号类似。
 
-## Solving a Mystery
+## 解密一个谜题
 
-Let's say you are curious: should you use MACD crossings or lower Bollinger Bands to trigger your long entries.
-And you also wonder should you use RSI or ADX to help with those decisions.
-If you decide to use RSI or ADX, which values should I use for them?
+假设你很犹豫：是否应该用MACD金叉还是布林带下轨触发多单入场？  
+你还在考虑，是用RSI还是ADX辅助决策。  
+如果选择使用RSI或ADX，应该用哪个值？  
 
-So let's use hyperparameter optimization to solve this mystery.
+那么，让我们用超参数优化来破解这个谜。
 
-### Defining indicators to be used
+### 定义要用的指标
 
-We start by calculating the indicators our strategy is going to use.
+首先，计算你的策略将用到的所有指标。
 
-``` python
+```python
 class MyAwesomeStrategy(IStrategy):
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
-        Generate all indicators used by the strategy
+        生成策略用到的所有指标
         """
         dataframe['adx'] = ta.ADX(dataframe)
         dataframe['rsi'] = ta.RSI(dataframe)
@@ -139,9 +138,9 @@ class MyAwesomeStrategy(IStrategy):
         return dataframe
 ```
 
-### Hyperoptable parameters
+### Hyperopt可调参数定义
 
-We continue to define hyperoptable parameters:
+接下来，定义可调整的超参数：
 
 ```python
 class MyAwesomeStrategy(IStrategy):
@@ -152,86 +151,85 @@ class MyAwesomeStrategy(IStrategy):
     buy_trigger = CategoricalParameter(["bb_lower", "macd_cross_signal"], default="bb_lower", space="buy")
 ```
 
-The above definition says: I have five parameters I want to randomly combine to find the best combination.  
-`buy_rsi` is an integer parameter, which will be tested between 20 and 40. This space has a size of 20.  
-`buy_adx` is a decimal parameter, which will be evaluated between 20 and 40 with 1 decimal place (so values are 20.1, 20.2, ...). This space has a size of 200.  
-Then we have three category variables. First two are either `True` or `False`.
-We use these to either enable or disable the ADX and RSI guards.
-The last one we call `trigger` and use it to decide which buy trigger we want to use.
+以上定义表示：我有五个参数，希望随机组合以找到最佳配置。  
+`buy_rsi`是一个整数参数，测试区间为20到40，空间大小为20。  
+`buy_adx`是小数参数，评价范围为20到40，保留一位小数，组合数为200（20*10）。  
+后面有三个类别变量，前两个为`True`或`False`，用来启用或禁用ADX和RSI守护条件。  
+最后一个叫`trigger`，用以选择买入触发条件。
 
-!!! Note "Parameter space assignment"
-    Parameters must either be assigned to a variable named `buy_*` or `sell_*` - or contain `space='buy'` | `space='sell'` to be assigned to a space correctly.
-    If no parameter is available for a space, you'll receive the error that no space was found when running hyperopt.  
-    Parameters with unclear space (e.g. `adx_period = IntParameter(4, 24, default=14)` - no explicit nor implicit space) will not be detected and will therefore be ignored.
+!!! 提示 "参数空间分配"
+    参数要么命名为`buy_*`或`sell_*`，要么包含`space='buy'`|`space='sell'`，才能正确归属到空间内。  
+    如果没有为某个空间定义参数，会出现找不到空间的错误。  
+    不明确空间的参数（例如：`adx_period = IntParameter(4, 24, default=14)`，既无明确也无隐式空间）会被忽略。
 
-So let's write the buy strategy using these values:
+用这些值写出买入策略示例：
 
 ```python
-    def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        conditions = []
-        # GUARDS AND TRENDS
-        if self.buy_adx_enabled.value:
-            conditions.append(dataframe['adx'] > self.buy_adx.value)
-        if self.buy_rsi_enabled.value:
-            conditions.append(dataframe['rsi'] < self.buy_rsi.value)
+def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    conditions = []
+    # 守护条件和趋势
+    if self.buy_adx_enabled.value:
+        conditions.append(dataframe['adx'] > self.buy_adx.value)
+    if self.buy_rsi_enabled.value:
+        conditions.append(dataframe['rsi'] < self.buy_rsi.value)
 
-        # TRIGGERS
-        if self.buy_trigger.value == 'bb_lower':
-            conditions.append(dataframe['close'] < dataframe['bb_lowerband'])
-        if self.buy_trigger.value == 'macd_cross_signal':
-            conditions.append(qtpylib.crossed_above(
-                dataframe['macd'], dataframe['macdsignal']
-            ))
+    # 触发条件
+    if self.buy_trigger.value == 'bb_lower':
+        conditions.append(dataframe['close'] < dataframe['bb_lowerband'])
+    if self.buy_trigger.value == 'macd_cross_signal':
+        conditions.append(qtpylib.crossed_above(
+            dataframe['macd'], dataframe['macdsignal']
+        ))
 
-        # Check that volume is not 0
-        conditions.append(dataframe['volume'] > 0)
+    # 确保成交量不为0
+    conditions.append(dataframe['volume'] > 0)
 
-        if conditions:
-            dataframe.loc[
-                reduce(lambda x, y: x & y, conditions),
-                'enter_long'] = 1
+    if conditions:
+        dataframe.loc[
+            reduce(lambda x, y: x & y, conditions),
+            'enter_long'
+        ] = 1
 
-        return dataframe
+    return dataframe
 ```
 
-Hyperopt will now call `populate_entry_trend()` many times (`epochs`) with different value combinations.  
-It will use the given historical data and simulate buys based on the buy signals generated with the above function.  
-Based on the results, hyperopt will tell you which parameter combination produced the best results (based on the configured [loss function](#loss-functions)).
+Hyperopt将会多次（多轮`epochs`）调用`populate_entry_trend()`，每次用不同参数组合。  
+它会用历史数据模拟买入信号，最后根据[损失函数](#loss-functions)给出最优参数。
 
-!!! Note
-    The above setup expects to find ADX, RSI and Bollinger Bands in the populated indicators.
-    When you want to test an indicator that isn't used by the bot currently, remember to
-    add it to the `populate_indicators()` method in your strategy or hyperopt file.
+!!! 注意
+    上述设置假设指标`adx`、`rsi`和布林带在指标集里已被计算出来。  
+    如果你想测试一个未在`populate_indicators()`中用到的指标，记得将它加入对应的指标生成函数。
 
-## Parameter types
+## 参数类型
 
-There are four parameter types each suited for different purposes.
+参数主要有四种，每种适合不同场景。
 
-* `IntParameter` - defines an integral parameter with upper and lower boundaries of search space.
-* `DecimalParameter` - defines a floating point parameter with a limited number of decimals (default 3). Should be preferred instead of `RealParameter` in most cases.
-* `RealParameter` - defines a floating point parameter with upper and lower boundaries and no precision limit. Rarely used as it creates a space with a near infinite number of possibilities.
-* `CategoricalParameter` - defines a parameter with a predetermined number of choices.
-* `BooleanParameter` - Shorthand for `CategoricalParameter([True, False])` - great for "enable" parameters.
+* `IntParameter` — 用于定义整型参数，范围有限。
+* `DecimalParameter` — 用于定义浮点数参数，带有限定的小数位（默认3），在大部分情况下优于`RealParameter`。
+* `RealParameter` — 浮点参数，无范围限制，极少用到，因其搜索空间几乎无限。
+* `CategoricalParameter` — 预定义的类别选择。
+* `BooleanParameter` — 简写，等同于 `CategoricalParameter([True, False])`，适合启用/禁用参数。
 
-### Parameter options
+### 参数选项
 
-There are two parameter options that can help you to quickly test various ideas:
+有两个参数选项可以帮助你快速测试不同想法：
 
-* `optimize` - when set to `False`, the parameter will not be included in optimization process. (Default: True)
-* `load` - when set to `False`, results of a previous hyperopt run (in `buy_params` and `sell_params` either in your strategy or the JSON output file) will not be used as the starting value for subsequent hyperopts. The default value specified in the parameter will be used instead. (Default: True)
+* `optimize` — 设置为`False`时，不会被纳入优化（默认：True）。
+* `load` — 设置为`False`时，不会用之前hyperopt的结果作为起点（默认：True），而会使用参数的默认值。
 
-!!! Tip "Effects of `load=False` on backtesting"
-    Be aware that setting the `load` option to `False` will mean backtesting will also use the default value specified in the parameter and *not* the value found through hyperoptimisation.
+!!! 提示 "设置`load=False`对回测的影响"
+    如果设置`load=False`，回测时会使用参数的默认值，而非hyperopt找到的最优值，需注意此差异。
 
-!!! Warning
-    Hyperoptable parameters cannot be used in `populate_indicators` - as hyperopt does not recalculate indicators for each epoch, so the starting value would be used in this case.
+!!! 警告
+    超参数不能用于`populate_indicators`，因为hyperopt不会每轮都重新计算指标，指标值会固定。
 
-## Optimizing an indicator parameter
+## 优化指标参数
 
-Assuming you have a simple strategy in mind - a EMA cross strategy (2 Moving averages crossing) - and you'd like to find the ideal parameters for this strategy.
-By default, we assume a stoploss of 5% - and a take-profit (`minimal_roi`) of 10% - which means freqtrade will sell the trade once 10% profit has been reached.
+假设你有一个简单策略：EMA交叉（两个移动平均线交叉），想找到最优参数。
 
-``` python
+默认假设止损为5%，盈利目标为10%（`minimal_roi` = 10%，意味着利润达到10%时卖出）。
+
+```python
 from pandas import DataFrame
 from functools import reduce
 
@@ -247,88 +245,83 @@ class MyAwesomeStrategy(IStrategy):
     minimal_roi = {
         "0":  0.10
     }
-    # Define the parameter spaces
+    # 定义参数空间
     buy_ema_short = IntParameter(3, 50, default=5)
     buy_ema_long = IntParameter(15, 200, default=50)
 
-
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        """Generate all indicators used by the strategy"""
-        
-        # Calculate all ema_short values
+        """生成策略用到的所有指标"""
+        # 计算所有短EMA
         for val in self.buy_ema_short.range:
             dataframe[f'ema_short_{val}'] = ta.EMA(dataframe, timeperiod=val)
-        
-        # Calculate all ema_long values
+        # 计算所有长EMA
         for val in self.buy_ema_long.range:
             dataframe[f'ema_long_{val}'] = ta.EMA(dataframe, timeperiod=val)
-        
         return dataframe
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions = []
         conditions.append(qtpylib.crossed_above(
-                dataframe[f'ema_short_{self.buy_ema_short.value}'], dataframe[f'ema_long_{self.buy_ema_long.value}']
-            ))
-
-        # Check that volume is not 0
+            dataframe[f'ema_short_{self.buy_ema_short.value}'], dataframe[f'ema_long_{self.buy_ema_long.value}']
+        ))
+        # 量必须大于0
         conditions.append(dataframe['volume'] > 0)
-
         if conditions:
             dataframe.loc[
                 reduce(lambda x, y: x & y, conditions),
-                'enter_long'] = 1
+                'enter_long'
+            ] = 1
         return dataframe
 
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions = []
         conditions.append(qtpylib.crossed_above(
-                dataframe[f'ema_long_{self.buy_ema_long.value}'], dataframe[f'ema_short_{self.buy_ema_short.value}']
-            ))
-
-        # Check that volume is not 0
+            dataframe[f'ema_long_{self.buy_ema_long.value}'], dataframe[f'ema_short_{self.buy_ema_short.value}']
+        ))
+        # 量必须大于0
         conditions.append(dataframe['volume'] > 0)
-
         if conditions:
             dataframe.loc[
                 reduce(lambda x, y: x & y, conditions),
-                'exit_long'] = 1
+                'exit_long'
+            ] = 1
         return dataframe
 ```
 
-Breaking it down:
+分析如下：  
+`self.buy_ema_short.range`返回一个对象，包含从参数范围最低到最高的所有值。  
+在这个例子（`IntParameter(3, 50, default=5)`）中，循环会覆盖所有从3到50的整数（`[3, 4, 5, ..., 49, 50]`）。  
+利用这个特性，hyperopt会自动生成多达48个新列（如`['buy_ema_3', 'buy_ema_4', ..., 'buy_ema_50']`）。
 
-Using `self.buy_ema_short.range` will return a range object containing all entries between the Parameters low and high value.
-In this case (`IntParameter(3, 50, default=5)`), the loop would run for all numbers between 3 and 50 (`[3, 4, 5, ... 49, 50]`).
-By using this in a loop, hyperopt will generate 48 new columns (`['buy_ema_3', 'buy_ema_4', ... , 'buy_ema_50']`).
+hyperopt会用选中的值，来生成买入和卖出信号。
 
-Hyperopt itself will then use the selected value to create the buy and sell signals.
+虽然此方法可能太简单，无法确保持续获利，但它作为示例说明了如何调优指标参数的思路。
 
-While this strategy is most likely too simple to provide consistent profit, it should serve as an example how optimize indicator parameters.
+!!! 注意
+    `self.buy_ema_short.range`在hyperopt和其他模式下表现不同。在hyperopt中，它会生成多列（比如48列）；  
+    而在回测或实盘模式下，只会使用选中的某个值对应的列或参数。所以避免在实际运行中用显式的列名或非对应的值。
 
-!!! Note
-    `self.buy_ema_short.range` will act differently between hyperopt and other modes. For hyperopt, the above example may generate 48 new columns, however for all other modes (backtesting, dry/live), it will only generate the column for the selected value. You should therefore avoid using the resulting column with explicit values (values other than `self.buy_ema_short.value`).
+!!! 注意
+    `range`属性同时可以用于`DecimalParameter`和`CategoricalParameter`。  
+    `RealParameter`由于搜索空间无限，因此没有`range`属性。
 
-!!! Note
-    `range` property may also be used with `DecimalParameter` and `CategoricalParameter`. `RealParameter` does not provide this property due to infinite search space.
+??? 提示 "性能优化建议"
+    在正常hyperopt过程中，指标会被计算一次，传递给每轮（epoch），会随核心数增加而消耗更多内存（RAM）。出于性能考虑，有两种减小RAM占用的方案：
 
-??? Hint "Performance tip"
-    During normal hyperopting, indicators are calculated once and supplied to each epoch, linearly increasing RAM usage as a factor of increasing cores. As this also has performance implications, there are two alternatives to reduce RAM usage
+    * 将`ema_short`和`ema_long`的计算从`populate_indicators()`移动到`populate_entry_trend()`。因为每轮都会调用`populate_entry_trend()`，不再需要`.range`。
+    * hyperopt提供`--analyze-per-epoch`参数，会把`populate_indicators()`的执行移到每轮时，只计算单一值，不用`.range`，节省内存。
 
-    * Move `ema_short` and `ema_long` calculations from `populate_indicators()` to `populate_entry_trend()`. Since `populate_entry_trend()` will be calculated every epoch, you don't need to use `.range` functionality.
-    * hyperopt provides `--analyze-per-epoch` which will move the execution of `populate_indicators()` to the epoch process, calculating a single value per parameter per epoch instead of using the `.range` functionality. In this case, `.range` functionality will only return the actually used value.
+    这些优化虽然会减少RAM占用，但会增加CPU负担。你可以权衡，避免大规模超参数调优导致OOM。
 
-    These alternatives will reduce RAM usage, but increase CPU usage. However, your hyperopting run will be less likely to fail due to Out Of Memory (OOM) issues.
+    无论是否使用`.range`或上述方案，建议尽量减小搜索空间，以提高效率。
 
-    Whether you are using `.range` functionality or the alternatives above, you should try to use space ranges as small as possible since this will improve CPU/RAM usage.
+## 优化保护措施
 
-## Optimizing protections
+freqtrade也可以对保护措施进行优化。方法由你自行定义，以下仅作示意。
 
-Freqtrade can also optimize protections. How you optimize protections is up to you, and the following should be considered as example only.
+策略只需定义一个`protections`属性，返回保护配置列表。
 
-The strategy will simply need to define the "protections" entry as property returning a list of protection configurations.
-
-``` python
+```python
 from pandas import DataFrame
 from functools import reduce
 
@@ -341,11 +334,10 @@ import freqtrade.vendor.qtpylib.indicators as qtpylib
 class MyAwesomeStrategy(IStrategy):
     stoploss = -0.05
     timeframe = '15m'
-    # Define the parameter spaces
+    # 参数空间定义
     cooldown_lookback = IntParameter(2, 48, default=5, space="protection", optimize=True)
     stop_duration = IntParameter(12, 200, default=5, space="protection", optimize=True)
     use_stop_protection = BooleanParameter(default=True, space="protection", optimize=True)
-
 
     @property
     def protections(self):
@@ -368,26 +360,23 @@ class MyAwesomeStrategy(IStrategy):
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # ...
-        
 ```
 
-You can then run hyperopt as follows:
+你可以用如下命令启动hyperopt：  
 `freqtrade hyperopt --hyperopt-loss SharpeHyperOptLossDaily --strategy MyAwesomeStrategy --spaces protection`
 
-!!! Note
-    The protection space is not part of the default space, and is only available with the Parameters Hyperopt interface, not with the legacy hyperopt interface (which required separate hyperopt files).
-    Freqtrade will also automatically change the "--enable-protections" flag if the protection space is selected.
+!!! 注意
+    `protection`空间不是默认空间，只在参数hyperopt界面中可用，不是旧版hyperopt结构（需要单独文件）。  
+    选择包含`protection`空间时，freqtrade会自动开启`--enable-protections`。
 
-!!! Warning
-    If protections are defined as property, entries from the configuration will be ignored.
-    It is therefore recommended to not define protections in the configuration.
+!!! 警告
+    如果在配置中直接定义`protections`为属性，策略中的保护配置会被覆盖，建议不要在配置文件中定义。
 
-### Migrating from previous property setups
+### 迁移之前的`protections`配置
 
-A migration from a previous setup is pretty simple, and can be accomplished by converting the protections entry to a property.
-In simple terms, the following configuration will be converted to the below.
+旧版本配置示例：
 
-``` python
+```python
 class MyAwesomeStrategy(IStrategy):
     protections = [
         {
@@ -397,9 +386,9 @@ class MyAwesomeStrategy(IStrategy):
     ]
 ```
 
-Result
+迁移后：
 
-``` python
+```python
 class MyAwesomeStrategy(IStrategy):
     
     @property
@@ -412,13 +401,13 @@ class MyAwesomeStrategy(IStrategy):
         ]
 ```
 
-You will then obviously also change potential interesting entries to parameters to allow hyper-optimization.
+有意向的参数也可以改为参数（参数优化）。
 
-### Optimizing `max_entry_position_adjustment`
+### 优化 `max_entry_position_adjustment`
 
-While `max_entry_position_adjustment` is not a separate space, it can still be used in hyperopt by using the property approach shown above.
+虽然没有专用空间，但可以用属性方式支持hyperopt。
 
-``` python
+```python
 from pandas import DataFrame
 from functools import reduce
 
@@ -432,116 +421,103 @@ class MyAwesomeStrategy(IStrategy):
     stoploss = -0.05
     timeframe = '15m'
 
-    # Define the parameter spaces
+    # 参数空间定义
     max_epa = CategoricalParameter([-1, 0, 1, 3, 5, 10], default=1, space="buy", optimize=True)
 
     @property
     def max_entry_position_adjustment(self):
         return self.max_epa.value
-        
-
-    def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        # ...
 ```
 
-??? Tip "Using `IntParameter`"
-    You can also use the `IntParameter` for this optimization, but you must explicitly return an integer:
-    ``` python
-    max_epa = IntParameter(-1, 10, default=1, space="buy", optimize=True)
+??? 提示 "用`IntParameter`"
+```python
+max_epa = IntParameter(-1, 10, default=1, space="buy", optimize=True)
 
-    @property
-    def max_entry_position_adjustment(self):
-        return int(self.max_epa.value)
-    ```
+@property
+def max_entry_position_adjustment(self):
+    return int(self.max_epa.value)
+```
 
-## Loss-functions
+## 损失函数（Loss-functions）
 
-Each hyperparameter tuning requires a target. This is usually defined as a loss function (sometimes also called objective function), which should decrease for more desirable results, and increase for bad results.
+每次超参数调优都需要一个目标。通常用损失函数（有时称目标函数），在目标函数中，越优越值越低，差越差越高。
 
-A loss function must be specified via the `--hyperopt-loss <Class-name>` argument (or optionally via the configuration under the `"hyperopt_loss"` key).
-This class should be in its own file within the `user_data/hyperopts/` directory.
+必须用`--hyperopt-loss <类名>`参数或配置`"hyperopt_loss"`键来指定。  
+类文件需放在`user_data/hyperopts/`目录下。
 
-Currently, the following loss functions are builtin:
+当前内置支持以下损失函数：
 
-* `ShortTradeDurHyperOptLoss` - (default legacy Freqtrade hyperoptimization loss function) - Mostly for short trade duration and avoiding losses.
-* `OnlyProfitHyperOptLoss` - takes only amount of profit into consideration.
-* `SharpeHyperOptLoss` - Optimizes Sharpe Ratio calculated on trade returns relative to standard deviation.
-* `SharpeHyperOptLossDaily` - Optimizes Sharpe Ratio calculated on **daily** trade returns relative to standard deviation.
-* `SortinoHyperOptLoss` - Optimizes Sortino Ratio calculated on trade returns relative to **downside** standard deviation.
-* `SortinoHyperOptLossDaily` - optimizes Sortino Ratio calculated on **daily** trade returns relative to **downside** standard deviation.
-* `MaxDrawDownHyperOptLoss` - Optimizes Maximum absolute drawdown.
-* `MaxDrawDownRelativeHyperOptLoss` -  Optimizes both maximum absolute drawdown while also adjusting for maximum relative drawdown.
-* `MaxDrawDownPerPairHyperOptLoss` - Calculates the profit/drawdown ratio per pair and returns the worst result as objective, forcing hyperopt to optimize the parameters for all pairs in the pairlist. This way, we prevent one or more pairs with good results from inflating the metrics, while the pairs with poor results are not represented and therefore not optimized.
-* `CalmarHyperOptLoss` - Optimizes Calmar Ratio calculated on trade returns relative to max drawdown.
-* `ProfitDrawDownHyperOptLoss` - Optimizes by max Profit & min Drawdown objective. `DRAWDOWN_MULT` variable within the hyperoptloss file can be adjusted to be stricter or more flexible on drawdown purposes.
-* `MultiMetricHyperOptLoss` -  Optimizes by several key metrics to achieve balanced performance. The primary focus is on maximizing Profit and minimizing Drawdown, while also considering additional metrics such as Profit Factor, Expectancy Ratio and Winrate. Moreover, it applies a penalty for epochs with a low number of trades, encouraging strategies with adequate trade frequency.
+* `ShortTradeDurHyperOptLoss` —（默认的旧频率调优损失）针对短交易时间和避免亏损  
+* `OnlyProfitHyperOptLoss` — 只考虑利润
+* `SharpeHyperOptLoss` — 根据交易收益的夏普比率（收益/标准差）优化
+* `SharpeHyperOptLossDaily` — 以每日收益计算夏普比率
+* `SortinoHyperOptLoss` — 根据下行标准差优化Sortino比率
+* `SortinoHyperOptLossDaily` — 按日收益和下行标准差
+* `MaxDrawDownHyperOptLoss` — 最大绝对回撤
+* `MaxDrawDownRelativeHyperOptLoss` — 绝对回撤与相对回撤的结合
+* `MaxDrawDownPerPairHyperOptLoss` — 每对的盈亏比，取最差的为目标，强制优化所有对
+* `CalmarHyperOptLoss` — 以最大回撤为基础的Calmar比率
+* `ProfitDrawDownHyperOptLoss` — 利润与回撤的权衡，参数`DRAWDOWN_MULT`可调节严苛程度
+* `MultiMetricHyperOptLoss` — 多指标平衡优化，包括利润、回撤、盈利因子、期望值和赢率，还会惩罚交易较少的策略
 
-Creation of a custom loss function is covered in the [Advanced Hyperopt](advanced-hyperopt.md) part of the documentation.
+自定义损失函数的技术细节请参见[高级Hyperopt](advanced-hyperopt.md)。
 
-## Execute Hyperopt
+## 执行Hyperopt
 
-Once you have updated your hyperopt configuration you can run it.
-Because hyperopt tries a lot of combinations to find the best parameters it will take time to get a good result.
-
-We strongly recommend to use `screen` or `tmux` to prevent any connection loss.
+更新配置后，可以运行hyperopt。  
+由于hyperopt会尝试大量参数组合，耗时较长。建议使用`screen`或`tmux`避免中途断线。
 
 ```bash
 freqtrade hyperopt --config config.json --hyperopt-loss <hyperoptlossname> --strategy <strategyname> -e 500 --spaces all
 ```
 
-The `-e` option will set how many evaluations hyperopt will do. Since hyperopt uses Bayesian search, running too many epochs at once may not produce greater results. Experience has shown that best results are usually not improving much after 500-1000 epochs.  
-Doing multiple runs (executions) with a few 1000 epochs and different random state will most likely produce different results.
+`-e`参数控制评估次数。hyperopt采用贝叶斯搜索，评估次数过多会遇到收益递减。经验总结，500-1000轮已较优。  
+多次运行（不同随机状态）并各自评估1000轮以上，可能产生不同结果。
 
-The `--spaces all` option determines that all possible parameters should be optimized. Possibilities are listed below.
+`--spaces all`表示优化所有参数空间，具体细节见下文。
 
-!!! Note
-    Hyperopt will store hyperopt results with the timestamp of the hyperopt start time.
-    Reading commands (`hyperopt-list`, `hyperopt-show`) can use `--hyperopt-filename <filename>` to read and display older hyperopt results.
-    You can find a list of filenames with `ls -l user_data/hyperopt_results/`.
+!!! 注意
+    hyperopt会用开始时间戳存储结果。  
+    可以用`hyperopt-list`和`hyperopt-show`查看历史结果（需`--hyperopt-filename <文件名>`参数）。  
+    文件名列表可以用`ls -l user_data/hyperopt_results/`查看。
 
-### Execute Hyperopt with different historical data source
+### 使用不同数据源进行hyperopt
 
-If you would like to hyperopt parameters using an alternate historical data set that
-you have on-disk, use the `--datadir PATH` option. By default, hyperopt uses data from directory `user_data/data`.
+如果希望用磁盘上的其他数据源进行hyperopt，在命令中加入`--datadir PATH`，默认用`user_data/data`。
 
-### Running Hyperopt with a smaller test-set
+### 用较少数据进行测试
 
-Use the `--timerange` argument to change how much of the test-set you want to use.
-For example, to use one month of data, pass `--timerange 20210101-20210201` (from january 2021 - february 2021) to the hyperopt call.
+用`--timerange`参数指定测试时间段，例如：  
+`--timerange 20210101-20210201`表示只用2021年1月的数据。
 
-Full command:
-
+完整示例：  
 ```bash
 freqtrade hyperopt --strategy <strategyname> --timerange 20210101-20210201
 ```
 
-### Running Hyperopt with Smaller Search Space
+### 限定搜索空间（放宽参数范围）
 
-Use the `--spaces` option to limit the search space used by hyperopt.
-Letting Hyperopt optimize everything is a huuuuge search space.
-Often it might make more sense to start by just searching for initial buy algorithm.
-Or maybe you just want to optimize your stoploss or roi table for that awesome new buy strategy you have.
+用`--spaces`选择要优化的空间，例如：  
+* `all`：全部参数  
+* `buy`：只优化买入参数  
+* `sell`：只优化卖出参数  
+* `roi`：仅优化利润表参数  
+* `stoploss`：优化止损值  
+* `trailing`：优化跟踪止损参数  
+* `trades`：优化最大同时持仓数  
+* `protection`：优化保护参数（见[保护措施优化](#optimizing-protections)）  
+* `default`：除`trailing`和`protection`外所有空间（等价于`all`）
 
-Legal values are:
+示例：  
+`--spaces roi stoploss` 表示只优化这两个空间。
 
-* `all`: optimize everything
-* `buy`: just search for a new buy strategy
-* `sell`: just search for a new sell strategy
-* `roi`: just optimize the minimal profit table for your strategy
-* `stoploss`: search for the best stoploss value
-* `trailing`: search for the best trailing stop values
-* `trades`: search for the best max open trades values
-* `protection`: search for the best protection parameters (read the [protections section](#optimizing-protections) on how to properly define these)
-* `default`: `all` except `trailing` and `protection`
-* space-separated list of any of the above values for example `--spaces roi stoploss`
+默认情况下，不包括`trailing`空间，建议在找到其他参数的最优配置后单独调优`trailing`。
 
-The default Hyperopt Search Space, used when no `--space` command line option is specified, does not include the `trailing` hyperspace. We recommend you to run optimization for the `trailing` hyperspace separately, when the best parameters for other hyperspaces were found, validated and pasted into your custom strategy.
+## 理解hyperopt的结果
 
-## Understand the Hyperopt Result
+完成hyperopt后，可以用结果更新策略。
 
-Once Hyperopt is completed you can use the result to update your strategy.
-Given the following result from hyperopt:
-
+示例结果：  
 ```
 Best result:
 
@@ -557,25 +533,20 @@ Best result:
     }
 ```
 
-You should understand this result like:
+理解为：  
+* 最佳买入触发器为`bb_lower`。  
+* 不使用ADX（因为 `'buy_adx_enabled':False`）。  
+* 推荐考虑使用RSI（`'buy_rsi_enabled':True`），且RSI值为`29`。
 
-* The buy trigger that worked best was `bb_lower`.
-* You should not use ADX because `'buy_adx_enabled': False`.
-* You should **consider** using the RSI indicator (`'buy_rsi_enabled': True`) and the best value is `29.0` (`'buy_rsi': 29.0`)
+### 自动将参数应用到策略
 
-### Automatic parameter application to the strategy
+hyperopt结果会存入同目录的JSON文件（如 `MyAwesomeStrategy.json`），除非用`--disable-param-export`。  
+策略类中也可直接写入hyperopt结果（复制结果块，粘贴到类内，替换旧参数）。  
 
-When using Hyperoptable parameters, the result of your hyperopt-run will be written to a json file next to your strategy (so for `MyAwesomeStrategy.py`, the file would be `MyAwesomeStrategy.json`).  
-This file is also updated when using the `hyperopt-show` sub-command, unless `--disable-param-export` is provided to either of the 2 commands.
-
-
-Your strategy class can also contain these results explicitly. Simply copy hyperopt results block and paste them at class level, replacing old parameters (if any). New parameters will automatically be loaded next time strategy is executed.
-
-Transferring your whole hyperopt result to your strategy would then look like:
-
+示例：  
 ```python
 class MyAwesomeStrategy(IStrategy):
-    # Buy hyperspace params:
+    # 买入超参数
     buy_params = {
         'buy_adx': 44,
         'buy_rsi': 29,
@@ -585,20 +556,20 @@ class MyAwesomeStrategy(IStrategy):
     }
 ```
 
-!!! Note
-    Values in the configuration file will overwrite Parameter-file level parameters - and both will overwrite parameters within the strategy.
-    The prevalence is therefore: config > parameter file > strategy `*_params` > parameter default
+!!! 注意
+    配置文件中的参数将覆盖参数文件中的值，参数文件值又覆盖策略中的`*_params`。  
+    级别关系：config >参数文件 >策略`*_params` > 默认值。
 
-### Understand Hyperopt ROI results
+### 理解hyperopt的ROI结果
 
-If you are optimizing ROI (i.e. if optimization search-space contains 'all', 'default' or 'roi'), your result will look as follows and include a ROI table:
+如果调优ROI空间（空间中包含`'roi'`或`'default'`），结果会显示ROI表格：
 
 ```
 Best result:
 
     44/100:    135 trades. Avg profit  0.57%. Total profit  0.03871918 BTC (0.7722%). Avg duration 180.4 mins. Objective: 1.94367
 
-    # ROI table:
+    # ROI表格:
     minimal_roi = {
         0: 0.10674,
         21: 0.09158,
@@ -607,47 +578,39 @@ Best result:
     }
 ```
 
-In order to use this best ROI table found by Hyperopt in backtesting and for live trades/dry-run, copy-paste it as the value of the `minimal_roi` attribute of your custom strategy:
+用hyperopt找到的最优ROI表格，可以复制粘贴到策略中：
 
+```python
+# 用于策略的最小ROI
+minimal_roi = {
+    0: 0.10674,
+    21: 0.09158,
+    78: 0.03634,
+    118: 0
+}
 ```
-    # Minimal ROI designed for the strategy.
-    # This attribute will be overridden if the config file contains "minimal_roi"
-    minimal_roi = {
-        0: 0.10674,
-        21: 0.09158,
-        78: 0.03634,
-        118: 0
-    }
-```
 
-As stated in the comment, you can also use it as the value of the `minimal_roi` setting in the configuration file.
+也可以在配置文件中直接用这个ROI表。
 
-#### Default ROI Search Space
+#### 默认ROI空间
 
-If you are optimizing ROI, Freqtrade creates the 'roi' optimization hyperspace for you -- it's the hyperspace of components for the ROI tables. By default, each ROI table generated by the Freqtrade consists of 4 rows (steps). Hyperopt implements adaptive ranges for ROI tables with ranges for values in the ROI steps that depend on the timeframe used. By default the values vary in the following ranges (for some of the most used timeframes, values are rounded to 3 digits after the decimal point):
+freqtrade会自动生成`roi`的超空间，为ROI表组件空间。  
+每个ROI表有4个步骤（行），数值范围会根据时间框架自动调整（范围要点详见上表），大致如下（精确到小数点后三位）：
 
-| # step | 1m     |               | 5m       |             | 1h         |               | 1d           |               |
-| ------ | ------ | ------------- | -------- | ----------- | ---------- | ------------- | ------------ | ------------- |
-| 1      | 0      | 0.011...0.119 | 0        | 0.03...0.31 | 0          | 0.068...0.711 | 0            | 0.121...1.258 |
-| 2      | 2...8  | 0.007...0.042 | 10...40  | 0.02...0.11 | 120...480  | 0.045...0.252 | 2880...11520 | 0.081...0.446 |
-| 3      | 4...20 | 0.003...0.015 | 20...100 | 0.01...0.04 | 240...1200 | 0.022...0.091 | 5760...28800 | 0.040...0.162 |
-| 4      | 6...44 | 0.0           | 30...220 | 0.0         | 360...2640 | 0.0           | 8640...63360 | 0.0           |
+| 步骤 | 1m        | 5m        | 1h        | 1d        |
+|-------|-----------|-----------|-----------|-----------|
+| 1     | 0-0.119   | 0-0.31    | 0-0.711  | 0-1.258  |
+| 2     | 0.007-0.042 | 0.02-0.11 | 0.045-0.252 | 0.081-0.446 |
+| 3     | 0.003-0.015 | 0.01-0.04 | 0.022-0.091 | 0.040-0.162 |
+| 4     | 0-0.044   | 0-0.220   | 0-2.640   | 0-63.360  |
 
-These ranges should be sufficient in most cases. The minutes in the steps (ROI dict keys) are scaled linearly depending on the timeframe used. The ROI values in the steps (ROI dict values) are scaled logarithmically depending on the timeframe used.
+在没有自定义`generate_roi_table()`和`roi_space()`方法时，freqtrade会用这些自动生成的范围。
 
-If you have the `generate_roi_table()` and `roi_space()` methods in your custom hyperopt, remove them in order to utilize these adaptive ROI tables and the ROI hyperoptimization space generated by Freqtrade by default.
+如需要自定义ROI空间，可以重写这两个方法。
 
-Override the `roi_space()` method if you need components of the ROI tables to vary in other ranges. Override the `generate_roi_table()` and `roi_space()` methods and implement your own custom approach for generation of the ROI tables during hyperoptimization if you need a different structure of the ROI tables or other amount of rows (steps).
+### 了解超参数止损（stoploss）优化结果
 
-A sample for these methods can be found in the [overriding pre-defined spaces section](advanced-hyperopt.md#overriding-pre-defined-spaces).
-
-!!! Note "Reduced search space"
-    To limit the search space further, Decimals are limited to 3 decimal places (a precision of 0.001). This is usually sufficient, every value more precise than this will usually result in overfitted results. You can however [overriding pre-defined spaces](advanced-hyperopt.md#overriding-pre-defined-spaces) to change this to your needs.
-
-### Understand Hyperopt Stoploss results
-
-If you are optimizing stoploss values (i.e. if optimization search-space contains 'all', 'default' or 'stoploss'), your result will look as follows and include stoploss:
-
+示例：  
 ```
 Best result:
 
@@ -665,173 +628,154 @@ Best result:
     stoploss: -0.27996
 ```
 
-In order to use this best stoploss value found by Hyperopt in backtesting and for live trades/dry-run, copy-paste it as the value of the `stoploss` attribute of your custom strategy:
+将此最优止损值粘贴到策略的`stoploss`属性：
 
-``` python
-    # Optimal stoploss designed for the strategy
-    # This attribute will be overridden if the config file contains "stoploss"
-    stoploss = -0.27996
+```python
+stoploss = -0.27996
 ```
 
-As stated in the comment, you can also use it as the value of the `stoploss` setting in the configuration file.
+#### 默认止损空间
 
-#### Default Stoploss Search Space
+freqtrade会自动生成`stoploss`空间，范围通常为-0.35到-0.02，已基本满足大多数需求。
 
-If you are optimizing stoploss values, Freqtrade creates the 'stoploss' optimization hyperspace for you. By default, the stoploss values in that hyperspace vary in the range -0.35...-0.02, which is sufficient in most cases.
+如果需要定义不同范围，可覆写`stoploss_space()`。
 
-If you have the `stoploss_space()` method in your custom hyperopt file, remove it in order to utilize Stoploss hyperoptimization space generated by Freqtrade by default.
+### 超参数跟踪止损（Trailing Stop）结果分析
 
-Override the `stoploss_space()` method and define the desired range in it if you need stoploss values to vary in other range during hyperoptimization. A sample for this method can be found in the [overriding pre-defined spaces section](advanced-hyperopt.md#overriding-pre-defined-spaces).
-
-!!! Note "Reduced search space"
-    To limit the search space further, Decimals are limited to 3 decimal places (a precision of 0.001). This is usually sufficient, every value more precise than this will usually result in overfitted results. You can however [overriding pre-defined spaces](advanced-hyperopt.md#overriding-pre-defined-spaces) to change this to your needs.
-
-### Understand Hyperopt Trailing Stop results
-
-If you are optimizing trailing stop values (i.e. if optimization search-space contains 'all' or 'trailing'), your result will look as follows and include trailing stop parameters:
-
+示例：  
 ```
 Best result:
 
     45/100:    606 trades. Avg profit  1.04%. Total profit  0.31555614 BTC ( 630.48%). Avg duration 150.3 mins. Objective: -1.10161
 
-    # Trailing stop:
+    # 跟踪止损参数
     trailing_stop = True
     trailing_stop_positive = 0.02001
     trailing_stop_positive_offset = 0.06038
     trailing_only_offset_is_reached = True
 ```
 
-In order to use these best trailing stop parameters found by Hyperopt in backtesting and for live trades/dry-run, copy-paste them as the values of the corresponding attributes of your custom strategy:
+将最优参数复制到策略中：
 
-``` python
-    # Trailing stop
-    # These attributes will be overridden if the config file contains corresponding values.
-    trailing_stop = True
-    trailing_stop_positive = 0.02001
-    trailing_stop_positive_offset = 0.06038
-    trailing_only_offset_is_reached = True
+```python
+# 跟踪止损参数
+trailing_stop = True
+trailing_stop_positive = 0.02001
+trailing_stop_positive_offset = 0.06038
+trailing_only_offset_is_reached = True
 ```
 
-As stated in the comment, you can also use it as the values of the corresponding settings in the configuration file.
+#### 默认搜索空间
 
-#### Default Trailing Stop Search Space
+freqtrade会自动生成`trailing`空间，  
+`trailing_stop`默认总是True，且参数范围在0.02~0.35（`trailing_stop_positive`）和0.01~0.10（`trailing_stop_positive_offset`），可以在`trailing_space()`中自定义。
 
-If you are optimizing trailing stop values, Freqtrade creates the 'trailing' optimization hyperspace for you. By default, the `trailing_stop` parameter is always set to True in that hyperspace, the value of the `trailing_only_offset_is_reached` vary between True and False, the values of the `trailing_stop_positive` and `trailing_stop_positive_offset` parameters vary in the ranges 0.02...0.35 and 0.01...0.1 correspondingly, which is sufficient in most cases.
+重写`trailing_space()`定义范围。
 
-Override the `trailing_space()` method and define the desired range in it if you need values of the trailing stop parameters to vary in other ranges during hyperoptimization. A sample for this method can be found in the [overriding pre-defined spaces section](advanced-hyperopt.md#overriding-pre-defined-spaces).
+!!! 注意
+    数值精度限制为三位小数（0.001），通常已足够，避免过拟合。
 
-!!! Note "Reduced search space"
-    To limit the search space further, Decimals are limited to 3 decimal places (a precision of 0.001). This is usually sufficient, every value more precise than this will usually result in overfitted results. You can however [overriding pre-defined spaces](advanced-hyperopt.md#overriding-pre-defined-spaces) to change this to your needs.
+## 结果可复现（Reproducible results）
 
-### Reproducible results
+超参数搜索从随机初始化（目前为30次）开始，随机点在参数空间中随机生成。在输出中，用`*`标记启动的随机epoch。
 
-The search for optimal parameters starts with a few (currently 30) random combinations in the hyperspace of parameters, random Hyperopt epochs. These random epochs are marked with an asterisk character (`*`) in the first column in the Hyperopt output.
+你可以用`--random-state`指定随机状态，以确保每次相同。
 
-The initial state for generation of these random values (random state) is controlled by the value of the `--random-state` command line option. You can set it to some arbitrary value of your choice to obtain reproducible results.
+如果未显式设置，hyperopt会用随机值初始化，每次运行时记录在日志中，可复制粘贴后使用。
 
-If you have not set this value explicitly in the command line options, Hyperopt seeds the random state with some random value for you. The random state value for each Hyperopt run is shown in the log, so you can copy and paste it into the `--random-state` command line option to repeat the set of the initial random epochs used.
+只要策略、数据、损失函数保持不变，使用相同随机状态，结果应一致。
 
-If you have not changed anything in the command line options, configuration, timerange, Strategy and Hyperopt classes, historical data and the Loss Function -- you should obtain same hyper-optimization results with same random state value used.
+## 输出格式化
 
-## Output formatting
+默认hyperopt会彩色显示：盈利的轮次用绿色，循环的比普通色醒目。  
+不需要颜色时用`--no-color`关闭。
 
-By default, hyperopt prints colorized results -- epochs with positive profit are printed in the green color. This highlighting helps you find epochs that can be interesting for later analysis. Epochs with zero total profit or with negative profits (losses) are printed in the normal color. If you do not need colorization of results (for instance, when you are redirecting hyperopt output to a file) you can switch colorization off by specifying the `--no-color` option in the command line.
+可用`--print-all`显示所有轮次结果（默认最优轮次还会加粗显示），也可以用`--no-color`取消。
 
-You can use the `--print-all` command line option if you would like to see all results in the hyperopt output, not only the best ones. When `--print-all` is used, current best results are also colorized by default -- they are printed in bold (bright) style. This can also be switched off with the `--no-color` command line option.
+!!! 注意（Windows）
+    Windows原生不支持彩色输出，自动禁用。可用WSL模拟彩色。
 
-!!! Note "Windows and color output"
-    Windows does not support color-output natively, therefore it is automatically disabled. To have color-output for hyperopt running under windows, please consider using WSL.
+## 位置堆叠（Position stacking）与限制最大持仓数
 
-## Position stacking and disabling max market positions
+某些情况下，可能需要用`--eps`或`--enable-position-staking`参数，或设置`max_open_trades`很高，以去除持仓限制。
 
-In some situations, you may need to run Hyperopt (and Backtesting) with the `--eps`/`--enable-position-staking` argument, or you may need to set `max_open_trades` to a very high number to disable the limit on the number of open trades.
+默认行为模仿Freqtrade的实时运行/干跑：每个交易对仅允许一个仓位。  
+全部仓位数受`max_open_trades`限制。在超参数调优时，可能会掩盖部分潜在交易。
 
-By default, hyperopt emulates the behavior of the Freqtrade Live Run/Dry Run, where only one
-open trade per pair is allowed. The total number of trades open for all pairs
-is also limited by the `max_open_trades` setting. During Hyperopt/Backtesting this may lead to
-potential trades being hidden (or masked) by already open trades.
+`--eps`或`--enable-position-stacking`允许多次买入同一对。  
+设置`--max-open-trades`一个很大值，则禁用限制。
 
-The `--eps`/`--enable-position-stacking` argument allows emulation of buying the same pair multiple times.
-Using `--max-open-trades` with a very high number will disable the limit on the number of open trades.
+!!! 注意
+    干跑/实盘不会开启位置堆叠，实际中最好关闭，此方案更符合实际。
 
-!!! Note
-    Dry/live runs will **NOT** use position stacking - therefore it does make sense to also validate the strategy without this as it's closer to reality.
+也可在配置中显式开启`"position_stacking"=true`。
 
-You can also enable position stacking in the configuration file by explicitly setting
-`"position_stacking"=true`.
+## 内存不足（Out of Memory）
 
-## Out of Memory errors
+hyperopt耗费大量内存（每个并行回测都要全量数据），极易OOM。  
+可采取如下措施：
 
-As hyperopt consumes a lot of memory (the complete data needs to be in memory once per parallel backtesting process), it's likely that you run into "out of memory" errors.
-To combat these, you have multiple options:
+* 减少交易对数
+* 缩小测试时间范围（`--timerange`）
+* 避免`--timeframe-detail`（会加载更多数据）
+* 降低并行核数（`-j <n>`）
+* 增加机器内存
+* 使用`--analyze-per-epoch`（大量参数下，节省RAM）
 
-* Reduce the amount of pairs.
-* Reduce the timerange used (`--timerange <timerange>`).
-* Avoid using `--timeframe-detail` (this loads a lot of additional data into memory).
-* Reduce the number of parallel processes (`-j <n>`).
-* Increase the memory of your machine.
-* Use `--analyze-per-epoch` if you're using a lot of parameters with `.range` functionality.
+## 搜索空间已达到极限
 
+如果出现`The objective has been evaluated at this point before.`，意味着你的空间已用尽，或非常接近。  
+实际上，所有空间点已尝试或达到局部极值，hyperopt在此情况下会以随机点来试图逃出。
 
-## The objective has been evaluated at this point before.
-
-If you see `The objective has been evaluated at this point before.` - then this is a sign that your space has been exhausted, or is close to that.
-Basically all points in your space have been hit (or a local minima has been hit) - and hyperopt does no longer find points in the multi-dimensional space it did not try yet.
-Freqtrade tries to counter the "local minima" problem by using new, randomized points in this case.
-
-Example:
-
-``` python
+示例：  
+```python
 buy_ema_short = IntParameter(5, 20, default=10, space="buy", optimize=True)
-# This is the only parameter in the buy space
+# 这是买入空间中的唯一参数，范围15个值
 ```
 
-The `buy_ema_short` space has 15 possible values (`5, 6, ... 19, 20`). If you now run hyperopt for the buy space, hyperopt will only have 15 values to try before running out of options.
-Your epochs should therefore be aligned to the possible values - or you should be ready to interrupt a run if you norice a lot of `The objective has been evaluated at this point before.` warnings.
+该空间只有15个值（5到20），超参数轮次尽量匹配所有值，否则会频繁出现警告。
 
-## Show details of Hyperopt results
+## 查看hyperopt结果详细信息
 
-After you run Hyperopt for the desired amount of epochs, you can later list all results for analysis, select only best or profitable once, and show the details for any of the epochs previously evaluated. This can be done with the `hyperopt-list` and `hyperopt-show` sub-commands. The usage of these sub-commands is described in the [Utils](utils.md#list-hyperopt-results) chapter.
+用完hyperopt后，可以用`hyperopt-list`和`hyperopt-show`命令查看全部或特定轮次详情。
 
-## Output debug messages from your strategy
+具体用法见[工具](utils.md#list-hyperopt-results)。
 
-If you want to output debug messages from your strategy, you can use the `logging` module. By default, Freqtrade will output all messages with a level of `INFO` or higher. 
+## 输出调试信息
 
+你可以在策略中用`logging`模块输出调试信息。默认频trade只显示`INFO`以上级别日志。
 
-``` python
+```python
 import logging
 
-
 logger = logging.getLogger(__name__)
-
 
 class MyAwesomeStrategy(IStrategy):
     ...
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        logger.info("This is a debug message")
+        logger.info("这是调试信息")
         ...
-
 ```
 
-!!! Note "using print"
-    Messages printed via `print()` will not be shown in the hyperopt output unless parallelism is disabled (`-j 1`). 
-    It is recommended to use the `logging` module instead.
+!!! 注意 "用`print()`"
+    使用`print()`的日志不会出现在hyperopt输出中，除非关闭并行（`-j 1`）。  
+    推荐用`logging`。
 
-## Validate backtesting results
+## 验证回测结果
 
-Once the optimized strategy has been implemented into your strategy, you should backtest this strategy to make sure everything is working as expected.
+设置好策略后，务必用相同参数（时间段、时间框架等）完整回测。  
+确保回测与hyperopt结果一致。
 
-To achieve same the results (number of trades, their durations, profit, etc.) as during Hyperopt, please use the same configuration and parameters (timerange, timeframe, ...) used for hyperopt for Backtesting.
+### 为什么回测结果与hyperopt不符？
 
-### Why do my backtest results not match my hyperopt results?
+如果不匹配，请检查：  
+* 你是否在`populate_indicators()`中添加参数并在一次性计算？（应放到每轮计算的`populate_entry_trend()`中）  
+* 是否将hyperopt结果正确导入到策略？用`hyperopt-show`确认。  
+* 日志中参数设置是否正确，值是否被有效使用。  
+* 注意`stoploss`、`max_open_trades`和`trailing_stop`，这些可能在配置文件中被覆盖。  
+* 是否有其他JSON配置文件覆盖了参数，或自定义保护措施未同步。
 
-Should results not match, check the following factors:
+## 补充说明
 
-* You may have added parameters to hyperopt in `populate_indicators()` where they will be calculated only once **for all epochs**. If you are, for example, trying to optimise multiple SMA timeperiod values, the hyperoptable timeperiod parameter should be placed in `populate_entry_trend()` which is calculated every epoch. See [Optimizing an indicator parameter](https://www.freqtrade.io/en/stable/hyperopt/#optimizing-an-indicator-parameter).
-* If you have disabled the auto-export of hyperopt parameters into the JSON parameters file, double-check to make sure you transferred all hyperopted values into your strategy correctly.
-* Check the logs to verify what parameters are being set and what values are being used.
-* Pay special care to the stoploss, max_open_trades and trailing stoploss parameters, as these are often set in configuration files, which override changes to the strategy. Check the logs of your backtest to ensure that there were no parameters inadvertently set by the configuration (like `stoploss`, `max_open_trades` or `trailing_stop`).
-* Verify that you do not have an unexpected parameters JSON file overriding the parameters or the default hyperopt settings in your strategy.
-* Verify that any protections that are enabled in backtesting are also enabled when hyperopting, and vice versa. When using `--space protection`, protections are auto-enabled for hyperopting.
+以上内容结合了我训练所获资料，尽力保持专业和详细，帮助你实现超参数优化的全流程。

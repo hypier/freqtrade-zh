@@ -1,67 +1,54 @@
-# Start the bot
+# 启动机器人
 
-This page explains the different parameters of the bot and how to run it.
+本页说明机器人的不同参数以及如何运行它。
 
-!!! Note
-    If you've used `setup.sh`, don't forget to activate your virtual environment (`source .venv/bin/activate`) before running freqtrade commands.
+!!! 注意
+    如果你已经使用了 `setup.sh`，在执行 `freqtrade` 命令之前，请不要忘了激活你的虚拟环境（`source .venv/bin/activate`）。
 
-!!! Warning "Up-to-date clock"
-    The clock on the system running the bot must be accurate, synchronized to a NTP server frequently enough to avoid problems with communication to the exchanges.
+!!! 警告 “保持时钟同步”
+    运行机器人的系统时间必须准确无误，并经常同步到 NTP 服务器，以避免与交易所通信时出现问题。
 
-## Bot commands
+## 机器人命令
 
 --8<-- "commands/main.md"
 
-### Bot trading commands
+### 机器人交易相关命令
 
 --8<-- "commands/trade.md"
 
-### How to specify which configuration file be used?
+### 如何指定使用哪个配置文件？
 
-The bot allows you to select which configuration file you want to use by means of
-the `-c/--config` command line option:
+机器人允许你通过 `-c/--config` 命令行参数选择要使用的配置文件：
 
 ```bash
 freqtrade trade -c path/far/far/away/config.json
 ```
 
-Per default, the bot loads the `config.json` configuration file from the current
-working directory.
+默认情况下，机器人会从当前工作目录加载 `config.json` 配置文件。
 
-### How to use multiple configuration files?
+### 如何使用多个配置文件？
 
-The bot allows you to use multiple configuration files by specifying multiple
-`-c/--config` options in the command line. Configuration parameters
-defined in the latter configuration files override parameters with the same name
-defined in the previous configuration files specified in the command line earlier.
+机器人支持通过在命令行中指定多个 `-c/--config` 选项来使用多个配置文件。后面配置文件中定义的参数会覆盖前面配置文件中同名的参数。
 
-For example, you can make a separate configuration file with your key and secret
-for the Exchange you use for trading, specify default configuration file with
-empty key and secret values while running in the Dry Mode (which does not actually
-require them):
+例如，你可以为你用来交易的交易所创建一个单独的配置文件，包含你的 API Key 和 Secret，运行在 Dry Mode（不实际执行交易时）时，指定一个空的 Key 和 Secret 作为默认配置文件：
 
 ```bash
 freqtrade trade -c ./config.json
 ```
 
-and specify both configuration files when running in the normal Live Trade Mode:
+在正常的实盘交易模式下，可以同时指定多个配置文件：
 
 ```bash
 freqtrade trade -c ./config.json -c path/to/secrets/keys.config.json
 ```
 
-This could help you hide your private Exchange key and Exchange secret on you local machine
-by setting appropriate file permissions for the file which contains actual secrets and, additionally,
-prevent unintended disclosure of sensitive private data when you publish examples
-of your configuration in the project issues or in the Internet.
+这样可以通过为包含真实私密信息的文件设置合适的文件权限，保护你的私有交易所密钥和密钥秘密，避免在项目问题反馈或互联网发布配置示例时泄露敏感数据。
 
-See more details on this technique with examples in the documentation page on
-[configuration](configuration.md).
+关于此技术的更多细节和示例，可以参考文档页面上的[配置](configuration.md)。
 
-### Where to store custom data
+### 自定义数据存放位置
 
-Freqtrade allows the creation of a user-data directory using `freqtrade create-userdir --userdir someDirectory`.
-This directory will look as follows:
+Freqtrade 允许你使用命令 `freqtrade create-userdir --userdir someDirectory` 创建用户数据目录。该目录结构如下：
 
 ```
 user_data/
@@ -73,64 +60,59 @@ user_data/
 └── strategies
 ```
 
-You can add the entry "user_data_dir" setting to your configuration, to always point your bot to this directory.
-Alternatively, pass in `--userdir` to every command.
-The bot will fail to start if the directory does not exist, but will create necessary subdirectories.
+你可以在配置中添加 `"user_data_dir"` ，让机器人始终指向这个目录。
+或者在每个命令中传入 `--userdir` 参数。
+如果目录不存在，机器人启动时会失败，但会自动创建必要的子目录。
 
-This directory should contain your custom strategies, custom hyperopts and hyperopt loss functions, backtesting historical data (downloaded using either backtesting command or the download script) and plot outputs.
+该目录应包含你的自定义策略、自定义hyperopt和hyperopt损失函数、回测的历史数据（通过回测命令或下载脚本获取）以及绘图输出。
 
-It is recommended to use version control to keep track of changes to your strategies.
+建议使用版本控制工具追踪策略的变更。
 
-### How to use **--strategy**?
+### 如何使用 **--strategy**？
 
-This parameter will allow you to load your custom strategy class.
-To test the bot installation, you can use the `SampleStrategy` installed by the `create-userdir` subcommand (usually `user_data/strategy/sample_strategy.py`).
+此参数允许你加载自定义策略类。  
+要测试机器人安装是否成功，可以使用由 `create-userdir` 子命令（通常为 `user_data/strategy/sample_strategy.py`）安装的 `SampleStrategy`。
 
-The bot will search your strategy file within `user_data/strategies`.
-To use other directories, please read the next section about `--strategy-path`.
+机器人会在 `user_data/strategies` 目录下搜索你的策略文件。  
+如果需要从其他目录加载策略，请阅读下一节关于 `--strategy-path` 的内容。
 
-To load a strategy, simply pass the class name (e.g.: `CustomStrategy`) in this parameter.
+要加载某个策略，只需在此参数中传入策略类名（例如：`CustomStrategy`）。
 
-**Example:**
-In `user_data/strategies` you have a file `my_awesome_strategy.py` which has
-a strategy class called `AwesomeStrategy` to load it:
+**示例：**  
+如果在 `user_data/strategies` 目录下有一个文件 `my_awesome_strategy.py`，其中定义了 `AwesomeStrategy` 类，要加载它：
 
 ```bash
 freqtrade trade --strategy AwesomeStrategy
 ```
 
-If the bot does not find your strategy file, it will display in an error
-message the reason (File not found, or errors in your code).
+如果机器人找不到你的策略文件，会在错误信息中显示原因（文件未找到或代码中有错误）。
 
-Learn more about strategy file in
-[Strategy Customization](strategy-customization.md).
+更多关于策略文件的内容，请参考
+[策略定制](strategy-customization.md)。
 
-### How to use **--strategy-path**?
+### 如何使用 **--strategy-path**？
 
-This parameter allows you to add an additional strategy lookup path, which gets
-checked before the default locations (The passed path must be a directory!):
+此参数允许你添加额外的策略搜索路径，优先于默认位置进行查找（传入的路径必须是目录！）：
 
 ```bash
 freqtrade trade --strategy AwesomeStrategy --strategy-path /some/directory
 ```
 
-#### How to install a strategy?
+#### 如何安装策略？
 
-This is very simple. Copy paste your strategy file into the directory
-`user_data/strategies` or use `--strategy-path`. And voila, the bot is ready to use it.
+非常简单。将你的策略文件复制到 `user_data/strategies` 目录，或使用 `--strategy-path` 参数指定路径。  
+然后，机器人即可使用该策略。
 
-### How to use **--db-url**?
+### 如何使用 **--db-url**？
 
-When you run the bot in Dry-run mode, per default no transactions are
-stored in a database. If you want to store your bot actions in a DB
-using `--db-url`. This can also be used to specify a custom database
-in production mode. Example command:
+在 Dry-run（模拟运行）模式下，默认不会将交易信息存储到数据库中。  
+如果你希望将机器人操作存入数据库，可以使用 `--db-url` 参数。如果在生产环境中想指定自定义数据库，也可以使用此参数。例如：
 
 ```bash
 freqtrade trade -c config.json --db-url sqlite:///tradesv3.dry_run.sqlite
 ```
 
-## Next step
+## 下一步
 
-The optimal strategy of the bot will change with time depending of the market trends. The next step is to
-[Strategy Customization](strategy-customization.md).
+机器人的最优策略会随着市场趋势的变化而调整。下一步建议参考
+[策略定制](strategy-customization.md)。

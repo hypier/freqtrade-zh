@@ -1,69 +1,57 @@
-```
-usage: freqtrade edge [-h] [-v] [--no-color] [--logfile FILE] [-V] [-c PATH]
-                      [-d PATH] [--userdir PATH] [-s NAME]
-                      [--strategy-path PATH] [--recursive-strategy-search]
-                      [--freqaimodel NAME] [--freqaimodel-path PATH]
-                      [-i TIMEFRAME] [--timerange TIMERANGE]
-                      [--data-format-ohlcv {json,jsongz,feather,parquet}]
-                      [--max-open-trades INT] [--stake-amount STAKE_AMOUNT]
-                      [--fee FLOAT] [-p PAIRS [PAIRS ...]]
-                      [--stoplosses STOPLOSS_RANGE]
+用法：freqtrade edge [-h] [-v] [--no-color] [--logfile FILE] [-V] [-c PATH]
+                     [-d PATH] [--userdir PATH] [-s NAME]
+                     [--strategy-path PATH] [--recursive-strategy-search]
+                     [--freqaimodel NAME] [--freqaimodel-path PATH]
+                     [-i TIMEFRAME] [--timerange TIMERANGE]
+                     [--data-format-ohlcv {json,jsongz,feather,parquet}]
+                     [--max-open-trades INT] [--stake-amount STAKE_AMOUNT]
+                     [--fee FLOAT] [-p PAIRS [PAIRS ...]]
+                     [--stoplosses STOPLOSS_RANGE]
 
-options:
-  -h, --help            show this help message and exit
+选项：
+  -h, --help            显示此帮助信息并退出
   -i TIMEFRAME, --timeframe TIMEFRAME
-                        Specify timeframe (`1m`, `5m`, `30m`, `1h`, `1d`).
+                        指定时间周期（`1m`、`5m`、`30m`、`1h`、`1d`）
   --timerange TIMERANGE
-                        Specify what timerange of data to use.
+                        指定使用的数据时间范围
   --data-format-ohlcv {json,jsongz,feather,parquet}
-                        Storage format for downloaded candle (OHLCV) data.
-                        (default: `feather`).
+                        下载蜡烛数据（OHLCV）的存储格式。
+                        （默认：`feather`）
   --max-open-trades INT
-                        Override the value of the `max_open_trades`
-                        configuration setting.
+                        覆盖配置中的 `max_open_trades` 设置值
   --stake-amount STAKE_AMOUNT
-                        Override the value of the `stake_amount` configuration
-                        setting.
-  --fee FLOAT           Specify fee ratio. Will be applied twice (on trade
-                        entry and exit).
+                        覆盖配置中的 `stake_amount` 设置值
+  --fee FLOAT           指定手续费比例。将在交易的开仓和平仓时应用两次
   -p PAIRS [PAIRS ...], --pairs PAIRS [PAIRS ...]
-                        Limit command to these pairs. Pairs are space-
-                        separated.
+                        指定交易对，限制命令仅作用于这些交易对。交易对以空格分隔
   --stoplosses STOPLOSS_RANGE
-                        Defines a range of stoploss values against which edge
-                        will assess the strategy. The format is "min,max,step"
-                        (without any space). Example:
+                        定义止损值范围，策略将依据此范围评估。格式为
+                        "min,max,step"（无空格）。示例：
                         `--stoplosses=-0.01,-0.1,-0.001`
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
+常用参数：
+  -v, --verbose         提升输出详细程度（-vv 获取更多信息，-vvv 获取所有信息）
+  --no-color            禁用高亮显示结果，如果输出重定向到文件可能有用
   --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        'syslog', 'journald'. See the documentation for more
-                        details.
-  -V, --version         show program's version number and exit
+                        日志输出到指定文件。特殊值包括：
+                        'syslog'、'journald'。详细信息请查阅文档
+  -V, --version         显示程序版本号并退出
   -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
+                        指定配置文件（默认：`userdir/config.json`或
+                        `config.json`，以存在的文件为准）。可以使用多
+                        个 --config 选项。也可以设置为 `-` 以从标准输入读取配置
   -d PATH, --datadir PATH, --data-dir PATH
-                        Path to directory with historical backtesting data.
+                        历史回测数据目录路径
   --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+                        用户数据目录路径
 
-Strategy arguments:
+策略参数：
   -s NAME, --strategy NAME
-                        Specify strategy class name which will be used by the
-                        bot.
-  --strategy-path PATH  Specify additional strategy lookup path.
+                        指定将由机器人使用的策略类名
+  --strategy-path PATH  指定额外的策略搜索路径
   --recursive-strategy-search
-                        Recursively search for a strategy in the strategies
-                        folder.
-  --freqaimodel NAME    Specify a custom freqaimodels.
+                        在策略文件夹中递归搜索策略
+  --freqaimodel NAME    指定自定义的 freqaimodel
   --freqaimodel-path PATH
-                        Specify additional lookup path for freqaimodels.
-
+                        指定 freqaimodel 的额外搜索路径
 ```

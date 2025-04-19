@@ -1,40 +1,36 @@
-# Feature engineering
+# 特征工程
 
-## Defining the features
+## 定义特征
 
-Low level feature engineering is performed in the user strategy within a set of functions called `feature_engineering_*`. These function set the `base features` such as, `RSI`, `MFI`, `EMA`, `SMA`, time of day, volume, etc. The `base features` can be custom indicators or they can be imported from any technical-analysis library that you can find. FreqAI is equipped with a set of functions to simplify rapid large-scale feature engineering:
+在用户策略中通过一组名为`feature_engineering_*`的函数执行低阶特征工程。这些函数设置“基础特征”，例如`RSI`、`MFI`、`EMA`、`SMA`、时间段、交易量等。`基础特征`可以是自定义指标，也可以从任何技术分析库中导入。FreqAI配备了一套函数以简化快速大规模特征工程：
 
-|  Function | Description |
-|---------------|-------------|
-| `feature_engineering_expand_all()` | This optional function will automatically expand the defined features on the config defined `indicator_periods_candles`, `include_timeframes`, `include_shifted_candles`, and `include_corr_pairs`.
-| `feature_engineering_expand_basic()` | This optional function will automatically expand the defined features on the config defined `include_timeframes`, `include_shifted_candles`, and `include_corr_pairs`. Note: this function does *not* expand across `indicator_periods_candles`.
-| `feature_engineering_standard()` | This optional function will be called once with the dataframe of the base timeframe. This is the final function to be called, which means that the dataframe entering this function will contain all the features and columns from the base asset created by the other `feature_engineering_expand` functions. This function is a good place to do custom exotic feature extractions (e.g. tsfresh). This function is also a good place for any feature that should not be auto-expanded upon (e.g., day of the week).
-| `set_freqai_targets()` | Required function to set the targets for the model. All targets must be prepended with `&` to be recognized by the FreqAI internals.
+| 函数                     | 描述                                                                                   |
+|--------------------------|----------------------------------------------------------------------------------------|
+| `feature_engineering_expand_all()` | 该可选函数会根据配置中的`indicator_periods_candles`、`include_timeframes`、`include_shifted_candles`和`include_corr_pairs`自动扩展定义的特征。|
+| `feature_engineering_expand_basic()` | 该可选函数会根据配置中的`include_timeframes`、`include_shifted_candles`和`include_corr_pairs`自动扩展定义的特征。注意：此函数不跨`indicator_periods_candles`扩展。 |
+| `feature_engineering_standard()` | 在基础时间框架的数据框上调用一次的可选函数。这是最后调用的函数，意味着输入该函数的数据框包含由其他`feature_engineering_expand`函数创建的所有特征和列。这也是进行自定义特殊特征提取（如tsfresh）以及包含不应自动扩展的特征（如星期几）的理想位置。 |
+| `set_freqai_targets()` | 设置模型目标的必需函数。所有目标必须以`&`前缀，以被FreqAI内部识别。 |
 
-Meanwhile, high level feature engineering is handled within `"feature_parameters":{}` in the FreqAI config. Within this file, it is possible to decide large scale feature expansions on top of the `base_features` such as "including correlated pairs" or "including informative timeframes" or even "including recent candles."
+与此同时，高级特征工程在FreqAI配置文件中的`"feature_parameters":{}`中处理。在此文件中，可以基于`base_features`决定大规模特征扩展，例如“包含相关配对”或“包含有信息量的时间框架”甚至“包含最近的蜡烛”。
 
-It is advisable to start from the template `feature_engineering_*` functions in the source provided example strategy (found in `templates/FreqaiExampleStrategy.py`) to ensure that the feature definitions are following the correct conventions. Here is an example of how to set the indicators and labels in the strategy:
+建议从源码提供的示例策略中的`feature_engineering_*`模板函数开始（示例文件位于`templates/FreqaiExampleStrategy.py`），确保特征定义遵循正确规范。以下是在策略中设置指标和标签的示例：
 
 ```python
     def feature_engineering_expand_all(self, dataframe: DataFrame, period, metadata, **kwargs) -> DataFrame:
         """
-        *Only functional with FreqAI enabled strategies*
-        This function will automatically expand the defined features on the config defined
-        `indicator_periods_candles`, `include_timeframes`, `include_shifted_candles`, and
-        `include_corr_pairs`. In other words, a single feature defined in this function
-        will automatically expand to a total of
-        `indicator_periods_candles` * `include_timeframes` * `include_shifted_candles` *
-        `include_corr_pairs` numbers of features added to the model.
+        *仅在启用FreqAI策略时有效*
+        该函数会根据配置中的`indicator_periods_candles`, `include_timeframes`, `include_shifted_candles`, 和`include_corr_pairs`自动扩展定义的特征。换句话说，在此函数中定义的单个特征，将自动扩展出
+        `indicator_periods_candles` * `include_timeframes` * `include_shifted_candles` * `include_corr_pairs` 个特征添加到模型中。
 
-        All features must be prepended with `%` to be recognized by FreqAI internals.
+        所有特征前必须加`%`以被FreqAI内部识别。
 
-        Access metadata such as the current pair/timeframe/period with:
+        通过以下方式访问元数据（如当前交易对/时间框架/周期）：
 
         `metadata["pair"]` `metadata["tf"]`  `metadata["period"]`
 
-        :param df: strategy dataframe which will receive the features
-        :param period: period of the indicator - usage example:
-        :param metadata: metadata of current pair
+        :param df: 将接收特征的策略数据框
+        :param period: 指标的周期 - 示例用法：
+        :param metadata: 当前交易对的元数据
         dataframe["%-ema-period"] = ta.EMA(dataframe, timeperiod=period)
         """
 
@@ -66,28 +62,26 @@ It is advisable to start from the template `feature_engineering_*` functions in 
         )
 
         return dataframe
+```
 
+```python
     def feature_engineering_expand_basic(self, dataframe: DataFrame, metadata, **kwargs) -> DataFrame:
         """
-        *Only functional with FreqAI enabled strategies*
-        This function will automatically expand the defined features on the config defined
-        `include_timeframes`, `include_shifted_candles`, and `include_corr_pairs`.
-        In other words, a single feature defined in this function
-        will automatically expand to a total of
-        `include_timeframes` * `include_shifted_candles` * `include_corr_pairs`
-        numbers of features added to the model.
+        *仅在启用FreqAI策略时有效*
+        该函数会根据配置中的`include_timeframes`、`include_shifted_candles`和`include_corr_pairs`自动扩展定义的特征。
+        换句话说，在此函数中定义的单个特征，将自动扩展出
+        `include_timeframes` * `include_shifted_candles` * `include_corr_pairs` 个特征加入模型。
 
-        Features defined here will *not* be automatically duplicated on user defined
-        `indicator_periods_candles`
+        此处定义的特征不会在用户自定义的`indicator_periods_candles`中自动重复。
 
-        Access metadata such as the current pair/timeframe with:
+        通过以下方式访问元数据（如当前交易对/时间框架）：
 
         `metadata["pair"]` `metadata["tf"]`
 
-        All features must be prepended with `%` to be recognized by FreqAI internals.
+        所有特征前面必须加`%`以被FreqAI识别。
 
-        :param df: strategy dataframe which will receive the features
-        :param metadata: metadata of current pair
+        :param df: 将接收特征的策略数据框
+        :param metadata: 当前交易对的元数据
         dataframe["%-pct-change"] = dataframe["close"].pct_change()
         dataframe["%-ema-200"] = ta.EMA(dataframe, timeperiod=200)
         """
@@ -95,46 +89,44 @@ It is advisable to start from the template `feature_engineering_*` functions in 
         dataframe["%-raw_volume"] = dataframe["volume"]
         dataframe["%-raw_price"] = dataframe["close"]
         return dataframe
+```
 
+```python
     def feature_engineering_standard(self, dataframe: DataFrame, metadata, **kwargs) -> DataFrame:
         """
-        *Only functional with FreqAI enabled strategies*
-        This optional function will be called once with the dataframe of the base timeframe.
-        This is the final function to be called, which means that the dataframe entering this
-        function will contain all the features and columns created by all other
-        freqai_feature_engineering_* functions.
+        *仅在启用FreqAI策略时有效*
+        该可选函数会针对基础时间框架的数据框调用一次。这是最后调用的函数，意味着进入此函数的数据框将包含所有其它`freqai_feature_engineering_*`函数创建的特征和列。
 
-        This function is a good place to do custom exotic feature extractions (e.g. tsfresh).
-        This function is a good place for any feature that should not be auto-expanded upon
-        (e.g. day of the week).
+        这是进行自定义特殊特征提取（如tsfresh）的良好位置，也是适合不应自动扩展的特征（如星期几）的存放位置。
 
-        Access metadata such as the current pair with:
+        通过以下方式访问元数据（如当前交易对）：
 
         `metadata["pair"]`
 
-        All features must be prepended with `%` to be recognized by FreqAI internals.
+        所有特征前必须加`%`以被FreqAI内部识别。
 
-        :param df: strategy dataframe which will receive the features
-        :param metadata: metadata of current pair
-        usage example: dataframe["%-day_of_week"] = (dataframe["date"].dt.dayofweek + 1) / 7
+        :param df: 将接收特征的策略数据框
+        :param metadata: 当前交易对的元数据
+        使用示例： dataframe["%-day_of_week"] = (dataframe["date"].dt.dayofweek + 1) / 7
         """
         dataframe["%-day_of_week"] = (dataframe["date"].dt.dayofweek + 1) / 7
         dataframe["%-hour_of_day"] = (dataframe["date"].dt.hour + 1) / 25
         return dataframe
+```
 
+```python
     def set_freqai_targets(self, dataframe: DataFrame, metadata, **kwargs) -> DataFrame:
         """
-        *Only functional with FreqAI enabled strategies*
-        Required function to set the targets for the model.
-        All targets must be prepended with `&` to be recognized by the FreqAI internals.
+        *仅在启用FreqAI策略时有效*
+        设置模型目标的必需函数。所有目标必须以`&`前缀，以被FreqAI内部识别。
 
-        Access metadata such as the current pair with:
+        访问元数据（如当前交易对）：
 
         `metadata["pair"]`
 
-        :param df: strategy dataframe which will receive the targets
-        :param metadata: metadata of current pair
-        usage example: dataframe["&-target"] = dataframe["close"].shift(-1) / dataframe["close"]
+        :param df: 将接收目标的策略数据框
+        :param metadata: 当前交易对的元数据
+        使用示例： dataframe["&-target"] = dataframe["close"].shift(-1) / dataframe["close"]
         """
         dataframe["&-s_close"] = (
             dataframe["close"]
@@ -144,15 +136,12 @@ It is advisable to start from the template `feature_engineering_*` functions in 
             / dataframe["close"]
             - 1
             )
-        
         return dataframe
 ```
 
-In the presented example, the user does not wish to pass the `bb_lowerband` as a feature to the model,
-and has therefore not prepended it with `%`. The user does, however, wish to pass `bb_width` to the
-model for training/prediction and has therefore prepended it with `%`.
+在上述示例中，用户不希望将`bb_lowerband`作为特征传入模型，因此没有在前面加`%`。而用户希望将`bb_width`传入模型用于训练/预测，因此在前面加了`%`。
 
-After having defined the `base features`, the next step is to expand upon them using the powerful `feature_parameters` in the configuration file:
+定义好`基础特征`后，下一步就是利用配置文件中的强大`feature_parameters`进行扩展，例如：
 
 ```json
     "freqai": {
@@ -172,21 +161,22 @@ After having defined the `base features`, the next step is to expand upon them u
     }
 ```
 
-The `include_timeframes` in the config above are the timeframes (`tf`) of each call to `feature_engineering_expand_*()` in the strategy. In the presented case, the user is asking for the `5m`, `15m`, and `4h` timeframes of the `rsi`, `mfi`, `roc`, and `bb_width` to be included in the feature set.
+这里的`include_timeframes`是策略中调用`feature_engineering_expand_*()`的时间框架（`tf`）。在示例中，用户请求包含`5m`、`15m`和`4h`的`rsi`、`mfi`、`roc`和`bb_width`特征。
 
-You can ask for each of the defined features to be included also for informative pairs using the `include_corr_pairlist`. This means that the feature set will include all the features from `feature_engineering_expand_*()` on all the `include_timeframes` for each of the correlated pairs defined in the config (`ETH/USD`, `LINK/USD`, and `BNB/USD` in the presented example).
+同时，可以通过`include_corr_pairlist`为每个定义的特征集包含相关配对的特征。这意味着特征集将包含所有在所有`include_timeframes`中为每个在配置中定义的相关配对（如`ETH/USD`、`LINK/USD`、`BNB/USD`）扩展的特征。
 
-`include_shifted_candles` indicates the number of previous candles to include in the feature set. For example, `include_shifted_candles: 2` tells FreqAI to include the past 2 candles for each of the features in the feature set.
+`include_shifted_candles`指示包含的前多少期蜡烛（k线）。例如，`include_shifted_candles: 2`表示FreqAI会包含每个特征的过去两根蜡烛数据。
 
-In total, the number of features the user of the presented example strategy has created is: length of `include_timeframes` * no. features in `feature_engineering_expand_*()` * length of `include_corr_pairlist` * no. `include_shifted_candles` * length of `indicator_periods_candles`
- $= 3 * 3 * 3 * 2 * 2 = 108$.
- 
- !!! note "Learn more about creative feature engineering"
-    Check out our [medium article](https://emergentmethods.medium.com/freqai-from-price-to-prediction-6fadac18b665) geared toward helping users learn how to creatively engineer features.
+总的来说，用户通过示例策略中的配置产生的特征数量为：
+`长度 of include_timeframes` * `feature_engineering_expand_*()`中的特征数 * `include_corr_pairlist`的长度 * `include_shifted_candles` * `indicator_periods_candles`  
+即：`3 * 3 * 3 * 2 * 2 = 108`。
 
-### Gain finer control over `feature_engineering_*` functions with `metadata`
+!!! note "了解更多创意特征工程的方法"
+    查看我们的[Medium文章](https://emergentmethods.medium.com/freqai-from-price-to-prediction-6fadac18b665)，帮助用户学习如何创造性地工程特征。
 
-All `feature_engineering_*` and `set_freqai_targets()` functions are passed a `metadata` dictionary which contains information about the `pair`, `tf` (timeframe), and `period` that FreqAI is automating for feature building. As such, a user can use `metadata` inside `feature_engineering_*` functions as criteria for blocking/reserving features for certain timeframes, periods, pairs etc.
+### 利用`metadata`实现对`feature_engineering_*`函数的更细粒度控制
+
+所有`feature_engineering_*`和`set_freqai_targets()`函数都接收一个`metadata`字典，包含关于`pair`、`tf`（时间框架）和`period`的信息。用户可以利用`metadata`作为条件，阻止或保留某些时间框架、周期或交易对的特征。
 
 ```python
 def feature_engineering_expand_all(self, dataframe: DataFrame, period, metadata, **kwargs) -> DataFrame:
@@ -194,15 +184,15 @@ def feature_engineering_expand_all(self, dataframe: DataFrame, period, metadata,
         dataframe["%-roc-period"] = ta.ROC(dataframe, timeperiod=period)
 ```
 
-This will block `ta.ROC()` from being added to any timeframes other than `"1h"`.
+上例中，仅在时间框架为`"1h"`时，才会添加`ta.ROC()`特征，其他时间框架将被阻止。
 
-### Returning additional info from training
+### 训练结束后返回额外信息
 
-Important metrics can be returned to the strategy at the end of each model training by assigning them to `dk.data['extra_returns_per_train']['my_new_value'] = XYZ` inside the custom prediction model class. 
+重要指标可以在每次模型训练结束时返回，并通过在自定义预测模型类中将其赋值给`dk.data['extra_returns_per_train']['my_new_value'] = XYZ`来实现。  
 
-FreqAI takes the `my_new_value` assigned in this dictionary and expands it to fit the dataframe that is returned to the strategy. You can then use the returned metrics in your strategy through `dataframe['my_new_value']`. An example of how return values can be used in FreqAI are the `&*_mean` and `&*_std` values that are used to [created a dynamic target threshold](freqai-configuration.md#creating-a-dynamic-target-threshold).
+FreqAI会将这个`my_new_value`展开，以适应返回给策略的数据框结构，策略中可以通过`dataframe['my_new_value']`访问。示例：用`&*_mean`和`&*_std`值动态设定目标阈值（详见[创建动态目标阈值](freqai-configuration.md#creating-a-dynamic-target-threshold)）。
 
-Another example, where the user wants to use live metrics from the trade database, is shown below:
+另一个示例是使用交易数据库中的实时指标，例如：  
 
 ```json
     "freqai": {
@@ -210,32 +200,38 @@ Another example, where the user wants to use live metrics from the trade databas
     }
 ```
 
-You need to set the standard dictionary in the config so that FreqAI can return proper dataframe shapes. These values will likely be overridden by the prediction model, but in the case where the model has yet to set them, or needs a default initial value, the pre-set values are what will be returned.
+你需要在配置中预设字典，使FreqAI能返回正确的数据框形状。这些值可能会被预测模型覆盖，但在模型未设置或需要默认值时，这些预设值会被返回。
 
-### Weighting features for temporal importance
+### 权重因子用于时间重要性
 
-FreqAI allows you to set a `weight_factor` to weight recent data more strongly than past data via an exponential function:
+FreqAI支持通过指数函数设置`weight_factor`，赋予近期数据更高权重：
 
 $$ W_i = \exp(\frac{-i}{\alpha*n}) $$
 
-where $W_i$ is the weight of data point $i$ in a total set of $n$ data points. Below is a figure showing the effect of different weight factors on the data points in a feature set.
+其中 $W_i$ 是第 $i$ 个数据点的权重，$n$是数据点总数。以下图示不同权重因子对特征集数据点的影响。
 
 ![weight-factor](assets/freqai_weight-factor.jpg)
 
-## Building the data pipeline
+## 构建数据管道
 
-By default, FreqAI builds a dynamic pipeline based on user configuration settings. The default settings are robust and designed to work with a variety of methods. These two steps are a `MinMaxScaler(-1,1)` and a `VarianceThreshold` which removes any column that has 0 variance. Users can activate other steps with more configuration parameters. For example if users add `use_SVM_to_remove_outliers: true` to the `freqai` config, then FreqAI will automatically add the [`SVMOutlierExtractor`](#identifying-outliers-using-a-support-vector-machine-svm) to the pipeline. Likewise, users can add `principal_component_analysis: true` to the `freqai` config to activate PCA. The [DissimilarityIndex](#identifying-outliers-with-the-dissimilarity-index-di) is activated with `DI_threshold: 1`. Finally, noise can also be added to the data with `noise_standard_deviation: 0.1`. Finally, users can add [DBSCAN](#identifying-outliers-with-dbscan) outlier removal with `use_DBSCAN_to_remove_outliers: true`.
+默认情况下，FreqAI根据用户配置自动构建动态管道。默认包括`MinMaxScaler(-1,1)`和`VarianceThreshold`（去除方差为零的列）。用户可以通过配置启用其他步骤，例如：  
 
-!!! note "More information available"
-    Please review the [parameter table](freqai-parameter-table.md) for more information on these parameters.
+- 加入`use_SVM_to_remove_outliers: true`，FreqAI会自动添加`SVMOutlierExtractor`到管道（详见[使用支持向量机识别离群点](#identifying-outliers-using-a-support-vector-machine-svm)）  
+- 添加`principal_component_analysis: true`，启用PCA  
+- 配置`DI_threshold: 1`，启用异质性指标（Dissimilarity Index）  
+- 添加噪声：`noise_standard_deviation: 0.1`  
+- 启用DBSCAN离群点去除：`use_DBSCAN_to_remove_outliers: true`
 
+!!! note "更多参数说明"
+    请查阅 [参数表](freqai-parameter-table.md)，了解更多详情。
 
-### Customizing the pipeline
+### 自定义数据管道
 
-Users are encouraged to customize the data pipeline to their needs by building their own data pipeline. This can be done by simply setting `dk.feature_pipeline` to their desired `Pipeline` object inside their `IFreqaiModel` `train()` function, or if they prefer not to touch the `train()` function, they can override `define_data_pipeline`/`define_label_pipeline` functions in their `IFreqaiModel`:
+鼓励用户根据需要自定义数据管道。实现方式是将`dk.feature_pipeline`设为自定义的`Pipeline`对象，或者重载`define_data_pipeline`/`define_label_pipeline`函数（详见[迁移指南](strategy_migration.md#freqai---new-data-pipeline)）。  
 
-!!! note "More information available"
-    FreqAI uses the [`DataSieve`](https://github.com/emergentmethods/datasieve) pipeline, which follows the SKlearn pipeline API, but adds, among other features, coherence between the X, y, and sample_weight vector point removals, feature removal, feature name following. 
+FreqAI使用的是 [`DataSieve`](https://github.com/emergentmethods/datasieve) 管道，遵循sklearn管道API，并增加了数据点移除、一致性维护、特征名追踪等功能。  
+
+示例：  
 
 ```python
 from datasieve.transforms import SKLearnWrapper, DissimilarityIndex
@@ -243,21 +239,20 @@ from datasieve.pipeline import Pipeline
 from sklearn.preprocessing import QuantileTransformer, StandardScaler
 from freqai.base_models import BaseRegressionModel
 
-
 class MyFreqaiModel(BaseRegressionModel):
     """
-    Some cool custom model
+    一些酷炫的自定义模型
     """
     def fit(self, data_dictionary: Dict, dk: FreqaiDataKitchen, **kwargs) -> Any:
         """
-        My custom fit function
+        我的自定义训练函数
         """
         model = cool_model.fit()
         return model
 
     def define_data_pipeline(self) -> Pipeline:
         """
-        User defines their custom feature pipeline here (if they wish)
+        用户可自定义特征管道
         """
         feature_pipeline = Pipeline([
             ('qt', SKLearnWrapper(QuantileTransformer(output_distribution='normal'))),
@@ -268,7 +263,7 @@ class MyFreqaiModel(BaseRegressionModel):
     
     def define_label_pipeline(self) -> Pipeline:
         """
-        User defines their custom label pipeline here (if they wish)
+        用户可自定义标签管道
         """
         label_pipeline = Pipeline([
             ('qt', SKLearnWrapper(StandardScaler())),
@@ -277,50 +272,50 @@ class MyFreqaiModel(BaseRegressionModel):
         return label_pipeline
 ```
 
-Here, you are defining the exact pipeline that will be used for your feature set during training and prediction. You can use *most* SKLearn transformation steps by wrapping them in the `SKLearnWrapper` class as shown above. In addition, you can use any of the transformations available in the [`DataSieve` library](https://github.com/emergentmethods/datasieve). 
+此示例中，定义了训练和预测时使用的特征管道，你可以用大部分sklearn变换步骤，包装在`SKLearnWrapper`中。还可以使用任何`DataSieve`库中的转换。
 
-You can easily add your own transformation by creating a class that inherits from the datasieve `BaseTransform` and implementing your `fit()`, `transform()` and `inverse_transform()` methods:
+自定义转换只需通过继承`BaseTransform`并实现`fit()`、`transform()`和`inverse_transform()`方法，比如：  
 
 ```python
 from datasieve.transforms.base_transform import BaseTransform
-# import whatever else you need
+# 其他导入
 
 class MyCoolTransform(BaseTransform):
     def __init__(self, **kwargs):
         self.param1 = kwargs.get('param1', 1)
 
     def fit(self, X, y=None, sample_weight=None, feature_list=None, **kwargs):
-        # do something with X, y, sample_weight, or/and feature_list
+        # 训练逻辑
         return X, y, sample_weight, feature_list
 
     def transform(self, X, y=None, sample_weight=None,
                   feature_list=None, outlier_check=False, **kwargs):
-        # do something with X, y, sample_weight, or/and feature_list
+        # 转换逻辑
         return X, y, sample_weight, feature_list
 
     def inverse_transform(self, X, y=None, sample_weight=None, feature_list=None, **kwargs):
-        # do/dont do something with X, y, sample_weight, or/and feature_list
+        # 逆变换逻辑
         return X, y, sample_weight, feature_list
 ```
 
-!!! note "Hint"
-    You can define this custom class in the same file as your `IFreqaiModel`.
+!!! note "提示"
+    自定义类可以与`IFreqaiModel`写在同一文件中。
 
-### Migrating a custom `IFreqaiModel` to the new Pipeline
+### 将自定义`IFreqaiModel`迁移到新管道
 
-If you have created your own custom `IFreqaiModel` with a custom `train()`/`predict()` function, *and* you still rely on `data_cleaning_train/predict()`, then you will need to migrate to the new pipeline. If your model does *not* rely on `data_cleaning_train/predict()`, then you do not need to worry about this migration.
+如果已有自定义的`IFreqaiModel`，且在`train()`/`predict()`中使用`data_cleaning_train/predict()`，则需要迁移到新管道。若不依赖其，迁移无关紧要。
 
-More details about the migration can be found [here](strategy_migration.md#freqai---new-data-pipeline).
+迁移详情请查阅[这里](strategy_migration.md#freqai---new-data-pipeline)。
 
-## Outlier detection
+## 异常值检测
 
-Equity and crypto markets suffer from a high level of non-patterned noise in the form of outlier data points. FreqAI implements a variety of methods to identify such outliers and hence mitigate risk.
+市场中存在大量无规律噪声和离群点，FreqAI引入多种方法识别并减轻风险。
 
-### Identifying outliers with the Dissimilarity Index (DI)
+### 使用异质性指标（DI）识别离群点
 
-The Dissimilarity Index (DI) aims to quantify the uncertainty associated with each prediction made by the model. 
+异质性指标（DI）度量模型预测的不确定性。
 
-You can tell FreqAI to remove outlier data points from the training/test data sets using the DI by including the following statement in the config:
+通过在配置中加入：  
 
 ```json
     "freqai": {
@@ -330,31 +325,31 @@ You can tell FreqAI to remove outlier data points from the training/test data se
     }
 ```
 
-Which will add `DissimilarityIndex` step to your `feature_pipeline` and set the threshold to 1. The DI allows predictions which are outliers (not existent in the model feature space) to be thrown out due to low levels of certainty. To do so, FreqAI measures the distance between each training data point (feature vector), $X_{a}$, and all other training data points:
+会在特征管道中加入`DissimilarityIndex`，阈值为1。DI允许识别为离群的预测（不在模型特征空间内），并舍弃以降低风险。其原理为：计算每个训练点$X_a$与其他所有点$X_b$的距离：  
 
 $$ d_{ab} = \sqrt{\sum_{j=1}^p(X_{a,j}-X_{b,j})^2} $$
 
-where $d_{ab}$ is the distance between the normalized points $a$ and $b$, and $p$ is the number of features, i.e., the length of the vector $X$. The characteristic distance, $\overline{d}$, for a set of training data points is simply the mean of the average distances:
+然后，计算训练集的平均距离：  
 
 $$ \overline{d} = \sum_{a=1}^n(\sum_{b=1}^n(d_{ab}/n)/n) $$
 
-$\overline{d}$ quantifies the spread of the training data, which is compared to the distance between a new prediction feature vectors, $X_k$ and all the training data:
+新预测点$X_k$与训练集的距离：  
 
 $$ d_k = \arg \min d_{k,i} $$
 
-This enables the estimation of the Dissimilarity Index as:
+估算DI：  
 
-$$ DI_k = d_k/\overline{d} $$
+$$ DI_k = d_k / \overline{d} $$
 
-You can tweak the DI through the `DI_threshold` to increase or decrease the extrapolation of the trained model. A higher `DI_threshold` means that the DI is more lenient and allows predictions further away from the training data to be used whilst a lower `DI_threshold` has the opposite effect and hence discards more predictions.
+可以调节`DI_threshold`以控制离群点判定的敏感度。阈值越高，模型容许的预测越远，越宽松；阈值越低则越严格。
 
-Below is a figure that describes the DI for a 3D data set.
+以下图示为3D数据集的DI示意：
 
 ![DI](assets/freqai_DI.jpg)
 
-### Identifying outliers using a Support Vector Machine (SVM)
+### 使用支持向量机（SVM）识别离群点
 
-You can tell FreqAI to remove outlier data points from the training/test data sets using a Support Vector Machine (SVM) by including the following statement in the config:
+可在配置中加入：  
 
 ```json
     "freqai": {
@@ -364,17 +359,16 @@ You can tell FreqAI to remove outlier data points from the training/test data se
     }
 ```
 
-Which will add `SVMOutlierExtractor` step to your `feature_pipeline`. The SVM will be trained on the training data and any data point that the SVM deems to be beyond the feature space will be removed.
+会自动在特征管道中加入`SVMOutlierExtractor`。SVM在训练后会判断数据点是否超出特征空间，超出的将被移除。
 
-You can elect to provide additional parameters for the SVM, such as `shuffle`, and `nu` via the `feature_parameters.svm_params` dictionary in the config.
+你也可以通过`feature_parameters.svm_params`设置参数，如：`shuffle`和`nu`。  
 
-The parameter `shuffle` is by default set to `False` to ensure consistent results. If it is set to `True`, running the SVM multiple times on the same data set might result in different outcomes due to `max_iter` being to low for the algorithm to reach the demanded `tol`. Increasing `max_iter` solves this issue but causes the procedure to take longer time.
+- `shuffle`默认值为`False`，确保结果一致。若设置为`True`，每次训练可能不同（因`max_iter`过低导致收敛不到`tol`），建议适当增大`max_iter`。  
+- `nu`大致代表被判定为离群的比例，值在0到1之间。
 
-The parameter `nu`, *very* broadly, is the amount of data points that should be considered outliers and should be between 0 and 1.
+### 使用DBSCAN识别离群点
 
-### Identifying outliers with DBSCAN
-
-You can configure FreqAI to use DBSCAN to cluster and remove outliers from the training/test data set or incoming outliers from predictions, by activating `use_DBSCAN_to_remove_outliers` in the config:
+你可以启用：  
 
 ```json
     "freqai": {
@@ -384,18 +378,19 @@ You can configure FreqAI to use DBSCAN to cluster and remove outliers from the t
     }
 ```
 
-Which will add the `DataSieveDBSCAN` step to your `feature_pipeline`. This is an unsupervised machine learning algorithm that clusters data without needing to know how many clusters there should be.
+加入`DataSieveDBSCAN`。这是无监督聚类算法，不需预先知道簇的数量。
 
-Given a number of data points $N$, and a distance $\varepsilon$, DBSCAN clusters the data set by setting all data points that have $N-1$ other data points within a distance of $\varepsilon$ as *core points*. A data point that is within a distance of $\varepsilon$ from a *core point* but that does not have $N-1$ other data points within a distance of $\varepsilon$ from itself is considered an *edge point*. A cluster is then the collection of *core points* and *edge points*. Data points that have no other data points at a distance $<\varepsilon$ are considered outliers. The figure below shows a cluster with $N = 3$.
+定义：给定点数$N$和距离阈值$\varepsilon$，DBSCAN会将每个点周围半径$\varepsilon$内至少有$N-1$个点的点标记为“核心点”；距离$\varepsilon$内有核心点但自己未达到要求的点为“边界点”。簇由核心点和边界点组成；没有邻居的点被视为离群点。
+
+示意图：  
 
 ![dbscan](assets/freqai_dbscan.jpg)
 
-FreqAI uses `sklearn.cluster.DBSCAN` (details are available on scikit-learn's webpage [here](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.DBSCAN.html) (external website)) with `min_samples` ($N$) taken as 1/4 of the no. of time points (candles) in the feature set. `eps` ($\varepsilon$) is computed automatically as the elbow point in the *k-distance graph* computed from the nearest neighbors in the pairwise distances of all data points in the feature set.
+采用`sklearn.cluster.DBSCAN`，其中`min_samples`取值为数据点数量的1/4（按蜡烛数计算），`eps`自动采用k距图的拐点。
 
+### 使用主成分分析（PCA）进行降维
 
-### Data dimensionality reduction with Principal Component Analysis
-
-You can reduce the dimensionality of your features by activating the principal_component_analysis in the config:
+通过配置：  
 
 ```json
     "freqai": {
@@ -405,4 +400,4 @@ You can reduce the dimensionality of your features by activating the principal_c
     }
 ```
 
-This will perform PCA on the features and reduce their dimensionality so that the explained variance of the data set is >= 0.999. Reducing data dimensionality makes training the model faster and hence allows for more up-to-date models.
+启用PCA，将特征降至解释方差≥0.999的维度。这能加快训练速度，使模型更新更快。

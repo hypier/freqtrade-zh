@@ -1,10 +1,7 @@
-```
-usage: freqtrade create-userdir [-h] [--userdir PATH] [--reset]
+用法：freqtrade create-userdir [-h] [--userdir PATH] [--reset]
 
-options:
-  -h, --help            show this help message and exit
+选项：
+  -h, --help            显示此帮助信息并退出
   --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
-  --reset               Reset sample files to their original state.
-
-```
+                        用户数据目录的路径。
+  --reset               将示例文件重置为原始状态。

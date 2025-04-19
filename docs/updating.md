@@ -1,48 +1,48 @@
-# How to update
+# 如何更新
 
-To update your freqtrade installation, please use one of the below methods, corresponding to your installation method.
+要更新你的 freqtrade 安装，请使用以下方法之一，选择与你的安装方式相对应的方法。
 
-!!! Note "Tracking changes"
-    Breaking changes / changed behavior will be documented in the changelog that is posted alongside every release.
-    For the develop branch, please follow PR's to avoid being surprised by changes.
+!!! Note "跟踪变更"
+    破坏性变更或行为变更将在每个版本发布时的更新日志中记录。
+    对于开发分支，请关注 PR，以避免被突如其来的变更所惊吓。
 
 ## Docker
 
-!!! Note "Legacy installations using the `master` image"
-    We're switching from master to stable for the release Images - please adjust your docker-file and replace `freqtradeorg/freqtrade:master` with `freqtradeorg/freqtrade:stable`
+!!! Note "使用 `master` 镜像的旧版本安装"
+    我们正在将发布镜像的基础从 `master` 迁移到 `stable`，请调整你的 Docker 文件，将 `freqtradeorg/freqtrade:master` 替换为 `freqtradeorg/freqtrade:stable`
 
 ``` bash
 docker compose pull
 docker compose up -d
 ```
 
-## Installation via setup script
+## 通过安装脚本进行安装
 
 ``` bash
 ./setup.sh --update
 ```
 
 !!! Note
-    Make sure to run this command with your virtual environment disabled!
+    确保在运行此命令时你的虚拟环境已关闭！
 
-## Plain native installation
+## 纯本地原生安装
 
-Please ensure that you're also updating dependencies - otherwise things might break without you noticing.
+请确保你也在更新依赖项，否则可能会出现未被注意到的问题。
 
 ``` bash
 git pull
 pip install -U -r requirements.txt
 pip install -e .
 
-# Ensure freqUI is at the latest version
+# 确保 freqUI 为最新版本
 freqtrade install-ui 
 ```
 
-### Problems updating
+### 更新中遇到的问题
 
-Update-problems usually come missing dependencies (you didn't follow the above instructions) - or from updated dependencies, which fail to install (for example TA-lib).
-Please refer to the corresponding installation sections (common problems linked below)
+更新问题通常由缺失的依赖导致（你没有按照上述指引操作）——或者是因为依赖更新后无法成功安装（例如 TA-lib）。
+请参考相应的安装指南（以下链接中包括常见问题解答）
 
-Common problems and their solutions:
+常见问题及解决方案：
 
-* [ta-lib update on windows](windows_installation.md#2-install-ta-lib)
+* [ta-lib 在 Windows 上的更新](windows_installation.md#2-install-ta-lib)

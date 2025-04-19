@@ -5,39 +5,39 @@
 [![Coverage Status](https://coveralls.io/repos/github/freqtrade/freqtrade/badge.svg?branch=develop&service=github)](https://coveralls.io/github/freqtrade/freqtrade?branch=develop)
 [![Maintainability](https://api.codeclimate.com/v1/badges/5737e6d668200b7518ff/maintainability)](https://codeclimate.com/github/freqtrade/freqtrade/maintainability)
 
-<!-- Place this tag where you want the button to render. -->
+<!-- 在您希望按钮渲染的位置放置此标签。 -->
 <a class="github-button" href="https://github.com/freqtrade/freqtrade" data-icon="octicon-star" data-size="large" aria-label="Star freqtrade/freqtrade on GitHub">Star</a>
 <a class="github-button" href="https://github.com/freqtrade/freqtrade/fork" data-icon="octicon-repo-forked" data-size="large" aria-label="Fork freqtrade/freqtrade on GitHub">Fork</a>
 <a class="github-button" href="https://github.com/freqtrade/freqtrade/archive/stable.zip" data-icon="octicon-cloud-download" data-size="large" aria-label="Download freqtrade/freqtrade on GitHub">Download</a>
 
-## Introduction
+## 介绍
 
-Freqtrade is a free and open source crypto trading bot written in Python. It is designed to support all major exchanges and be controlled via Telegram or webUI. It contains backtesting, plotting and money management tools as well as strategy optimization by machine learning.
+Freqtrade是一个用Python编写的免费开源加密货币交易机器人。它旨在支持所有主要交易所，并通过Telegram或WebUI进行控制。它包含回测、绘图和资金管理工具，以及利用机器学习进行策略优化。
 
-!!! Danger "DISCLAIMER"
-    This software is for educational purposes only. Do not risk money which you are afraid to lose. USE THE SOFTWARE AT YOUR OWN RISK. THE AUTHORS AND ALL AFFILIATES ASSUME NO RESPONSIBILITY FOR YOUR TRADING RESULTS.
+!!! 警告 "免责声明"
+    本软件仅用于教育目的。请勿使用你害怕会失去的资金进行交易。请自行承担使用本软件的风险。作者及所有关联方不对你的交易结果承担任何责任。
 
-    Always start by running a trading bot in Dry-run and do not engage money before you understand how it works and what profit/loss you should expect.
+    建议你首先在模拟交易（Dry-run）中运行机器人，确保理解其工作原理以及预期的利润/亏损情况后再投入资金。
 
-    We strongly recommend you to have basic coding skills and Python knowledge. Do not hesitate to read the source code and understand the mechanisms of this bot, algorithms and techniques implemented in it.
+    我们强烈建议你具备基础编码技能和Python知识。不要犹豫阅读源代码，理解该机器人所采用的机制、算法和技巧。
 
-![freqtrade screenshot](assets/freqtrade-screenshot.png)
+![freqtrade 截图](assets/freqtrade-screenshot.png)
 
-## Features
+## 特性
 
-- Develop your Strategy: Write your strategy in python, using [pandas](https://pandas.pydata.org/). Example strategies to inspire you are available in the [strategy repository](https://github.com/freqtrade/freqtrade-strategies).
-- Download market data: Download historical data of the exchange and the markets your may want to trade with.
-- Backtest: Test your strategy on downloaded historical data.
-- Optimize: Find the best parameters for your strategy using hyperoptimization which employs machine learning methods. You can optimize buy, sell, take profit (ROI), stop-loss and trailing stop-loss parameters for your strategy.
-- Select markets: Create your static list or use an automatic one based on top traded volumes and/or prices (not available during backtesting). You can also explicitly blacklist markets you don't want to trade.
-- Run: Test your strategy with simulated money (Dry-Run mode) or deploy it with real money (Live-Trade mode).
-- Run using Edge (optional module): The concept is to find the best historical [trade expectancy](edge.md#expectancy) by markets based on variation of the stop-loss and then allow/reject markets to trade. The sizing of the trade is based on a risk of a percentage of your capital.
-- Control/Monitor: Use Telegram or a WebUI (start/stop the bot, show profit/loss, daily summary, current open trades results, etc.).
-- Analyze: Further analysis can be performed on either Backtesting data or Freqtrade trading history (SQL database), including automated standard plots, and methods to load the data into [interactive environments](data-analysis.md).
+- 开发你的策略：用Python编写你的交易策略，支持[pandas](https://pandas.pydata.org/)。可在[策略仓库](https://github.com/freqtrade/freqtrade-strategies)中找到示例策略以供参考。
+- 下载市场数据：下载你可能交易的交易所和市场的历史数据。
+- 回测：在下载的历史数据上测试你的交易策略。
+- 优化：使用机器学习方法的超参数优化，寻找你的策略的最佳参数。你可以优化买入、卖出、盈利（ROI）、止损和追踪止损等参数。
+- 选择市场：创建静态列表或使用基于交易量和/或价格排名的自动列表（回测时不可用）。也可以明确排除不希望交易的市场。
+- 运行：用模拟资金（Dry-Run模式）测试策略，或以真实资金（Live-Trade模式）部署。
+- 通过边缘（Edge）模块运行（可选）：通过变动止损值，寻找市场的最佳历史[交易预期](edge.md#expectancy)，再决定是否允许交易。每笔交易的规模基于资本的百分比风险。
+- 控制/监控：使用Telegram或WebUI（启动/停止机器人、显示盈利/亏损、每日总结、当前持仓交易结果等）。
+- 分析：可在回测数据或Freqtrade交易历史（SQL数据库）上进行更深层次的分析，包括自动标准绘图和将数据导入[交互式环境](data-analysis.md)的方法。
 
-## Supported exchange marketplaces
+## 支持的交易市场
 
-Please read the [exchange specific notes](exchanges.md) to learn about eventual, special configurations needed for each exchange.
+请阅读[交易所相关说明](exchanges.md)，了解每个交易所可能需要的特殊配置。
 
 - [X] [Binance](https://www.binance.com/)
 - [X] [BingX](https://bingx.com/invite/0EM9RX)
@@ -45,61 +45,61 @@ Please read the [exchange specific notes](exchanges.md) to learn about eventual,
 - [X] [Bybit](https://bybit.com/)
 - [X] [Gate.io](https://www.gate.io/ref/6266643)
 - [X] [HTX](https://www.htx.com/)
-- [X] [Hyperliquid](https://hyperliquid.xyz/) (A decentralized exchange, or DEX)
+- [X] [Hyperliquid](https://hyperliquid.xyz/)（去中心化交易所，简称DEX）
 - [X] [Kraken](https://kraken.com/)
 - [X] [OKX](https://okx.com/)
-- [X] [MyOKX](https://okx.com/) (OKX EEA)
-- [ ] [potentially many others through <img alt="ccxt" width="30px" src="assets/ccxt-logo.svg" />](https://github.com/ccxt/ccxt/). _(We cannot guarantee they will work)_
+- [X] [MyOKX](https://okx.com/)（OKX EEA）
+- [ ] [可能支持许多其他交易所，通过 <img alt="ccxt" width="30px" src="assets/ccxt-logo.svg" />](https://github.com/ccxt/ccxt/)。**（我们不能保证它们可用）**
 
-### Supported Futures Exchanges (experimental)
+### 支持的期货交易所（实验性功能）
 
 - [X] [Binance](https://www.binance.com/)
 - [X] [Bybit](https://bybit.com/)
 - [X] [Gate.io](https://www.gate.io/ref/6266643)
-- [X] [Hyperliquid](https://hyperliquid.xyz/) (A decentralized exchange, or DEX)
+- [X] [Hyperliquid](https://hyperliquid.xyz/)（去中心化交易所，简称DEX）
 - [X] [OKX](https://okx.com/)
 
-Please make sure to read the [exchange specific notes](exchanges.md), as well as the [trading with leverage](leverage.md) documentation before diving in.
+请确保在开始前阅读[交易所相关说明](exchanges.md)，以及[杠杆交易](leverage.md)相关文档。
 
-### Community tested
+### 社区验证
 
-Exchanges confirmed working by the community:
+由社区确认支持的交易所：
 
 - [X] [Bitvavo](https://bitvavo.com/)
 - [X] [Kucoin](https://www.kucoin.com/)
 
-## Community showcase
+## 社区展示
 
 --8<-- "includes/showcase.md"
 
-## Requirements
+## 系统需求
 
-### Hardware requirements
+### 硬件需求
 
-To run this bot we recommend you a linux cloud instance with a minimum of:
+建议运行为Linux云服务器，最低配置为：
 
 - 2GB RAM
-- 1GB disk space
-- 2vCPU
+- 1GB存储空间
+- 2个虚拟CPU（vCPU）
 
-### Software requirements
+### 软件需求
 
-- Docker (Recommended)
+- Docker（推荐）
 
-Alternatively
+或者
 
 - Python 3.10+
-- pip (pip3)
+- pip（pip3）
 - git
 - TA-Lib
-- virtualenv (Recommended)
+- virtualenv（推荐）
 
-## Support
+## 支持方式
 
-### Help / Discord
+### 帮助 / Discord
 
-For any questions not covered by the documentation or for further information about the bot, or to simply engage with like-minded individuals, we encourage you to join the Freqtrade [discord server](https://discord.gg/p7nuUNVfP7).
+如在文档中找不到答案，或想了解更多关于机器人的信息，或与志同道合者交流，欢迎加入Freqtrade的[Discord服务器](https://discord.gg/p7nuUNVfP7)。
 
-## Ready to try?
+## 准备试用？
 
-Begin by reading the installation guide [for docker](docker_quickstart.md) (recommended), or for [installation without docker](installation.md).
+首先阅读[Docker安装指南](docker_quickstart.md)（推荐），或选择[非Docker安装指南](installation.md)。

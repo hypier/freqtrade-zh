@@ -1,68 +1,51 @@
-```
-usage: freqtrade plot-profit [-h] [-v] [--no-color] [--logfile FILE] [-V]
-                             [-c PATH] [-d PATH] [--userdir PATH] [-s NAME]
-                             [--strategy-path PATH]
-                             [--recursive-strategy-search]
-                             [--freqaimodel NAME] [--freqaimodel-path PATH]
-                             [-p PAIRS [PAIRS ...]] [--timerange TIMERANGE]
-                             [--export {none,trades,signals}]
-                             [--export-filename PATH] [--db-url PATH]
-                             [--trade-source {DB,file}] [-i TIMEFRAME]
-                             [--auto-open]
+用法：freqtrade plot-profit [-h] [-v] [--no-color] [--logfile FILE] [-V]
+                              [-c PATH] [-d PATH] [--userdir PATH] [-s NAME]
+                              [--strategy-path PATH]
+                              [--recursive-strategy-search]
+                              [--freqaimodel NAME] [--freqaimodel-path PATH]
+                              [-p PAIRS [PAIRS ...]] [--timerange TIMERANGE]
+                              [--export {none,trades,signals}]
+                              [--export-filename PATH] [--db-url PATH]
+                              [--trade-source {DB,file}] [-i TIMEFRAME]
+                              [--auto-open]
 
-options:
-  -h, --help            show this help message and exit
+选项：
+  -h, --help            显示此帮助信息并退出
   -p PAIRS [PAIRS ...], --pairs PAIRS [PAIRS ...]
-                        Limit command to these pairs. Pairs are space-
-                        separated.
+                        将命令限制在这些交易对。交易对之间用空格分隔。
   --timerange TIMERANGE
-                        Specify what timerange of data to use.
+                        指定使用的数据时间范围。
   --export {none,trades,signals}
-                        Export backtest results (default: trades).
+                        导出回测结果（默认：trades）。
   --export-filename PATH, --backtest-filename PATH
-                        Use this filename for backtest results.Requires
-                        `--export` to be set as well. Example: `--export-filen
-                        ame=user_data/backtest_results/backtest_today.json`
-  --db-url PATH         Override trades database URL, this is useful in custom
-                        deployments (default: `sqlite:///tradesv3.sqlite` for
-                        Live Run mode, `sqlite:///tradesv3.dryrun.sqlite` for
-                        Dry Run).
+                        使用此文件名保存回测结果。需要同时设置`--export`。例如：`--export-filename=user_data/backtest_results/backtest_today.json`
+  --db-url PATH         覆盖交易日志数据库URL，在自定义部署中非常有用（默认：`sqlite:///tradesv3.sqlite` 用于实时运行，`sqlite:///tradesv3.dryrun.sqlite` 用于模拟运行）。
   --trade-source {DB,file}
-                        Specify the source for trades (Can be DB or file
-                        (backtest file)) Default: file
+                        指定交易数据来源（可以是数据库或文件（回测文件））。默认：file
   -i TIMEFRAME, --timeframe TIMEFRAME
-                        Specify timeframe (`1m`, `5m`, `30m`, `1h`, `1d`).
-  --auto-open           Automatically open generated plot.
+                        指定时间周期（`1m`、`5m`、`30m`、`1h`、`1d`）。
+  --auto-open           自动打开生成的图表。
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
+常用参数：
+  -v, --verbose         详细模式（-vv 获取更多信息，-vvv 获取全部消息）。
+  --no-color            禁用高亮显示结果的颜色，适合将输出重定向到文件。
   --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        'syslog', 'journald'. See the documentation for more
-                        details.
-  -V, --version         show program's version number and exit
+                        将日志信息写入指定文件。特殊值包括：
+                        'syslog'、'journald'。详细信息请参阅文档。
+  -V, --version         显示程序版本号并退出
   -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
+                        指定配置文件（默认：`userdir/config.json` 或 `config.json` ，根据实际存在的文件而定）。可以多次使用此参数。也可以设为`-`以从标准输入读取配置。
   -d PATH, --datadir PATH, --data-dir PATH
-                        Path to directory with historical backtesting data.
+                        指定存放历史回测数据的目录路径。
   --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+                        指定用户数据目录路径。
 
-Strategy arguments:
+策略相关参数：
   -s NAME, --strategy NAME
-                        Specify strategy class name which will be used by the
-                        bot.
-  --strategy-path PATH  Specify additional strategy lookup path.
+                        指定将被机器人使用的策略类名。
+  --strategy-path PATH  指定额外的策略查找路径。
   --recursive-strategy-search
-                        Recursively search for a strategy in the strategies
-                        folder.
-  --freqaimodel NAME    Specify a custom freqaimodels.
+                        在策略文件夹中递归搜索策略。
+  --freqaimodel NAME    指定自定义的频率模型。
   --freqaimodel-path PATH
-                        Specify additional lookup path for freqaimodels.
-
-```
+                        指定额外的频率模型查找路径。

@@ -1,84 +1,82 @@
 # FreqUI
 
-Freqtrade provides a builtin webserver, which can serve [FreqUI](https://github.com/freqtrade/frequi), the freqtrade frontend.
+Freqtrade 内置了一个网页服务器，可提供 [FreqUI](https://github.com/freqtrade/frequi)，即 freqtrade 的前端界面。
 
-By default, the UI is automatically installed as part of the installation (script, docker).
-freqUI can also be manually installed by using the `freqtrade install-ui` command.
-This same command can also be used to update freqUI to new new releases.
+默认情况下，UI 会在安装过程中自动安装（脚本安装、Docker 镜像）。  
+你也可以通过手动执行 `freqtrade install-ui` 命令来安装 freqUI。  
+同一个命令还可以用来将 freqUI 更新到最新版本。
 
-Once the bot is started in trade / dry-run mode (with `freqtrade trade`) - the UI will be available under the configured API port (by default `http://127.0.0.1:8080`).
+一旦在交易或模拟交易模式下启动机器人（使用 `freqtrade trade`）——界面将在配置好的 API 端口上提供（默认为 `http://127.0.0.1:8080`）。
 
-??? Note "Looking to contribute to freqUI?"
-    Developers should not use this method, but instead clone the corresponding use the method described in the [freqUI repository](https://github.com/freqtrade/frequi) to get the source-code of freqUI. A working installation of node will be required to build the frontend.
+??? 提示 "想为 freqUI 做贡献？"  
+开发者不应使用此方法，而应克隆相应的仓库，使用 [freqUI 仓库](https://github.com/freqtrade/frequi) 中描述的方法获取源码。  
+构建前端界面时需要安装 Node.js。
 
-!!! tip "freqUI is not required to run freqtrade"
-    freqUI is an optional component of freqtrade, and is not required to run the bot.
-    It is a frontend that can be used to monitor the bot and to interact with it - but freqtrade itself will work perfectly fine without it.
+!!! 提示 "运行 freqtrade 并不需要 freqUI"  
+freqUI 是 freqtrade 的一个可选组件，并非运行机器人所必需。  
+它是一个前端界面，用于监控和与机器人交互——但没有它，freqtrade 依然可以正常运行。
 
-## Configuration
+## 配置
 
-FreqUI does not have it's own configuration file - but assumes a working setup for the [rest-api](rest-api.md) is available.
-Please refer to the corresponding documentation page to get setup with freqUI
+FreqUI 没有自己的配置文件——但假设已配置好 [rest-api](rest-api.md) 的正常运行。  
+请参考相应的文档页面以完成 freqUI 的配置。
 
-## UI
+## 界面
 
-FreqUI is a modern, responsive web application that can be used to monitor and interact with your bot.
+FreqUI 是一个现代、响应式的网页应用，可以用来监控和操作你的机器人。
 
-FreqUI provides a light, as well as a dark theme.
-Themes can be easily switched via a prominent button at the top of the page.
-The theme of the screenshots on this page will adapt to the selected documentation Theme, so to see the dark (or light) version, please switch the theme of the Documentation.
+FreqUI 支持浅色主题和深色主题。  
+主题可以通过页面顶部的显著按钮轻松切换。  
+本文档中的截图主题会根据所选的文档主题自动调整，因此要查看深色（或浅色）版本，请切换文档的主题。
 
-### Login
+### 登录界面
 
-The below screenshot shows the login screen of freqUI.
+下方截图显示了 freqUI 的登录页面。
 
-![FreqUI - login](assets/frequi-login-CORS.png#only-dark)
+![FreqUI - login](assets/frequi-login-CORS.png#only-dark)  
 ![FreqUI - login](assets/frequi-login-CORS-light.png#only-light)
 
-!!! Hint "CORS"
-    The Cors error shown in this screenshot is due to the fact that the UI is running on a different port than the API, and [CORS](#cors) has not been setup correctly yet.
+!!! 提示 "CORS"  
+此截图中显示的 CORS 错误，是因为界面运行的端口与 API 不同，且 [CORS](#cors) 配置尚未正确设置。
 
-### Trade view
+### 交易视图
 
-The trade view allows you to visualize the trades that the bot is making and to interact with the bot.
-On this page, you can also interact with the bot by starting and stopping it and - if configured - force trade entries and exits.
+交易视图允许你可视化机器人执行的交易，并与机器人交互。  
+在此页面，你还可以通过启动和停止机器人，以及在配置允许的情况下，强制进行交易入场和退出操作。
 
-![FreqUI - trade view](assets/freqUI-trade-pane-dark.png#only-dark)
+![FreqUI - trade view](assets/freqUI-trade-pane-dark.png#only-dark)  
 ![FreqUI - trade view](assets/freqUI-trade-pane-light.png#only-light)
 
-### Plot Configurator
+### 绘图配置器
 
-FreqUI Plots can be configured either via a `plot_config` configuration object in the strategy (which can be loaded via "from strategy" button) or via the UI.
-Multiple plot configurations can be created and switched at will - allowing for flexible, different views into your charts.
+FreqUI 的绘图可以通过策略中的 `plot_config` 配置对象（支持通过“从策略加载”按钮加载）或通过界面进行配置。  
+可以创建和切换多个绘图配置，以实现对图表的不同视角。
 
-The plot configuration can be accessed via the "Plot Configurator" (Cog icon) button in the top right corner of the trade view.
+绘图配置可以通过交易视图右上角的“绘图配置器”按钮（齿轮图标）打开。
 
-![FreqUI - plot configuration](assets/freqUI-plot-configurator-dark.png#only-dark)
+![FreqUI - plot configuration](assets/freqUI-plot-configurator-dark.png#only-dark)  
 ![FreqUI - plot configuration](assets/freqUI-plot-configurator-light.png#only-light)
 
-### Settings
+### 设置
 
-Several UI related settings can be changed by accessing the settings page.
+可以通过访问设置页面，修改多项界面相关的设置。
 
-Things you can change (among others):
+你可以调整的内容包括但不限于：
 
-* Timezone of the UI
-* Visualization of open trades as part of the favicon (browser tab)
-* Candle colors (up/down -> red/green)
-* Enable / disable in-app notification types
+* 界面所用的时区
+* 浏览器标签页 favicon 上的未平仓交易显示
+* K线颜色（涨/跌 — 红色/绿色）
+* 开启或关闭应用内通知类型
 
-![FreqUI - Settings view](assets/frequi-settings-dark.png#only-dark)
+![FreqUI - Settings view](assets/frequi-settings-dark.png#only-dark)  
 ![FreqUI - Settings view](assets/frequi-settings-light.png#only-light)
 
-## Backtesting
+## 回测
 
-When freqtrade is started in [webserver mode](utils.md#webserver-mode) (freqtrade started with `freqtrade webserver`), the backtesting view becomes available.
-This view allows you to backtest strategies and visualize the results.
+当在 [网页服务器模式](utils.md#webserver-mode)下启动 freqtrade（使用 `freqtrade webserver` 命令）时，回测界面将变得可用。  
+该界面允许你进行策略回测并可视化结果。
 
-You can also load and visualize previous backtest results, as well as compare the results with each other.
+你还可以加载并分析历史回测数据，或者将多次回测结果进行对比。
 
-![FreqUI - Backtesting](assets/freqUI-backtesting-dark.png#only-dark)
+![FreqUI - Backtesting](assets/freqUI-backtesting-dark.png#only-dark)  
 ![FreqUI - Backtesting](assets/freqUI-backtesting-light.png#only-light)
-
-
---8<-- "includes/cors.md"

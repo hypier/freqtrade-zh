@@ -1,300 +1,301 @@
-# Edge positioning
+# 边缘定位
 
-The `Edge Positioning` module uses probability to calculate your win rate and risk reward ratio. It will use these statistics to control your strategy trade entry points, position size and, stoploss.
+`Edge Positioning`模块使用概率来计算你的胜率和风险/回报比。它会利用这些统计数据控制你的策略交易入场点、仓位规模和止损。
 
-!!! Danger "Deprecated functionality"
-    `Edge positioning` (or short Edge) is currently in maintenance mode only (we keep existing functionality alive) and should be considered as deprecated.
-    It will currently not receive new features until either someone stepped forward to take up ownership of that module - or we'll decide to remove edge from freqtrade.
+!!! Danger "已弃用功能"
+    `Edge positioning`（或简称Edge）目前处于维护模式（我们只负责保持现有功能的正常运行），应被视作已废弃。
+    目前不会再添加新功能，直到有人接手该模块，或者我们决定从freqtrade中移除Edge。
 
 !!! Warning
-    When using `Edge positioning` with a dynamic whitelist (VolumePairList), make sure to also use `AgeFilter` and set it to at least `calculate_since_number_of_days` to avoid problems with missing data.
+    在使用`Edge positioning`配合动态白名单（VolumePairList）时，请确保也启用`AgeFilter`并设置其`calculate_since_number_of_days`参数，避免因数据缺失导致的问题。
 
 !!! Note
-    `Edge Positioning` only considers *its own* buy/sell/stoploss signals. It ignores the stoploss, trailing stoploss, and ROI settings in the strategy configuration file.
-    `Edge Positioning` improves the performance of some trading strategies and *decreases* the performance of others.
+    `Edge Positioning`只考虑*自身*的买/卖/止损信号。它会忽略策略配置文件中的止损、追踪止损和ROI设置。
+    `Edge Positioning`可以提升某些交易策略的表现，但也可能*降低*其他策略的效果。
 
+## 引言
 
-## Introduction
+交易策略并非完美。它们是受市场及其指标影响的框架。由于市场完全难以预测，有时策略会获利，有时会亏损，即使是相同的策略。
 
-Trading strategies are not perfect. They are frameworks that are susceptible to the market and its indicators. Because the market is not at all predictable, sometimes a strategy will win and sometimes the same strategy will lose.
+为了在市场中获得优势，策略必须盈利多于亏损。盈利不仅关乎策略多频繁盈利或亏损。
 
-To obtain an edge in the market, a strategy has to make more money than it loses. Making money in trading is not only about *how often* the strategy makes or loses money.
+!!! tip "关键是赚多还是赚少！"
+    一个糟糕的策略可能在十笔交易中赚1分钱，却在一次交易中亏掉1美元。如果只看盈利交易的数量，可能会误以为该策略是盈利的，但实际上未必如此。
 
-!!! tip "It doesn't matter how often, but how much!"
-    A bad strategy might make 1 penny in *ten* transactions but lose 1 dollar in *one* transaction. If one only checks the number of winning trades, it would be misleading to think that the strategy is actually making a profit.
+`Edge Positioning`模块旨在提高策略的胜率和*长远来看*的盈利潜力。
 
-The Edge Positioning module seeks to improve a strategy's winning probability and the money that the strategy will make *on the long run*. 
+我们提出如下问题[^1]：
 
-We raise the following question[^1]:
+!!! Question "哪种交易更优？"
+    a) 胜率80%，亏损100\$的交易，赢200\$的交易<br/>
+    b) 胜率100%，亏损30\$的交易
 
-!!! Question "Which trade is a better option?"
-    a) A trade with 80% of chance of losing 100\$ and 20% chance of winning 200\$<br/>
-    b) A trade with 100% of chance of losing 30\$
+???+ Info "答案"
+    *a)*的期望值小于*b)*的期望值。<br/>
+    因此，*b)*从长远来看亏损更少。<br/>
+    不过，答案是：*视情况而定*
 
-???+ Info "Answer"
-    The expected value of *a)* is smaller than the expected value of *b)*.<br/>
-    Hence, *b*) represents a smaller loss in the long run.<br/>
-    However, the answer is: *it depends*
+另一种思考方式是提出类似的问题：
 
-Another way to look at it is to ask a similar question:
+!!! Question "哪种交易更优？"
+    a) 胜率80%，赢100\$的交易<br/>
+    b) 胜率100%，赢30\$的交易
 
-!!! Question "Which trade is a better option?"
-    a) A trade with 80% of chance of winning 100\$ and 20% chance of losing 200\$<br/>
-    b) A trade with 100% of chance of winning 30\$
+Edge定位试图自动回答关于风险/回报和仓位规模的难题，旨在最大限度地降低某个策略的亏损概率。
 
-Edge positioning tries to answer the hard questions about risk/reward and position size automatically, seeking to minimizes the chances of losing of a given strategy.
+### 交易、盈利与亏损
 
-### Trading, winning and losing
-
-Let's call $o$ the return of a single transaction $o$ where $o \in \mathbb{R}$. The collection $O = \{o_1, o_2, ..., o_N\}$ is the set of all returns of transactions made during a trading session. We say that $N$ is the cardinality of $O$, or, in lay terms, it is the number of transactions made in a trading session.
+设$o$为单笔交易的回报，其中$o \in \mathbb{R}$。所有交易回报组成的集合为$O = \{o_1, o_2, ..., o_N\}$，$N$为该交易会话中的交易次数。我们说$N$是$O$的基数，通俗地，就是一次交易会话中的交易总数。
 
 !!! Example
-    In a session where a strategy made three transactions we can say that $O = \{3.5, -1, 15\}$. That means that $N = 3$ and $o_1 = 3.5$, $o_2 = -1$, $o_3 = 15$.
+    在一个策略进行三笔交易的会话中，定义$O = \{3.5, -1, 15\}$。这表示$N=3$，且$o_1=3.5$, $o_2=-1$, $o_3=15$。
 
-A winning trade is a trade where a strategy *made* money. Making money means that the strategy closed the position in a value that returned a profit, after all deducted fees. Formally, a winning trade will have a return $o_i > 0$. Similarly, a losing trade will have a return $o_j \leq 0$. With that, we can discover the set of all winning trades, $T_{win}$, as follows:
+盈利交易是指策略“赚”了钱的交易。盈利意味着策略在扣除所有费用后，以盈利的价格平仓。正式而言，盈利交易的回报$o_i > 0$。亏损交易则是回报$o_j \leq 0$。据此，我们可以定义所有盈利交易集合$T_{win}$：
 
 $$ T_{win} = \{ o \in O | o > 0 \} $$
 
-Similarly, we can discover the set of losing trades $T_{lose}$ as follows:
+亏损交易集合$T_{lose}$为：
 
-$$ T_{lose} = \{o \in O | o \leq 0\} $$
+$$ T_{lose} = \{ o \in O | o \leq 0 \} $$
 
 !!! Example
-    In a section where a strategy made four transactions $O = \{3.5, -1, 15, 0\}$:<br>
+    在一个交易中，策略进行了四笔交易，$O = \{3.5, -1, 15, 0\}$：<br>
     $T_{win} = \{3.5, 15\}$<br>
     $T_{lose} = \{-1, 0\}$<br>
 
-### Win Rate and Lose Rate
+### 胜率与亏损率
 
-The win rate $W$ is the proportion of winning trades with respect to all the trades made by a strategy. We use the following function to compute the win rate:
+胜率$W$是盈利交易占全部交易的比例。它的计算公式为：
 
 $$W = \frac{|T_{win}|}{N}$$
 
-Where $W$ is the win rate, $N$ is the number of trades and, $T_{win}$ is the set of all trades where the strategy made money.
+其中$W$为胜率，$N$为交易总数，$T_{win}$为所有盈利交易的集合。
 
-Similarly, we can compute the rate of losing trades:
+亏损率$L$的计算类似：
 
 $$ 
     L = \frac{|T_{lose}|}{N} 
 $$
 
-Where $L$ is the lose rate, $N$ is the amount of trades made and, $T_{lose}$ is the set of all trades where the strategy lost money. Note that the above formula is the same as calculating $L = 1 – W$ or $W = 1 – L$
+即亏损交易占比，$L$为亏损率。注意：$L = 1 - W$，也等价于$W = 1 - L$。
 
-### Risk Reward Ratio
+### 风险回报比（Risk Reward Ratio, R）
 
-Risk Reward Ratio ($R$) is a formula used to measure the expected gains of a given investment against the risk of loss. It is basically what you potentially win divided by what you potentially lose. Formally:
+风险回报比（$R$）用来衡量某一投资的预期收益相对于亏损的比例。它基本上是你潜在赢取的金额除以潜在亏损的金额。正式定义为：
 
-$$ R = \frac{\text{potential_profit}}{\text{potential_loss}} $$
+$$ R = \frac{\text{潜在利润}}{\text{潜在亏损}} $$
 
-???+ Example "Worked example of $R$ calculation"
-    Let's say that you think that the price of *stonecoin* today is 10.0\$. You believe that, because they will start mining stonecoin, it will go up to 15.0\$ tomorrow. There is the risk that the stone is too hard, and the GPUs can't mine it, so the price might go to 0\$ tomorrow. You are planning to invest 100\$, which will give you 10 shares (100 / 10).
+???+ Example "$R$的计算示例"
+    假设你认为*stonecoin*今天的价格是10.0\$，你相信因为它们将开始挖矿，明天价格会涨到15.0\$。但存在风险，矿难导致GPU无法挖矿，价格可能会跌到0\$。你计划投资100\$，这样可以买到$100 / 10 = 10$股。
 
-    Your potential profit is calculated as:
+    潜在利润为：
 
     $\begin{aligned} 
-        \text{potential_profit} &= (\text{potential_price} - \text{entry_price}) * \frac{\text{investment}}{\text{entry_price}} \\
+        \text{潜在利润} &= (\text{潜在价格} - \text{入场价格}) * \frac{\text{投资金额}}{\text{入场价格}} \\
                                 &= (15 - 10) * (100 / 10) \\
-                                &= 50
+                                &= 5 * 10 = 50
     \end{aligned}$
 
-    Since the price might go to 0\$, the 100\$ dollars invested could turn into 0.
+    如果价格跌到0\$，那么投入的100\$可能变为0。
 
-    We do however use a stoploss of 15% - so in the worst case, we'll sell 15% below entry price (or at 8.5$\).
+    但我们设置了15%的止损：在最坏情况下，价格将以低于入场价15%的价格卖出，即8.5\$。
+
+    潜在亏损为：
 
     $\begin{aligned}
-        \text{potential_loss} &= (\text{entry_price} - \text{stoploss}) * \frac{\text{investment}}{\text{entry_price}} \\
-                                &= (10 - 8.5) * (100 / 10)\\
-                                &= 15
+        \text{潜在亏损} &= (\text{入场价格} - \text{止损价}) * \frac{\text{投资金额}}{\text{入场价格}} \\
+                                &= (10 - 8.5) * (100 / 10) \\
+                                &= 1.5 * 10 = 15
     \end{aligned}$
 
-    We can compute the Risk Reward Ratio as follows:
+    因此，风险回报比为：
 
     $\begin{aligned}
-        R   &= \frac{\text{potential_profit}}{\text{potential_loss}}\\
-            &= \frac{50}{15}\\
-            &= 3.33
+        R &= \frac{\text{潜在利润}}{\text{潜在亏损}} \\
+          &= \frac{50}{15} \\
+          &= 3.33
     \end{aligned}$<br>
-    What it effectively means is that the strategy have the potential to make 3.33\$ for each 1\$ invested.
+    这意味着策略每投资1\$，在最佳情况下可以赚取大约3.33\$。
 
-On a long horizon, that is, on many trades, we can calculate the risk reward by dividing the strategy' average profit on winning trades by the strategy' average loss on losing trades. We can calculate the average profit, $\mu_{win}$, as follows:
+在长时间、多笔交易的情况下，可以通过用策略在盈利交易中的平均利润除以在亏损交易中的平均亏损来计算风险回报比。平均利润$\mu_{win}$的计算方式为：
 
 $$ \text{average_profit} = \mu_{win} = \frac{\text{sum_of_profits}}{\text{count_winning_trades}} = \frac{\sum^{o \in T_{win}} o}{|T_{win}|} $$
 
-Similarly, we can calculate the average loss, $\mu_{lose}$, as follows:
+类似地，平均亏损$\mu_{lose}$为：
 
 $$ \text{average_loss} = \mu_{lose} = \frac{\text{sum_of_losses}}{\text{count_losing_trades}} = \frac{\sum^{o \in T_{lose}} o}{|T_{lose}|} $$
 
-Finally, we can calculate the Risk Reward ratio, $R$, as follows:
+最后，风险回报比$R$为：
 
-$$ R = \frac{\text{average_profit}}{\text{average_loss}} = \frac{\mu_{win}}{\mu_{lose}}\\ $$
+$$ R = \frac{\text{平均利润}}{\text{平均亏损}} = \frac{\mu_{win}}{\mu_{lose}} $$
 
+???+ Example "用平均利润/亏损计算$R$的实例"
+    假设所用策略的平均赢利$\mu_{win} = 2.06$，平均亏损$\mu_{loss} =4.11$。
+    计算风险回报比为：
+    $R = \frac{2.06}{4.11} \approx 0.5012$
 
-???+ Example "Worked example of $R$ calculation using mean profit/loss"
-    Let's say the strategy that we are using makes an average win $\mu_{win} = 2.06$ and an average loss $\mu_{loss} = 4.11$.<br>
-    We calculate the risk reward ratio as follows:<br>
-    $R = \frac{\mu_{win}}{\mu_{loss}} = \frac{2.06}{4.11} = 0.5012...$
-    
+### 期望值（Expectancy）
 
-### Expectancy
-
-By combining the Win Rate $W$ and the Risk Reward ratio $R$ to create an expectancy ratio $E$. A expectance ratio is the expected return of the investment made in a trade. We can compute the value of $E$ as follows:
+将胜率$W$和风险回报比$R$结合，得到期望比率$E$。期望值反映单次交易的预期收益。其计算公式为：
 
 $$E = R * W - L$$
 
-!!! Example "Calculating $E$"
-    Let's say that a strategy has a win rate $W = 0.28$ and a risk reward ratio $R = 5$. What this means is that the strategy is expected to make 5 times the investment around on 28% of the trades it makes. Working out the example:<br>
-    $E = R * W - L = 5 * 0.28 - 0.72 = 0.68$
-    <br>
+???+ Example "计算$E$"
+    假设一个策略的胜率$W=0.28$，风险回报比$R=5$，意味着它在约28%的交易中预期获得5倍的投资回报。计算：<br>
+    $E = R * W - L = 5 * 0.28 - 0.72 = 1.4 - 0.72 = 0.68$
 
-The expectancy worked out in the example above means that, on average, this strategy' trades will return 1.68 times the size of its losses. Said another way, the strategy makes 1.68\$ for every 1\$ it loses, on average. 
+上例中的$E$表示平均每笔交易可以回报亏损的1.68倍。换句话说，策略平均每亏损1\$，就能盈利1.68\$。
 
-This is important for two reasons: First, it may seem obvious, but you know right away that you have a positive return. Second, you now have a number you can compare to other candidate systems to make decisions about which ones you employ.
+这个指标非常重要：一方面，它直观显示交易的盈利潜力；另一方面，可以用它和其他系统的表现做比较，辅助决策。
 
-It is important to remember that any system with an expectancy greater than 0 is profitable using past data. The key is finding one that will be profitable in the future.
+需要注意的是，任何期望值大于0的系统，从历史数据看都是盈利的。关键在于未来是否也能持续盈利。
 
-You can also use this value to evaluate the effectiveness of modifications to this system.
+你还可以利用此值评估对系统的修改效果。
 
 !!! Note
-    It's important to keep in mind that Edge is testing your expectancy using historical data, there's no guarantee that you will have a similar edge in the future. It's still vital to do this testing in order to build confidence in your methodology but be wary of "curve-fitting" your approach to the historical data as things are unlikely to play out the exact same way for future trades.
+    需要记住的是，Edge在用历史数据测试你的期望值时，并不能保证未来也会有类似的优势。尽管如此，这样的测试依然能增强你的信心，但要警惕“曲线拟合”，避免过度依赖历史数据推断未来交易的表现。
 
-## How does it work?
+## 原理
 
-Edge combines dynamic stoploss, dynamic positions, and whitelist generation into one isolated module which is then applied to the trading strategy. If enabled in config, Edge will go through historical data with a range of stoplosses in order to find buy and sell/stoploss signals. It then calculates win rate and expectancy over *N* trades for each stoploss. Here is an example:
+Edge结合动态止损、动态仓位和白名单生成，形成一个孤立的模块，并应用到交易策略中。如果在配置中启用，Edge会根据不同止损值，遍历历史数据，寻找买卖/止损信号，然后计算每个止损条件下的胜率和期望值。示例：
 
-| Pair   |      Stoploss      |  Win Rate | Risk Reward Ratio | Expectancy |
-|----------|:-------------:|-------------:|------------------:|-----------:|
-| XZC/ETH  |  -0.01        |   0.50       |1.176384           | 0.088      |
-| XZC/ETH  |  -0.02        |   0.51       |1.115941           | 0.079      |
-| XZC/ETH  |  -0.03        |   0.52       |1.359670           | 0.228      |
-| XZC/ETH  |  -0.04        |   0.51       |1.234539           | 0.117      |
+| 配对   |      止损        |  胜率  |   风险回报比   | 期望值   |
+|----------|:--------------:|--------:|--------------:|--------:|
+| XZC/ETH |  -0.01         |   0.50  | 1.176384     | 0.088  |
+| XZC/ETH |  -0.02         |   0.51  | 1.115941     | 0.079  |
+| XZC/ETH |  -0.03         |   0.52  | 1.359670     | 0.228  |
+| XZC/ETH |  -0.04         |   0.51  | 1.234539     | 0.117  |
 
-The goal here is to find the best stoploss for the strategy in order to have the maximum expectancy. In the above example stoploss at $3%$ leads to the maximum expectancy according to historical data.
+目标是找到最大期望值的止损点。上例中，$3\%$的止损能带来最大期望值（基于历史数据）。
 
-Edge module then forces stoploss value it evaluated to your strategy dynamically.
+Edge模块会动态将该止损值强制应用到策略中。
 
-### Position size
+### 仓位规模
 
-Edge dictates the amount at stake for each trade to the bot according to the following factors:
+Edge根据以下因素，决定每笔交易的投入金额：
 
-- Allowed capital at risk
-- Stoploss
+- 允许的风险资本
+- 止损值
 
-Allowed capital at risk is calculated as follows:
-
-```
-Allowed capital at risk = (Capital available_percentage) X (Allowed risk per trade)
-```
-
-Stoploss is calculated as described above with respect to historical data.
-
-The position size is calculated as follows:
+允许风险资本的计算公式为：
 
 ```
-Position size = (Allowed capital at risk) / Stoploss
+允许风险资本 = (可用资金百分比) * (允许的单笔风险)
 ```
 
-Example:
+止损值依据历史数据设定。
 
-Let's say the stake currency is **ETH** and there is $10$ **ETH** on the wallet. The capital available percentage is $50%$ and the allowed risk per trade is $1\%$. Thus, the available capital for trading is $10 * 0.5 = 5$ **ETH** and the allowed capital at risk would be $5 * 0.01 = 0.05$ **ETH**.
+仓位规模的计算为：
 
--   **Trade 1:** The strategy detects a new buy signal in the **XLM/ETH** market. `Edge Positioning` calculates a stoploss of $2\%$ and a position of $0.05 / 0.02 = 2.5$ **ETH**. The bot takes a position of $2.5$ **ETH** in the **XLM/ETH** market.
+```
+仓位大小 = (允许风险资金) / (止损值)
+```
 
--   **Trade 2:** The strategy detects a buy signal on the **BTC/ETH** market while **Trade 1** is still open. `Edge Positioning` calculates the stoploss of $4\%$ on this market. Thus, **Trade 2** position size is $0.05 / 0.04 = 1.25$ **ETH**.
+示例：
 
-!!! Tip "Available Capital $\neq$ Available in wallet"
-    The available capital for trading didn't change in **Trade 2** even with **Trade 1** still open. The available capital **is not** the free amount in the wallet.
+假设基础货币为**ETH**，钱包中有10个**ETH**。资金可用百分比为50%，允许风险为1%：
 
--   **Trade 3:** The strategy detects a buy signal in the **ADA/ETH** market. `Edge Positioning` calculates a stoploss of $1\%$ and a position of $0.05 / 0.01 = 5$ **ETH**. Since **Trade 1** has $2.5$ **ETH** blocked and **Trade 2** has $1.25$ **ETH** blocked, there is only $5 - 1.25 - 2.5 = 1.25$ **ETH** available. Hence, the position size of **Trade 3** is $1.25$ **ETH**. 
+- 可用资金：10 * 0.5 = 5 **ETH**
+- 允许风险：5 * 0.01 = 0.05 **ETH**
 
-!!! Tip "Available Capital Updates"
-    The available capital does not change before a position is sold. After a trade is closed the Available Capital goes up if the trade was profitable or goes down if the trade was a loss.
+*第1笔交易：*策略检测到在**XLM/ETH**市场出现买入信号，Edge计算出止损为2%，那么仓位为：0.05 / 0.02 = 2.5 **ETH**。交易机器人随后在XLM/ETH市场买入2.5 **ETH**。
 
--   The strategy detects a sell signal in the **XLM/ETH** market. The bot exits **Trade 1** for a profit of $1$ **ETH**. The total capital in the wallet becomes $11$ **ETH** and the available capital for trading becomes $5.5$ **ETH**.
+*第2笔交易：*策略检测到在**BTC/ETH**市场的买入信号，而第1笔交易尚未平仓，Edge计算的止损为4%，那此时的仓位为：0.05 / 0.04 = 1.25 **ETH**。
 
--   **Trade 4** The strategy detects a new buy signal int the **XLM/ETH** market. `Edge Positioning` calculates the stoploss of $2\%$, and the position size of $0.055 / 0.02 = 2.75$ **ETH**.
+!!! Tip "可用资金≠钱包中的剩余金额"
+    事实上，第一次交易后的可用资金会因为平仓盈利或亏损而变动，**与钱包剩余余额不同**。
 
-## Edge command reference
+*第3笔交易：*策略在**ADA/ETH**市场发出买入信号，Edge计算止损为1%，仓位为：0.05 / 0.01=5 **ETH**。但由于前两笔交易已经占用了1.25 + 2.5 **ETH**，钱包中剩余：5 - 1.25 - 2.5=1.25 **ETH**，所以这次仓位最大为1.25 **ETH**。
+
+!!! Tip "可用资金随交易变化"
+    仓位在交易未平仓前不会变化。交易平仓后，获利会使可用资金增加，亏损会减少。
+
+举例：
+
+在第4笔交易中，策略检测到**XLM/ETH**的买入信号，Edge计算止损为2%，仓位为：0.055 / 0.02=2.75 **ETH**。
+
+## Edge命令参考
 
 --8<-- "commands/edge.md"
 
-## Configurations
+## 配置选项
 
-Edge module has following configuration options:
+Edge模块支持以下配置参数：
 
-|  Parameter | Description |
-|------------|-------------|
-| `enabled` | If true, then Edge will run periodically. <br>*Defaults to `false`.* <br> **Datatype:** Boolean
-| `process_throttle_secs` | How often should Edge run in seconds. <br>*Defaults to `3600` (once per hour).* <br> **Datatype:** Integer
-| `calculate_since_number_of_days` | Number of days of data against which Edge calculates Win Rate, Risk Reward and Expectancy. <br> **Note** that it downloads historical data so increasing this number would lead to slowing down the bot. <br>*Defaults to `7`.* <br> **Datatype:** Integer
-| `allowed_risk` | Ratio of allowed risk per trade. <br>*Defaults to `0.01` (1%)).* <br> **Datatype:** Float
-| `stoploss_range_min` | Minimum stoploss. <br>*Defaults to `-0.01`.* <br> **Datatype:** Float
-| `stoploss_range_max` | Maximum stoploss. <br>*Defaults to `-0.10`.* <br> **Datatype:** Float
-| `stoploss_range_step` | As an example if this is set to -0.01 then Edge will test the strategy for `[-0.01, -0,02, -0,03 ..., -0.09, -0.10]` ranges. <br> **Note** than having a smaller step means having a bigger range which could lead to slow calculation. <br> If you set this parameter to -0.001, you then slow down the Edge calculation by a factor of 10. <br>*Defaults to `-0.001`.* <br> **Datatype:** Float
-| `minimum_winrate` | It filters out pairs which don't have at least minimum_winrate. <br>This comes handy if you want to be conservative and don't comprise win rate in favour of risk reward ratio. <br>*Defaults to `0.60`.* <br> **Datatype:** Float
-| `minimum_expectancy` | It filters out pairs which have the expectancy lower than this number. <br>Having an expectancy of 0.20 means if you put 10\$ on a trade you expect a 12\$ return. <br>*Defaults to `0.20`.* <br> **Datatype:** Float
-| `min_trade_number` | When calculating *W*, *R* and *E* (expectancy) against historical data, you always want to have a minimum number of trades. The more this number is the more Edge is reliable. <br>Having a win rate of 100% on a single trade doesn't mean anything at all. But having a win rate of 70% over past 100 trades means clearly something. <br>*Defaults to `10` (it is highly recommended not to decrease this number).* <br> **Datatype:** Integer
-| `max_trade_duration_minute` | Edge will filter out trades with long duration. If a trade is profitable after 1 month, it is hard to evaluate the strategy based on it. But if most of trades are profitable and they have maximum duration of 30 minutes, then it is clearly a good sign.<br>**NOTICE:** While configuring this value, you should take into consideration your timeframe. As an example filtering out trades having duration less than one day for a strategy which has 4h interval does not make sense. Default value is set assuming your strategy interval is relatively small (1m or 5m, etc.).<br>*Defaults to `1440` (one day).* <br> **Datatype:** Integer
-| `remove_pumps` | Edge will remove sudden pumps in a given market while going through historical data. However, given that pumps happen very often in crypto markets, we recommend you keep this off.<br>*Defaults to `false`.* <br> **Datatype:** Boolean
+| 参数                     | 描述                                                                                          |
+|-------------------------|------------------------------------------------------------------------------------------------|
+| `enabled`               | 是否启用Edge。启用后，Edge会周期性运行。<br>*默认值：`false`。<br>**数据类型：**Boolean         |
+| `process_throttle_secs` | Edge运行的频率（秒）。<br>*默认3600秒（每小时一次）。*<br>**数据类型：**Integer                   |
+| `calculate_since_number_of_days` | 与之关联的历史数据天数，用于计算胜率、风险回报和期望值。<br>**注意**：该参数会下载历史数据，值越大，处理越慢。<br>*默认：7天。*<br>**数据类型：**Integer |
+| `allowed_risk`          | 每笔交易允许的风险比例。<br>*默认：0.01（1%）*<br>**数据类型：**Float                         |
+| `stoploss_range_min`    | 最小止损值。<br>*默认：-0.01*<br>**数据类型：**Float                                                      |
+| `stoploss_range_max`    | 最大止损值。<br>*默认：-0.10*<br>**数据类型：**Float                                                      |
+| `stoploss_range_step`   | 止损范围的步长。例如，设置为-0.01，Edge会测试范围如[-0.01, -0.02, -0.03 ... -0.09, -0.10]`。<br>**注意：**较小的步长意味着更宽的范围，但会增加计算时间。若设置为-0.001，则计算速度变慢十倍。<br>*默认：-0.001*<br>**数据类型：**Float |
+| `minimum_winrate`       | 过滤胜率低于此值的交易对，有助于变得更保守，优先考虑胜率。<br>*默认：0.60*<br>**数据类型：**Float                 |
+| `minimum_expectancy`    | 过滤期望值低于此值的交易对。例如，期望值为0.20表示投入10\$，预期收益12\$。<br>*默认：0.20*<br>**数据类型：**Float             |
+| `min_trade_number`      | 计算$W$、$R$和$E$时，要求的最小交易次数。数值越大，结果越可靠。<br>单笔盈利100%的交易没有意义，但过去100笔交易胜率70%则说明问题。<br>*默认：10（不建议降低此值）*<br>**数据类型：**Integer |
+| `max_trade_duration_minute` | 过滤持仓时间超过此分钟数的交易。最长持仓超1个月的策略难以评估，但持续盈利的短期交易（如30分钟以内）则显示良好。<br>**注意：**配置此参数应考虑你的时间框架。例如，过滤掉持续不到一天的交易对对于每4小时的策略可能不合理。默认值为1440（一天）。<br>**数据类型：**Integer |
+| `remove_pumps`          | 在历史数据分析中排除突发涨幅（pumps）。考虑到加密货币市场涨幅频繁，建议关闭此功能。<br>*默认：false*。<br>**数据类型：**Boolean |
 
-## Running Edge independently
+## 独立运行Edge
 
-You can run Edge independently in order to see in details the result. Here is an example:
+你可以单独运行Edge，以详细查看结果。例如：
 
-``` bash
+```bash
 freqtrade edge
 ```
 
-An example of its output:
+示例输出：
 
-| **pair**     |   **stoploss** |   **win rate** |   **risk reward ratio** |   **required risk reward** |   **expectancy** |   **total number of trades** |   **average duration (min)** |
-|:----------|-----------:|-----------:|--------------------:|-----------------------:|-------------:|-----------------:|---------------:|
-| **AGI/BTC**   |      -0.02 |       0.64 |                5.86 |                   0.56 |         3.41 |                       14 |                       54 |
-| **NXS/BTC**   |      -0.03 |       0.64 |                2.99 |                   0.57 |         1.54 |                       11 |                       26 |
-| **LEND/BTC**  |      -0.02 |       0.82 |                2.05 |                   0.22 |         1.50 |                       11 |                       36 |
-| **VIA/BTC**   |      -0.01 |       0.55 |                3.01 |                   0.83 |         1.19 |                       11 |                       48 |
-| **MTH/BTC**   |      -0.09 |       0.56 |                2.82 |                   0.80 |         1.12 |                       18 |                       52 |
-| **ARDR/BTC**  |      -0.04 |       0.42 |                3.14 |                   1.40 |         0.73 |                       12 |                       42 |
-| **BCPT/BTC**  |      -0.01 |       0.71 |                1.34 |                   0.40 |         0.67 |                       14 |                       30 |
-| **WINGS/BTC** |      -0.02 |       0.56 |                1.97 |                   0.80 |         0.65 |                       27 |                       42 |
-| **VIBE/BTC**  |      -0.02 |       0.83 |                0.91 |                   0.20 |         0.59 |                       12 |                       35 |
-| **MCO/BTC**   |      -0.02 |       0.79 |                0.97 |                   0.27 |         0.55 |                       14 |                       31 |
-| **GNT/BTC**   |      -0.02 |       0.50 |                2.06 |                   1.00 |         0.53 |                       18 |                       24 |
-| **HOT/BTC**   |      -0.01 |       0.17 |                7.72 |                   4.81 |         0.50 |                      209 |                        7 |
-| **SNM/BTC**   |      -0.03 |       0.71 |                1.06 |                   0.42 |         0.45 |                       17 |                       38 |
-| **APPC/BTC**  |      -0.02 |       0.44 |                2.28 |                   1.27 |         0.44 |                       25 |                       43 |
-| **NEBL/BTC**  |      -0.03 |       0.63 |                1.29 |                   0.58 |         0.44 |                       19 |                       59 |
+| **pair**     | **stoploss** | **win rate** | **risk reward ratio** | **expectancy** | **总交易数** | **平均持仓时间（分钟）** |
+|:----------|:------------:|:------------:|:---------------------:|:--------------:|:------------:|:--------------------------:|
+| **AGI/BTC**   |    -0.02     |     0.64     |        5.86           |     0.56       |      14      |             54             |
+| **NXS/BTC**   |    -0.03     |     0.64     |        2.99           |     0.57       |      11      |             26             |
+| **LEND/BTC**  |    -0.02     |     0.82     |        2.05           |     0.22       |      11      |             36             |
+| **VIA/BTC**   |    -0.01     |     0.55     |        3.01           |     0.83       |      11      |             48             |
+| **MTH/BTC**   |    -0.09     |     0.56     |        2.82           |     0.80       |      18      |             52             |
+| **ARDR/BTC**  |    -0.04     |     0.42     |        3.14           |     1.40       |      12      |             42             |
+| **BCPT/BTC**  |    -0.01     |     0.71     |        1.34           |     0.40       |      14      |             30             |
+| **WINGS/BTC** |    -0.02     |     0.56     |        1.97           |     0.80       |      27      |             42             |
+| **VIBE/BTC**  |    -0.02     |     0.83     |        0.91           |     0.20       |      12      |             35             |
+| **MCO/BTC**   |    -0.02     |     0.79     |        0.97           |     0.27       |      14      |             31             |
+| **GNT/BTC**   |    -0.02     |     0.50     |        2.06           |     1.00       |      18      |             24             |
+| **HOT/BTC**   |    -0.01     |     0.17     |        7.72           |     4.81       |     209      |              7             |
+| **SNM/BTC**   |    -0.03     |     0.71     |        1.06           |     0.42       |      17      |             38             |
+| **APPC/BTC**  |    -0.02     |     0.44     |        2.28           |     1.27       |      25      |             43             |
+| **NEBL/BTC**  |    -0.03     |     0.63     |        1.29           |     0.58       |      19      |             59             |
 
-Edge produced the above table by comparing `calculate_since_number_of_days` to `minimum_expectancy` to find `min_trade_number` historical information based on the config file. The timerange Edge uses for its comparisons can be further limited by using the `--timerange` switch.
+Edge通过比较`calculate_since_number_of_days`与`minimum_expectancy`，根据配置文件找到对应的历史信息数`min_trade_number`。你也可以使用`--timerange`参数进一步限制时间范围。
 
-In live and dry-run modes, after the `process_throttle_secs` has passed, Edge will again process `calculate_since_number_of_days` against `minimum_expectancy` to find `min_trade_number`. If no `min_trade_number` is found, the bot will return "whitelist empty". Depending on the trade strategy being deployed, "whitelist empty" may be return much of the time - or *all* of the time. The use of Edge may also cause trading to occur in bursts, though this is rare.
+在实盘和测试模式中，经过`process_throttle_secs`的等待后，Edge会再次根据`calculate_since_number_of_days`和`minimum_expectancy`计算`min_trade_number`。如果找不到符合条件的交易数，程序会返回“whitelist empty”。不同策略会导致这一状态出现频率不同，甚至可能一直为空。使用Edge可能会使交易出现集中爆发，但这种情况不常见。
 
-If you encounter "whitelist empty" a lot, condsider tuning `calculate_since_number_of_days`, `minimum_expectancy`  and `min_trade_number` to align to the trading frequency of your strategy.
+如果经常遇到“whitelist empty”，建议调节`calculate_since_number_of_days`、`minimum_expectancy`和`min_trade_number`，使其与策略的交易频率匹配。
 
-### Update cached pairs with the latest data
+### 更新缓存的交易对数据以获得最新信息
 
-Edge requires historic data the same way as backtesting does.
-Please refer to the [Data Downloading](data-download.md) section of the documentation for details.
+Edge需要历史数据，方法和回测相似。详情请参阅[数据下载](data-download.md)部分。
 
-### Precising stoploss range
+### 精确控制止损范围
 
 ```bash
-freqtrade edge --stoplosses=-0.01,-0.1,-0.001 #min,max,step
+freqtrade edge --stoplosses=-0.01,-0.1,-0.001 #最小值，最大值，步长
 ```
 
-### Advanced use of timerange
+### 高级用法：时间范围（timerange）
 
 ```bash
 freqtrade edge --timerange=20181110-20181113
 ```
 
-Doing `--timerange=-20190901` will get all available data until September 1st (excluding September 1st 2019).
+指定`--timerange=-20190901`则表示获取直到2019年9月1日（不含）所有数据。
 
-The full timerange specification:
+完整时间范围格式说明：
 
-* Use tickframes till 2018/01/31: `--timerange=-20180131`
-* Use tickframes since 2018/01/31: `--timerange=20180131-`
-* Use tickframes since 2018/01/31 till 2018/03/01 : `--timerange=20180131-20180301`
-* Use tickframes between POSIX timestamps 1527595200 1527618600: `--timerange=1527595200-1527618600`
+- 用芯片日期到2018/01/31：`--timerange=-20180131`
+- 自2018/01/31起：`--timerange=20180131-`
+- 从2018/01/31到2018/03/01：`--timerange=20180131-20180301`
+- 两个POSIX时间戳之间：`--timerange=1527595200-1527618600`
 
+---
 
-[^1]: Question extracted from MIT Opencourseware S096 - Mathematics with applications in Finance: https://ocw.mit.edu/courses/mathematics/18-s096-topics-in-mathematics-with-applications-in-finance-fall-2013/
+[^1]: 该问题摘自MIT OpenCourseWare S096 - “金融应用中的数学（Mathematics with applications in Finance）”课程：https://ocw.mit.edu/courses/mathematics/18-s096-topics-in-mathematics-with-applications-in-finance-fall-2013/

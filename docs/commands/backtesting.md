@@ -1,108 +1,80 @@
-```
-usage: freqtrade backtesting [-h] [-v] [--no-color] [--logfile FILE] [-V]
-                             [-c PATH] [-d PATH] [--userdir PATH] [-s NAME]
-                             [--strategy-path PATH]
-                             [--recursive-strategy-search]
-                             [--freqaimodel NAME] [--freqaimodel-path PATH]
-                             [-i TIMEFRAME] [--timerange TIMERANGE]
-                             [--data-format-ohlcv {json,jsongz,feather,parquet}]
-                             [--max-open-trades INT]
-                             [--stake-amount STAKE_AMOUNT] [--fee FLOAT]
-                             [-p PAIRS [PAIRS ...]] [--eps]
-                             [--enable-protections]
-                             [--dry-run-wallet DRY_RUN_WALLET]
-                             [--timeframe-detail TIMEFRAME_DETAIL]
-                             [--strategy-list STRATEGY_LIST [STRATEGY_LIST ...]]
-                             [--export {none,trades,signals}]
-                             [--export-filename PATH]
-                             [--breakdown {day,week,month,year} [{day,week,month,year} ...]]
-                             [--cache {none,day,week,month}]
-                             [--freqai-backtest-live-models]
+用法：freqtrade backtesting [-h] [-v] [--no-color] [--logfile FILE] [-V]
+                                 [-c PATH] [-d PATH] [--userdir PATH] [-s NAME]
+                                 [--strategy-path PATH]
+                                 [--recursive-strategy-search]
+                                 [--freqaimodel NAME] [--freqaimodel-path PATH]
+                                 [-i TIMEFRAME] [--timerange TIMERANGE]
+                                 [--data-format-ohlcv {json,jsongz,feather,parquet}]
+                                 [--max-open-trades INT]
+                                 [--stake-amount STAKE_AMOUNT] [--fee FLOAT]
+                                 [-p PAIRS [PAIRS ...]] [--eps]
+                                 [--enable-protections]
+                                 [--dry-run-wallet DRY_RUN_WALLET]
+                                 [--timeframe-detail TIMEFRAME_DETAIL]
+                                 [--strategy-list STRATEGY_LIST [STRATEGY_LIST ...]]
+                                 [--export {none,trades,signals}]
+                                 [--export-filename PATH]
+                                 [--breakdown {day,week,month,year} [{day,week,month,year} ...]]
+                                 [--cache {none,day,week,month}]
+                                 [--freqai-backtest-live-models]
 
-options:
-  -h, --help            show this help message and exit
+参数选项：
+  -h, --help            显示此帮助信息并退出
   -i TIMEFRAME, --timeframe TIMEFRAME
-                        Specify timeframe (`1m`, `5m`, `30m`, `1h`, `1d`).
+                        指定时间周期（`1m`、`5m`、`30m`、`1h`、`1d`）。
   --timerange TIMERANGE
-                        Specify what timerange of data to use.
+                        指定使用的数据时间范围。
   --data-format-ohlcv {json,jsongz,feather,parquet}
-                        Storage format for downloaded candle (OHLCV) data.
-                        (default: `feather`).
+                        下载的蜡烛图（OHLCV）数据存储格式。
+                        （默认：`feather`）。
   --max-open-trades INT
-                        Override the value of the `max_open_trades`
-                        configuration setting.
+                        覆盖配置中的 `max_open_trades` 值。
   --stake-amount STAKE_AMOUNT
-                        Override the value of the `stake_amount` configuration
-                        setting.
-  --fee FLOAT           Specify fee ratio. Will be applied twice (on trade
-                        entry and exit).
+                        覆盖配置中的 `stake_amount` 值。
+  --fee FLOAT           指定手续费比例。将在入场和出场时两次应用。
   -p PAIRS [PAIRS ...], --pairs PAIRS [PAIRS ...]
-                        Limit command to these pairs. Pairs are space-
-                        separated.
+                        限定交易对，多个用空格分隔。
   --eps, --enable-position-stacking
-                        Allow buying the same pair multiple times (position
-                        stacking).
+                        允许多次买入同一交易对（仓位叠加）。
   --enable-protections, --enableprotections
-                        Enable protections for backtesting.Will slow
-                        backtesting down by a considerable amount, but will
-                        include configured protections
+                        在回测中启用保护措施。会显著降低回测速度，但会包括配置的保护策略。
   --dry-run-wallet DRY_RUN_WALLET, --starting-balance DRY_RUN_WALLET
-                        Starting balance, used for backtesting / hyperopt and
-                        dry-runs.
+                        初始资金，用于回测 / 超参数优化和干运行。
   --timeframe-detail TIMEFRAME_DETAIL
-                        Specify detail timeframe for backtesting (`1m`, `5m`,
-                        `30m`, `1h`, `1d`).
+                        指定回测的详细时间周期（`1m`、`5m`、`30m`、`1h`、`1d`）。
   --strategy-list STRATEGY_LIST [STRATEGY_LIST ...]
-                        Provide a space-separated list of strategies to
-                        backtest. Please note that timeframe needs to be set
-                        either in config or via command line. When using this
-                        together with `--export trades`, the strategy-name is
-                        injected into the filename (so `backtest-data.json`
-                        becomes `backtest-data-SampleStrategy.json`
+                        提供一个用空格分隔的策略列表用于回测。请注意，时间周期必须在配置或命令行中设置。当与`--export trades`一起使用时，策略名会加入到文件名中（例如`backtest-data.json`变为`backtest-data-SampleStrategy.json`）
   --export {none,trades,signals}
-                        Export backtest results (default: trades).
+                        导出回测结果（默认：trades）。
   --export-filename PATH, --backtest-filename PATH
-                        Use this filename for backtest results.Requires
-                        `--export` to be set as well. Example: `--export-filen
-                        ame=user_data/backtest_results/backtest_today.json`
+                        使用此文件名保存回测结果。必须同时指定`--export`。示例：`--export-filename=user_data/backtest_results/backtest_today.json`
   --breakdown {day,week,month,year} [{day,week,month,year} ...]
-                        Show backtesting breakdown per [day, week, month,
-                        year].
+                        按天、周、月、年显示回测细分结果。
   --cache {none,day,week,month}
-                        Load a cached backtest result no older than specified
-                        age (default: day).
+                        加载不早于指定年龄的缓存回测结果（默认：day）。
   --freqai-backtest-live-models
-                        Run backtest with ready models.
+                        使用已准备好的模型进行回测。
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
+常用参数：
+  -v, --verbose         详细输出模式（-vv获得更多信息，-vvv输出所有信息）。
+  --no-color            禁用超参数优化结果的彩色显示。若将输出重定向到文件，此选项可能有用。
   --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        'syslog', 'journald'. See the documentation for more
-                        details.
-  -V, --version         show program's version number and exit
+                        将日志输出到指定文件。特殊值：
+                        'syslog'、'journald'。详情请参阅文档。
+  -V, --version         显示程序版本号并退出
   -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
+                        指定配置文件（默认：`userdir/config.json`或存在的`config.json`）。可以使用多个--config参数。也可以设为`-`从标准输入读取配置。
   -d PATH, --datadir PATH, --data-dir PATH
-                        Path to directory with historical backtesting data.
+                        指向存放历史回测数据的目录路径。
   --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+                        指向用户数据目录。
 
-Strategy arguments:
+策略参数：
   -s NAME, --strategy NAME
-                        Specify strategy class name which will be used by the
-                        bot.
-  --strategy-path PATH  Specify additional strategy lookup path.
+                        指定将由机器人使用的策略类名。
+  --strategy-path PATH  指定额外的策略查找路径。
   --recursive-strategy-search
-                        Recursively search for a strategy in the strategies
-                        folder.
-  --freqaimodel NAME    Specify a custom freqaimodels.
+                        在策略文件夹中递归搜索策略。
+  --freqaimodel NAME    指定自定义的freqaimodel。
   --freqaimodel-path PATH
-                        Specify additional lookup path for freqaimodels.
-
-```
+                        指定freqaimodel的额外查找路径。

@@ -1,17 +1,17 @@
-# Utility Subcommands
+# 实用子命令
 
-Besides the Live-Trade and Dry-Run run modes, the `backtesting`, `edge` and `hyperopt` optimization subcommands, and the `download-data` subcommand which prepares historical data, the bot contains a number of utility subcommands. They are described in this section.
+除了 Live-Trade 和 Dry-Run 运行模式之外，`backtesting`、`edge` 和 `hyperopt` 优化子命令，以及准备历史数据的 `download-data` 子命令之外，机器人还包含多个实用子命令。本节将对此进行介绍。
 
-## Create userdir
+## 创建用户目录
 
-Creates the directory structure to hold your files for freqtrade.
-Will also create strategy and hyperopt examples for you to get started.
-Can be used multiple times - using `--reset` will reset the sample strategy and hyperopt files to their default state.
+创建存放你的文件的文件夹结构，用于频繁交易（freqtrade）。
+同时会为你生成策略和 hyperopt 示例，帮助你快速入门。
+可以多次使用—使用 `--reset` 将会重置示例策略和 hyperopt 文件到默认状态。
 
 --8<-- "commands/create-userdir.md"
 
-!!! Warning
-    Using `--reset` may result in loss of data, since this will overwrite all sample files without asking again.
+!!! 警告
+    使用 `--reset` 可能会导致数据丢失，因为这将会覆盖所有示例文件，且不会再次确认。
 
 ```
 ├── backtest_results
@@ -26,41 +26,41 @@ Can be used multiple times - using `--reset` will reset the sample strategy and 
     └── sample_strategy.py
 ```
 
-## Create new config
+## 创建新配置
 
-Creates a new configuration file, asking some questions which are important selections for a configuration.
+生成新的配置文件，并会询问一些对配置选择至关重要的问题。
 
 --8<-- "commands/new-config.md"
 
-!!! Warning
-    Only vital questions are asked. Freqtrade offers a lot more configuration possibilities, which are listed in the [Configuration documentation](configuration.md#configuration-parameters)
+!!! 警告
+    仅会询问必要的问题。Freqtrade 提供了更多的配置选项，详细内容请参阅 [配置文档](configuration.md#configuration-parameters)。
 
-### Create config examples
+### 创建配置示例
 
 ```
 $ freqtrade new-config --config user_data/config_binance.json
 
-? Do you want to enable Dry-run (simulated trades)?  Yes
-? Please insert your stake currency: BTC
-? Please insert your stake amount: 0.05
-? Please insert max_open_trades (Integer or -1 for unlimited open trades): 3
-? Please insert your desired timeframe (e.g. 5m): 5m
-? Please insert your display Currency (for reporting): USD
-? Select exchange  binance
-? Do you want to enable Telegram?  No
+? 是否启用 Dry-run（模拟交易）？  是
+? 请输入你的权益币：BTC
+? 请输入你的权益金额：0.05
+? 请输入最大未平仓交易数（整数或 -1 表示无限制）：3
+? 请输入你希望的时间周期（如 5m）：5m
+? 请输入用来显示的货币（用于报告）：USD
+? 选择交易所  binance
+? 是否启用 Telegram？  否
 ```
 
-## Show config
+## 查看配置
 
-Show configuration file (with sensitive values redacted by default).
-Especially useful with [split configuration files](configuration.md#multiple-configuration-files) or [environment variables](configuration.md#environment-variables), where this command will show the merged configuration.
+显示配置文件（默认为敏感信息会被隐藏）。
+对于[拆分配置文件](configuration.md#multiple-configuration-files)或[环境变量](configuration.md#environment-variables)特别有用，此命令会显示合并后的配置结果。
 
-![Show config output](assets/show-config-output.png)
+![显示配置输出](assets/show-config-output.png)
 
 --8<-- "commands/show-config.md"
 
 ``` output
-Your combined configuration is:
+您的合并配置如下：
 {
   "exit_pricing": {
     "price_side": "other",
@@ -79,244 +79,241 @@ Your combined configuration is:
 }
 ```
 
-!!! Warning "Sharing information provided by this command"
-    We try to remove all known sensitive information from the default output (without `--show-sensitive`). 
-    Yet, please do double-check for sensitive values in your output to make sure you're not accidentally exposing some private info.
+!!! 警告 "分享此命令返回的信息"
+    我们会尽量在默认输出中去除所有已知的敏感信息（不使用 `--show-sensitive`）。
+    但请务必再次检查输出，确保没有无意中泄露私人信息。
 
-## Create new strategy
+## 创建新策略
 
-Creates a new strategy from a template similar to SampleStrategy.
-The file will be named inline with your class name, and will not overwrite existing files.
+从模板（类似 SampleStrategy）创建新策略文件。
+文件名将与类名保持一致，不会覆盖已有文件。
 
-Results will be located in `user_data/strategies/<strategyclassname>.py`.
+生成结果将存放在 `user_data/strategies/<策略类名>.py`。
 
 --8<-- "commands/new-strategy.md"
 
-### Sample usage of new-strategy
+### 使用新策略模板的示例
 
 ```bash
 freqtrade new-strategy --strategy AwesomeStrategy
 ```
 
-With custom user directory
+使用自定义用户目录
 
 ```bash
 freqtrade new-strategy --userdir ~/.freqtrade/ --strategy AwesomeStrategy
 ```
 
-Using the advanced template (populates all optional functions and methods)
+使用高级模板（填充所有可选函数和方法）
 
 ```bash
 freqtrade new-strategy --strategy AwesomeStrategy --template advanced
 ```
 
-## List Strategies
+## 列出策略
 
-Use the `list-strategies` subcommand to see all strategies in one particular directory.
+使用 `list-strategies` 子命令可以列出某个特定目录中的所有策略。
 
-This subcommand is useful for finding problems in your environment with loading strategies: modules with strategies that contain errors and failed to load are printed in red (LOAD FAILED), while strategies with duplicate names are printed in yellow (DUPLICATE NAME).
+此子命令非常适合检查加载策略是否出现问题：如果加载失败的模块会以红色显示（LOAD FAILED），重复命名的策略会显示为黄色（DUPLICATE NAME）。
 
 --8<-- "commands/list-strategies.md"
 
-!!! Warning
-    Using these commands will try to load all python files from a directory. This can be a security risk if untrusted files reside in this directory, since all module-level code is executed.
+!!! 警告
+    使用这些命令会尝试加载某个目录下的所有 Python 文件。如果该目录中存在不可信文件，执行会存在安全风险，因为所有模块级代码都会被执行。
 
-Example: Search default strategies directories (within the default userdir).
+示例：搜索默认的策略目录（在默认用户目录内）：
 
 ``` bash
 freqtrade list-strategies
 ```
 
-Example: Search strategies  directory within the userdir.
+示例：搜索用户目录中的策略目录：
 
 ``` bash
 freqtrade list-strategies --userdir ~/.freqtrade/
 ```
 
-Example: Search dedicated strategy path.
+示例：搜索专用的策略路径：
 
 ``` bash
 freqtrade list-strategies --strategy-path ~/.freqtrade/strategies/
 ```
 
-## List Hyperopt-Loss functions
+## 列出 Hyperopt 损失函数
 
-Use the `list-hyperoptloss` subcommand to see all hyperopt loss functions available.
+使用 `list-hyperoptloss` 子命令可以查看所有可用的 hyperopt 损失函数。
 
-It provides a quick list of all available loss functions in your environment.
+此命令会快速列出你环境中所有支持的损失函数。
 
-This subcommand can be useful for finding problems in your environment with loading loss functions: modules with Hyperopt-Loss functions that contain errors and failed to load are printed in red (LOAD FAILED), while hyperopt-Loss functions with duplicate names are printed in yellow (DUPLICATE NAME).
+它对于发现加载损失函数问题非常有用：如出现包含错误且加载失败的模块（以红色显示，LOAD FAILED）、重名的损失函数（以黄色显示，DUPLICATE NAME）会被标记出来。
 
 --8<-- "commands/list-hyperoptloss.md"
 
-## List freqAI models
+## 列出 freqAI 模型
 
-Use the `list-freqaimodels` subcommand to see all freqAI models available.
+使用 `list-freqaimodels` 子命令可以列出所有可用的 freqAI 模型。
 
-This subcommand is useful for finding problems in your environment with loading freqAI models: modules with models that contain errors and failed to load are printed in red (LOAD FAILED), while models with duplicate names are printed in yellow (DUPLICATE NAME).
+此子命令有助于检测加载模型时的潜在问题：支持不良或加载失败的模型会以红色显示（LOAD FAILED），重复命名的模型会以黄色显示（DUPLICATE NAME）。
 
 --8<-- "commands/list-freqaimodels.md"
 
-## List Exchanges
+## 列出交易所
 
-Use the `list-exchanges` subcommand to see the exchanges available for the bot.
+使用 `list-exchanges` 子命令可以查看机器人支持的所有交易所。
 
 --8<-- "commands/list-exchanges.md"
 
-Example: see exchanges available for the bot:
+示例：查看机器人支持的交易所：
 
 ```
 $ freqtrade list-exchanges
-Exchanges available for Freqtrade:
-Exchange name       Supported    Markets                 Reason
+Freqtrade支持的交易所：
+交易所名称       支持状态    市场                 备注
 ------------------  -----------  ----------------------  ------------------------------------------------------------------------
-binance             Official     spot, isolated futures
-bitmart             Official     spot
-bybit                            spot, isolated futures
-gate                Official     spot, isolated futures
-htx                 Official     spot
-huobi                            spot
-kraken              Official     spot
-okx                 Official     spot, isolated futures
+binance             官方      现货、隔离期货
+bitmart             官方      现货
+bybit                             现货、隔离期货
+gate                官方      现货、隔离期货
+htx                 官方      现货
+huobi                             现货
+kraken              官方      现货
+okx                 官方      现货、隔离期货
 ```
 
-!!! info ""
-    Output reduced for clarity - supported and available exchanges may change over time.
+!!! 说明 ""
+    出于清晰起见，输出内容已缩减。支持的交易所和功能可能会随时间变化。
 
-!!! Note "missing opt exchanges"
-    Values with "missing opt:" might need special configuration (e.g. using orderbook if `fetchTickers` is missing) - but should in theory work (although we cannot guarantee they will).
+!!! 注意 "缺少可选交易所"
+    带有 "missing opt:" 的值可能需要特殊配置（例如在 `fetchTickers` 缺失的情况下使用 orderbook），但理论上是可以的（虽然不能保证一定成功）。
 
-Example: see all exchanges supported by the ccxt library (including 'bad' ones, i.e. those that are known to not work with Freqtrade)
+示例：查看 ccxt 库支持的所有交易所（包括已知不支持的交易所）：
 
 ```
 $ freqtrade list-exchanges -a
-All exchanges supported by the ccxt library:
-Exchange name       Valid    Supported    Markets                 Reason
+ccxt 库支持的所有交易所：
+交易所名称       有效支持   支持状态    市场                    备注
 ------------------  -------  -----------  ----------------------  ---------------------------------------------------------------------------------
-binance             True     Official     spot, isolated futures
-bitflyer            False                 spot                    missing: fetchOrder. missing opt: fetchTickers.
-bitmart             True     Official     spot
-bybit               True                  spot, isolated futures
-gate                True     Official     spot, isolated futures
-htx                 True     Official     spot
-kraken              True     Official     spot
-okx                 True     Official     spot, isolated futures
+binance             True     官方      现货、隔离期货
+bitflyer            False                 现货                    缺少：fetchOrder。缺少可选：fetchTickers。
+bitmart             True     官方      现货
+bybit               True                  现货、隔离期货
+gate                True     官方      现货、隔离期货
+htx                 True     官方      现货
+kraken              True     官方      现货
+okx                 True     官方      现货、隔离期货
 ```
 
-!!! info ""
-    Reduced output - supported and available exchanges may change over time.
+!!! 说明 ""
+    输出已缩减。支持和可用的交易所可能会随时间变化。
 
-## List Timeframes
+## 列出时间周期
 
-Use the `list-timeframes` subcommand to see the list of timeframes available for the exchange.
+使用 `list-timeframes` 子命令可以查看交易所支持的时间周期列表。
 
 --8<-- "commands/list-timeframes.md"
 
-* Example: see the timeframes for the 'binance' exchange, set in the configuration file:
+示例：查看配置文件中 `binance` 交易所支持的时间周期：
 
 ```
 $ freqtrade list-timeframes -c config_binance.json
 ...
-Timeframes available for the exchange `binance`: 1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d, 3d, 1w, 1M
+交易所 `binance` 支持的时间周期：1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d, 3d, 1w, 1M
 ```
 
-* Example: enumerate exchanges available for Freqtrade and print timeframes supported by each of them:
+示例：列出 Freqtrade 支持的所有交易所及其支持的时间周期：
+
 ```
 $ for i in `freqtrade list-exchanges -1`; do freqtrade list-timeframes --exchange $i; done
 ```
 
-## List pairs/list markets
+## 列出交易对／市场
 
-The `list-pairs` and `list-markets` subcommands allow to see the pairs/markets available on exchange.
+`list-pairs` 和 `list-markets` 子命令可以用来查看交易所中的交易对／市场。
 
-Pairs are markets with the '/' character between the base currency part and the quote currency part in the market symbol.
-For example, in the 'ETH/BTC' pair 'ETH' is the base currency, while 'BTC' is the quote currency.
+交易对是在市场符号中，基础货币和报价货币之间用 `/` 连接，例如 `ETH/BTC` 中，`ETH` 是基础货币，`BTC` 是报价货币。
 
-For pairs traded by Freqtrade the pair quote currency is defined by the value of the `stake_currency` configuration setting.
+在支持的交易所中，Freqtrade 使用配置中的 `stake_currency` 来定义交易的报价货币。
 
-You can print info about any pair/market with these subcommands - and you can filter output by quote-currency using `--quote BTC`, or by base-currency using `--base ETH` options correspondingly.
+可以用这些子命令打印任何交易对／市场的信息，也可以通过 `--quote BTC` 过滤报价货币，或通过 `--base ETH` 过滤基础货币。
 
-These subcommands have same usage and same set of available options:
+这些子命令的用法和选项完全相同：
 
 --8<-- "commands/list-pairs.md"
 
-By default, only active pairs/markets are shown. Active pairs/markets are those that can currently be traded on the exchange.
-You can use the `-a`/`-all` option to see the list of all pairs/markets, including the inactive ones.
-Pairs may be listed as untradeable if the smallest tradeable price for the market is very small, i.e. less than `1e-11` (`0.00000000001`)
+默认只显示活跃的交易对／市场。活跃交易对是在当前交易所可以交易的那些。
+你可以加上 `-a`/`-all` 选项，显示所有交易对／市场（包括非活跃的）。
+交易对可能显示为不可交易，如果市场的最小可交易价格非常小（小于 `1e-11` 或 `0.00000000001`）。
 
-Pairs/markets are sorted by its symbol string in the printed output.
+交易对／市场按符号字符串排序输出。
 
-### Examples
+### 示例
 
-* Print the list of active pairs with quote currency USD on exchange, specified in the default
-configuration file (i.e. pairs on the "Binance" exchange) in JSON format:
+* 输出在默认配置文件中指定的交易所（如 Binance）上的活跃对，报价货币为 USD，格式为 JSON：
 
 ```
 $ freqtrade list-pairs --quote USD --print-json
 ```
 
-* Print the list of all pairs on the exchange, specified in the `config_binance.json` configuration file
-(i.e. on the "Binance" exchange) with base currencies BTC or ETH and quote currencies USDT or USD, as the
-human-readable list with summary:
+* 输出在配置文件 `config_binance.json` 中的所有交易对（在 Binance 交易所），基础货币为 BTC 或 ETH，报价货币为 USDT 或 USD，以人类可读的列表和摘要形式显示：
 
 ```
 $ freqtrade list-pairs -c config_binance.json --all --base BTC ETH --quote USDT USD --print-list
 ```
 
-* Print all markets on exchange "Kraken", in the tabular format:
+* 输出交易所 "Kraken" 上的所有市场，采用表格显示：
 
 ```
 $ freqtrade list-markets --exchange kraken --all
 ```
 
-## Test pairlist
+## 测试交易对列表
 
-Use the `test-pairlist` subcommand to test the configuration of [dynamic pairlists](plugins.md#pairlists).
+使用 `test-pairlist` 子命令测试 [动态交易对列表](plugins.md#pairlists) 的配置。
 
-Requires a configuration with specified `pairlists` attribute.
-Can be used to generate static pairlists to be used during backtesting / hyperopt.
+要求配置中包含 `pairlists` 属性。
+可以用来生成静态交易对列表，用于回测／hyperopt。
 
 --8<-- "commands/test-pairlist.md"
 
-### Examples
+### 示例
 
-Show whitelist when using a [dynamic pairlist](plugins.md#pairlists).
+显示启用了 [动态交易对列表](plugins.md#pairlists) 时的白名单：
 
 ```
 freqtrade test-pairlist --config config.json --quote USDT BTC
 ```
 
-## Convert database
+## 转换数据库
 
-`freqtrade convert-db` can be used to convert your database from one system to another (sqlite -> postgres, postgres -> other postgres), migrating all trades, orders and Pairlocks.
+`freqtrade convert-db` 可以将你的数据库从一种系统转换到另一种系统（sqlite -> postgres，postgres -> 其他 postgres），迁移所有的交易、订单以及 Pairlocks。
 
-Please refer to the [corresponding documentation](advanced-setup.md#use-a-different-database-system) to learn about requirements for different database systems.
+请参考 [相关文档](advanced-setup.md#use-a-different-database-system)，了解不同数据库系统的要求。
 
 --8<-- "commands/convert-db.md"
 
-!!! Warning
-    Please ensure to only use this on an empty target database. Freqtrade will perform a regular migration, but may fail if entries already existed.
+!!! 警告
+    仅应在目标数据库为空时使用此命令。Freqtrade 会进行常规迁移，但如果目标已有数据，可能会失败。
 
-## Webserver mode
+## Web服务器模式
 
-!!! Warning "Experimental"
-    Webserver mode is an experimental mode to increase backesting and strategy development productivity.
-    There may still be bugs - so if you happen to stumble across these, please report them as github issues, thanks.
+!!! 警告 "实验性"
+    Web服务器模式是一个实验性功能，用于提升回测与策略开发的效率。
+    可能仍存在 bug — 如遇问题，请在 GitHub 提交 Issue，谢谢。
 
-Run freqtrade in webserver mode.
-Freqtrade will start the webserver and allow FreqUI to start and control backtesting processes.
-This has the advantage that data will not be reloaded between backtesting runs (as long as timeframe and timerange remain identical).
-FreqUI will also show the backtesting results.
+运行 freqtrade 进入 Web 服务器模式。
+Freqtrade 会启动 Web 服务器，允许 FreqUI 启动并控制回测流程。
+此模式的优点是，在相同的时间周期和时间范围下，数据不会重复加载。
+FreqUI 还会显示回测结果。
 
 --8<-- "commands/webserver.md"
 
-### Webserver mode - docker
+### Web服务器模式 - Docker
 
-You can also use webserver mode via docker.
-Starting a one-off container requires the configuration of the port explicitly, as ports are not exposed by default.
-You can use `docker compose run --rm -p 127.0.0.1:8080:8080 freqtrade webserver` to start a one-off container that'll be removed once you stop it. This assumes that port 8080 is still available and no other bot is running on that port.
+也可以通过 Docker 使用 Web 服务器模式。
+启动一次性容器时需要明确配置端口，因为端口默认未映射。
+可以使用 `docker compose run --rm -p 127.0.0.1:8080:8080 freqtrade webserver` 来启动一个临时容器，停止后会自动删除。前提是端口 8080 还未被占用，且没有其他机器人在使用。
 
-Alternatively, you can reconfigure the docker-compose file to have the command updated:
+或者，你可以修改 `docker-compose` 文件，更新启动命令为：
 
 ``` yml
     command: >
@@ -324,98 +321,96 @@ Alternatively, you can reconfigure the docker-compose file to have the command u
       --config /freqtrade/user_data/config.json
 ```
 
-You can now use `docker compose up` to start the webserver.
-This assumes that the configuration has a webserver enabled and configured for docker (listening port = `0.0.0.0`).
+之后可以使用 `docker compose up` 启动 Web 服务器。
+此配置假设已启用 Web 服务器，并将端口配置为 `0.0.0.0`。
 
-!!! Tip
-    Don't forget to reset the command back to the trade command if you want to start a live or dry-run bot. 
+!!! 提示
+    开始使用前别忘了将命令恢复为交易命令，以便启动实盘或 Dry-Run 机器人。
 
-## Show previous Backtest results
+## 查看之前的回测结果
 
-Allows you to show previous backtest results.
-Adding `--show-pair-list` outputs a sorted pair list you can easily copy/paste into your configuration (omitting bad pairs).
+可以查看之前的回测结果。
+添加 `--show-pair-list` 会输出一个排序后的交易对列表，方便复制粘贴到配置中（过滤掉表现差的交易对）。
 
-??? Warning "Strategy overfitting"
-    Only using winning pairs can lead to an overfitted strategy, which will not work well on future data. Make sure to extensively test your strategy in dry-run before risking real money.
+??? 警告 "策略过拟合"
+    只使用获胜的交易对可能导致策略过拟合，未来可能无法表现良好。强烈建议在实盘前进行充分的 Dry-Run 测试。
 
 --8<-- "commands/backtesting-show.md"
 
-## Detailed backtest analysis
+## 详细回测分析
 
-Advanced backtest result analysis.
+高级的回测结果分析。
 
-More details in the [Backtesting analysis](advanced-backtesting.md#analyze-the-buyentry-and-sellexit-tags) Section.
+更多细节请参阅 [回测分析](advanced-backtesting.md#analyze-the-buyentry-and-sellexit-tags) 部分。
 
 --8<-- "commands/backtesting-analysis.md"
 
-## List Hyperopt results
+## 列出 Hyperopt 结果
 
-You can list the hyperoptimization epochs the Hyperopt module evaluated previously with the `hyperopt-list` sub-command.
+可以用 `hyperopt-list` 子命令列出 Hyperopt 模块之前评估的所有超参数优化轮次。
 
 --8<-- "commands/hyperopt-list.md"
 
-!!! Note
-    `hyperopt-list` will automatically use the latest available hyperopt results file.
-    You can override this using the `--hyperopt-filename` argument, and specify another, available filename (without path!).
+!!! 备注
+    `hyperopt-list` 会自动使用最新的 hyperopt 结果文件。
+    你也可以通过 `--hyperopt-filename` 参数指定其他文件（无需路径）。
 
-### Examples
+### 示例
 
-List all results, print details of the best result at the end:
+列出所有结果，最后显示最佳结果的详细信息：
 ```
 freqtrade hyperopt-list
 ```
 
-List only epochs with positive profit. Do not print the details of the best epoch, so that the list can be iterated in a script:
+只列出盈利的轮次，不显示详细信息，以便在脚本中循环处理：
 ```
 freqtrade hyperopt-list --profitable --no-details
 ```
 
-## Show details of Hyperopt results
+## 查看 Hyperopt 结果详情
 
-You can show the details of any hyperoptimization epoch previously evaluated by the Hyperopt module with the `hyperopt-show` subcommand.
+可以用 `hyperopt-show` 子命令查看之前由 Hyperopt 模块评估过的某个超参数优化轮次的详细信息。
 
 --8<-- "commands/hyperopt-show.md"
 
-!!! Note
-    `hyperopt-show` will automatically use the latest available hyperopt results file.
-    You can override this using the `--hyperopt-filename` argument, and specify another, available filename (without path!).
+!!! 备注
+    `hyperopt-show` 会自动使用最新的 hyperopt 结果文件。
+    也可以用 `--hyperopt-filename` 指定其他文件（无需路径）。
 
-### Examples
+### 示例
 
-Print details for the epoch 168 (the number of the epoch is shown by the `hyperopt-list` subcommand or by Hyperopt itself during hyperoptimization run):
+打印第168轮的详细信息（轮次编号由 `hyperopt-list` 或 Hyperopt 在运行时显示）：
 
 ```
 freqtrade hyperopt-show -n 168
 ```
 
-Prints JSON data with details for the last best epoch (i.e., the best of all epochs):
+打印包括所有轮次中最佳轮次的 JSON 详细信息：
 
 ```
 freqtrade hyperopt-show --best -n -1 --print-json --no-header
 ```
 
-## Show trades
+## 查看交易
 
-Print selected (or all) trades from database to screen.
+输出数据库中的（全部或指定的）交易信息到终端。
 
 --8<-- "commands/show-trades.md"
 
-### Examples
+### 示例
 
-Print trades with id 2 and 3 as json
+输出交易ID为2和3的交易，格式为 JSON：
 
 ``` bash
 freqtrade show-trades --db-url sqlite:///tradesv3.sqlite --trade-ids 2 3 --print-json
 ```
 
-## Strategy-Updater
+## 策略更新工具（Strategy-Updater）
 
-Updates listed strategies or all strategies within the strategies folder to be v3 compliant.
-If the command runs without --strategy-list then all strategies inside the strategies folder will be converted.
-Your original strategy will remain available in the `user_data/strategies_orig_updater/` directory.
+更新列出的策略或策略文件夹中的所有策略，使其符合 v3 标准。
+如果不指定 `--strategy-list`，则会自动转换策略文件夹中的所有策略。
+原始策略文件会被保留在 `user_data/strategies_orig_updater/` 目录中。
 
-!!! Warning "Conversion results"
-    Strategy updater will work on a "best effort" approach. Please do your due diligence and verify the results of the conversion.
-    We also recommend to run a python formatter (e.g. `black`) to format results in a sane manner.
-
---8<-- "commands/strategy-updater.md"
+!!! 警告 "转换结果"
+    策略更新器采用“尽最大努力”的方式工作。请务必自行核查转换结果。
+    推荐运行一次 Python 格式化工具（如 `black`）以确保格式规范。

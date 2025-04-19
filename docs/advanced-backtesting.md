@@ -1,217 +1,192 @@
-# Advanced Backtesting Analysis
+# 高级回测分析
 
-## Analyze the buy/entry and sell/exit tags
+## 分析买/入场和卖/出场标记
 
-It can be helpful to understand how a strategy behaves according to the buy/entry tags used to
-mark up different buy conditions. You might want to see more complex statistics about each buy and
-sell condition above those provided by the default backtesting output. You may also want to
-determine indicator values on the signal candle that resulted in a trade opening.
+理解策略根据使用的买入/入场标记（buy/entry tags）表现的方式可能很有帮助。这些标签用于标识不同的买入条件。你可能希望获得比默认回测输出更复杂的统计数据，以深入了解每个买卖条件。你也可能希望在触发交易开仓的信号蜡烛上，确定指标的具体数值。
 
-!!! Note
-    The following buy reason analysis is only available for backtesting, *not hyperopt*.
+!!! 注意
+    以下买入原因分析仅在回测模式下可用，*不适用于 hyperopt*。
 
-We need to run backtesting with the `--export` option set to `signals` to enable the exporting of
-signals **and** trades:
+我们需要在运行回测时，将 `--export` 选项设置为 `signals`，以启用信号 **和** 交易的导出：
 
-``` bash
+```bash
 freqtrade backtesting -c <config.json> --timeframe <tf> --strategy <strategy_name> --timerange=<timerange> --export=signals
 ```
 
-This will tell freqtrade to output a pickled dictionary of strategy, pairs and corresponding
-DataFrame of the candles that resulted in entry and exit signals.
-Depending on how many entries your strategy makes, this file may get quite large, so periodically check your `user_data/backtest_results` folder to delete old exports.
+这将指示 freqtrade 输出一个存储策略、交易对以及导致开仓和出场信号的蜡烛的字典（pkl格式）。这个字典会包含对应的 DataFrame。根据你的策略下单次数不同，该文件可能会变得相当大，因此建议定期检查 `user_data/backtest_results` 文件夹，删除旧的导出文件。
 
-Before running your next backtest, make sure you either delete your old backtest results or run
-backtesting with the `--cache none` option to make sure no cached results are used.
+在进行下一次回测之前，请确保你删除了旧的回测结果，或者在运行时使用 `--cache none` 选项，以确保不使用缓存结果。
 
-If all goes well, you should now see a `backtest-result-{timestamp}_signals.pkl` and `backtest-result-{timestamp}_exited.pkl` files in the `user_data/backtest_results` folder.
+如果一切顺利，你应该会在 `user_data/backtest_results` 文件夹中看到类似如下的文件：
 
-To analyze the entry/exit tags, we now need to use the `freqtrade backtesting-analysis` command
-with `--analysis-groups` option provided with space-separated arguments:
+- `backtest-result-{timestamp}_signals.pkl`
+- `backtest-result-{timestamp}_exited.pkl`
 
-``` bash
+要分析这些买卖标记（entry/exit tags），需要使用 `freqtrade backtesting-analysis` 命令，并提供 `--analysis-groups` 选项，后跟用空格分隔的参数：
+
+```bash
 freqtrade backtesting-analysis -c <config.json> --analysis-groups 0 1 2 3 4 5
 ```
 
-This command will read from the last backtesting results. The `--analysis-groups` option is
-used to specify the various tabular outputs showing the profit of each group or trade,
-ranging from the simplest (0) to the most detailed per pair, per buy and per sell tag (4):
+此命令会读取最近一次的回测结果。`--analysis-groups` 选项用来设置不同的输出表格，从简单（0）到每对每个买卖标签的详细统计（4）：
 
-* 0: overall winrate and profit summary by enter_tag
-* 1: profit summaries grouped by enter_tag
-* 2: profit summaries grouped by enter_tag and exit_tag
-* 3: profit summaries grouped by pair and enter_tag
-* 4: profit summaries grouped by pair, enter_ and exit_tag (this can get quite large)
-* 5: profit summaries grouped by exit_tag
+* 0：整体胜率和按enter_tag的利润汇总
+* 1：按enter_tag分组的利润汇总
+* 2：按enter_tag和exit_tag分组的利润汇总
+* 3：按交易对和enter_tag分组的利润汇总
+* 4：按交易对、enter_tag和exit_tag分组的利润汇总（可能会很大）
+* 5：按exit_tag分组的利润汇总
 
-More options are available by running with the `-h` option.
+更多选项可使用 `-h` 查看。
 
-### Using export-filename
+### 使用 export-filename
 
-Normally, `backtesting-analysis` uses the latest backtest results, but if you wanted to go
-back to a previous backtest output, you need to supply the `--export-filename` option.
-You can supply the same parameter to `backtest-analysis` with the name of the final backtest
-output file. This allows you to keep historical versions of backtest results and re-analyse
-them at a later date:
+通常情况下，`backtesting-analysis` 会自动使用最新的回测结果。但如果你想分析早期的某次回测输出，需要提供 `--export-filename` 选项。可以将此参数设置为你想分析的特定回测输出文件名，从而保存多个历史版本的回测结果，便于日后复查。
 
-``` bash
+例如：
+
+```bash
 freqtrade backtesting -c <config.json> --timeframe <tf> --strategy <strategy_name> --timerange=<timerange> --export=signals --export-filename=/tmp/mystrat_backtest.json
 ```
 
-You should see some output similar to below in the logs with the name of the timestamped
-filename that was exported:
+在日志中，你会看到类似如下的输出，显示导出的文件名和时间戳：
 
 ```
 2022-06-14 16:28:32,698 - freqtrade.misc - INFO - dumping json to "/tmp/mystrat_backtest-2022-06-14_16-28-32.json"
 ```
 
-You can then use that filename in `backtesting-analysis`:
+之后，在 `backtesting-analysis` 时，可以指定该文件名：
 
-```
+```bash
 freqtrade backtesting-analysis -c <config.json> --export-filename=/tmp/mystrat_backtest-2022-06-14_16-28-32.json
 ```
 
-### Tuning the buy tags and sell tags to display
+### 调整显示的买卖标签（买卖原因）
 
-To show only certain buy and sell tags in the displayed output, use the following two options:
+可以通过以下两个选项只显示特定的买入或卖出原因：
 
 ```
---enter-reason-list : Space-separated list of enter signals to analyse. Default: "all"
---exit-reason-list : Space-separated list of exit signals to analyse. Default: "all"
+--enter-reason-list : 用空格分隔的入场信号标签列表。默认值："all"
+--exit-reason-list  : 用空格分隔的出场信号标签列表。默认值："all"
 ```
 
-For example:
+例如：
 
 ```bash
 freqtrade backtesting-analysis -c <config.json> --analysis-groups 0 2 --enter-reason-list enter_tag_a enter_tag_b --exit-reason-list roi custom_exit_tag_a stop_loss
 ```
 
-### Outputting signal candle indicators
+### 输出信号蜡烛的指标数值
 
-The real power of `freqtrade backtesting-analysis` comes from the ability to print out the indicator
-values present on signal candles to allow fine-grained investigation and tuning of buy signal
-indicators. To print out a column for a given set of indicators, use the `--indicator-list`
-option:
+`freqtrade backtesting-analysis` 最强大的功能之一，是可以打印出信号蜡烛上所有指标的数值，便于进行细粒度的分析和参数微调。你可以通过 `--indicator-list` 选项指定要显示的指标列：
 
 ```bash
 freqtrade backtesting-analysis -c <config.json> --analysis-groups 0 2 --enter-reason-list enter_tag_a enter_tag_b --exit-reason-list roi custom_exit_tag_a stop_loss --indicator-list rsi rsi_1h bb_lowerband ema_9 macd macdsignal
 ```
 
-The indicators have to be present in your strategy's main DataFrame (either for your main
-timeframe or for informative timeframes) otherwise they will simply be ignored in the script
-output.
+注意，这些指标必须存在于策略的主 DataFrame（无论是主时间框架还是信息时间框架）中，否则它们不会在输出中显示。
 
-!!! Note "Indicator List"
-    The indicator values will be displayed for both entry and exit points. If `--indicator-list all` is specified, 
-    only the indicators at the entry point will be shown to avoid excessively large lists, which could occur depending on the strategy.
+!!! 注意 "指标列表"
+    指标值会同时显示在入场和出场点。如果指定 `--indicator-list all`，则只会显示入场点的指标，以避免输出过长，这在策略比较复杂时尤为重要。
 
-There are a range of candle and trade-related fields that are included in the analysis so are 
-automatically accessible by including them on the indicator-list, and these include:
+除了指标外，分析还会自动包括一些蜡烛和交易相关的字段，如：
 
-- **open_date     :** trade open datetime
-- **close_date    :** trade close datetime
-- **min_rate      :** minimum price seen throughout the position
-- **max_rate      :** maximum price seen throughout the position
-- **open          :** signal candle open price
-- **close         :** signal candle close price
-- **high          :** signal candle high price
-- **low           :** signal candle low price
-- **volume        :** signal candle volume
-- **profit_ratio  :** trade profit ratio
-- **profit_abs    :** absolute profit return of the trade 
+- **open_date     ：** 交易开仓时间
+- **close_date    ：** 交易平仓时间
+- **min_rate      ：** 在持仓期间的最低价格
+- **max_rate      ：** 在持仓期间的最高价格
+- **open          ：** 信号蜡烛开盘价
+- **close         ：** 信号蜡烛收盘价
+- **high          ：** 信号蜡烛最高价
+- **low           ：** 信号蜡烛最低价
+- **volume        ：** 信号蜡烛成交量
+- **profit_ratio  ：** 交易利润比
+- **profit_abs    ：** 交易的绝对利润
 
-#### Sample Output for Indicator Values
+#### 指标值示例输出
 
 ```bash
-freqtrade backtesting-analysis -c user_data/config.json --analysis-groups 0 --indicator-list chikou_span tenkan_sen 
+freqtrade backtesting-analysis -c user_data/config.json --analysis-groups 0 --indicator-list chikou_span tenkan_sen
 ```
 
-In this example,
-we aim to display the `chikou_span` and `tenkan_sen` indicator values at both the entry and exit points of trades.
+例如，目标是显示每笔交易的 `chikou_span` 和 `tenkan_sen` 指标值在入场和出场的时刻。
 
-A sample output for indicators might look like this:
+示例输出可能如下：
 
 | pair      | open_date                 | enter_reason | exit_reason | chikou_span (entry) | tenkan_sen (entry) | chikou_span (exit) | tenkan_sen (exit) |
 |-----------|---------------------------|--------------|-------------|---------------------|--------------------|--------------------|-------------------|
 | DOGE/USDT | 2024-07-06 00:35:00+00:00 |              | exit_signal | 0.105               | 0.106              | 0.105              | 0.107             |
 | BTC/USDT  | 2024-08-05 14:20:00+00:00 |              | roi         | 54643.440           | 51696.400          | 54386.000          | 52072.010         |
 
-As shown in the table, `chikou_span (entry)` represents the indicator value at the time of trade entry, 
-while `chikou_span (exit)` reflects its value at the time of exit. 
-This detailed view of indicator values enhances the analysis.
+在这个表格中，`chikou_span (entry)` 表示交易入场时的指标值，`chikou_span (exit)` 则代表出场时的值。这种详细的指标显示有助于更深入的分析。
 
-The `(entry)` and `(exit)` suffixes are added to indicators
-to distinguish the values at the entry and exit points of the trade.
+指标名后缀中的 `(entry)` 和 `(exit)` 用于区分入场时和出场时的指标值。
 
-!!! Note "Trade-wide Indicators"
-    Certain trade-wide indicators do not have the `(entry)` or `(exit)` suffix. These indicators include: `pair`, `stake_amount`, 
-    `max_stake_amount`, `amount`, `open_date`, `close_date`, `open_rate`, `close_rate`, `fee_open`, `fee_close`, `trade_duration`, 
-    `profit_ratio`, `profit_abs`, `exit_reason`,`initial_stop_loss_abs`, `initial_stop_loss_ratio`, `stop_loss_abs`, `stop_loss_ratio`, 
-    `min_rate`, `max_rate`, `is_open`, `enter_tag`, `leverage`, `is_short`, `open_timestamp`, `close_timestamp` and `orders`
+!!! 注 "交易范围指标"
+    某些交易范围的指标没有 `(entry)` 或 `(exit)` 后缀，包括：`pair`、`stake_amount`、`max_stake_amount`、`amount`、`open_date`、`close_date`、`open_rate`、`close_rate`、`fee_open`、`fee_close`、`trade_duration`、`profit_ratio`、`profit_abs`、`exit_reason`、`initial_stop_loss_abs`、`initial_stop_loss_ratio`、`stop_loss_abs`、`stop_loss_ratio`、`min_rate`、`max_rate`、`is_open`、`enter_tag`、`leverage`、`is_short`、`open_timestamp`、`close_timestamp` 和 `orders`。
 
-#### Filtering Indicators Based on Entry or Exit Signals
+#### 按入场或出场信号过滤指标
 
-The `--indicator-list` option, by default, displays indicator values for both entry and exit signals. To filter the indicator values exclusively for entry signals, you can use the `--entry-only` argument. Similarly, to display indicator values only at exit signals, use the `--exit-only` argument.
+`--indicator-list` 默认会显示入场和出场信号的指标值。若只想显示入场信号的指标，可以使用 `--entry-only`；只想显示出场点的指标，则使用 `--exit-only`。
 
-Example: Display indicator values at entry signals:
+示例：只显示入场信号的指标值：
 
 ```bash
 freqtrade backtesting-analysis -c user_data/config.json --analysis-groups 0 --indicator-list chikou_span tenkan_sen --entry-only
 ```
 
-Example: Display indicator values at exit signals:
+示例：只显示出场信号的指标值：
 
 ```bash
 freqtrade backtesting-analysis -c user_data/config.json --analysis-groups 0 --indicator-list chikou_span tenkan_sen --exit-only
 ```
 
-!!! note 
-    When using these filters, the indicator names will not be suffixed with `(entry)` or `(exit)`.
+!!! 注意
+    使用这些过滤参数时，指标名不会附加 `(entry)` 或 `(exit)` 后缀。
 
-### Filtering the trade output by date
+### 按日期过滤交易输出
 
-To show only trades between dates within your backtested timerange, supply the usual `timerange` option in `YYYYMMDD-[YYYYMMDD]` format:
+若只想查看在回测时间范围内（timerange）的交易，可提供 `--timerange` 选项，格式为 `YYYYMMDD-[YYYYMMDD]`，其中开始日期包含，结束日期不包含。例如：
 
 ```
---timerange : Timerange to filter output trades, start date inclusive, end date exclusive. e.g. 20220101-20221231
+--timerange : 用于过滤输出交易的时间范围，起始日期（包含）-结束日期（不包含）。如：20220101-20221231
 ```
 
-For example, if your backtest timerange was `20220101-20221231` but you only want to output trades in January:
+例如，如果回测时间范围为 `20220101-20221231`，但只想看一月的交易：
 
 ```bash
 freqtrade backtesting-analysis -c <config.json> --timerange 20220101-20220201
 ```
 
-### Printing out rejected signals
+### 打印被拒绝的信号
 
-Use the `--rejected-signals` option to print out rejected signals.
+使用 `--rejected-signals` 选项，可以打印出被过滤掉的信号。
 
 ```bash
 freqtrade backtesting-analysis -c <config.json> --rejected-signals
 ```
 
-### Writing tables to CSV
+### 将分析表格写入CSV
 
-Some of the tabular outputs can become large, so printing them out to the terminal is not preferable.
-Use the `--analysis-to-csv` option to disable printing out of tables to standard out and write them to CSV files.
+部分统计表较大，不适合直接在终端输出。可以使用 `--analysis-to-csv` 选项，将输出结果保存为CSV文件而不在终端显示。
 
 ```bash
 freqtrade backtesting-analysis -c <config.json> --analysis-to-csv
 ```
 
-By default this will write one file per output table you specified in the `backtesting-analysis` command, e.g.
+默认情况下，每个输出表会生成对应的CSV文件，例如：
 
 ```bash
 freqtrade backtesting-analysis -c <config.json> --analysis-to-csv --rejected-signals --analysis-groups 0 1
 ```
 
-This will write to `user_data/backtest_results`:
+会在 `user_data/backtest_results` 文件夹中生成：
 
-* rejected_signals.csv
-* group_0.csv
-* group_1.csv
+- rejected_signals.csv
+- group_0.csv
+- group_1.csv
 
-To override where the files will be written, also specify the `--analysis-csv-path` option.
+你也可以通过 `--analysis-csv-path` 选项自定义输出路径：
 
 ```bash
 freqtrade backtesting-analysis -c <config.json> --analysis-to-csv --analysis-csv-path another/data/path/

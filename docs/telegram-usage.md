@@ -1,55 +1,54 @@
-# Telegram usage
+# Telegram 使用指南
 
-## Setup your Telegram bot
+## 设置你的 Telegram 机器人
 
-Below we explain how to create your Telegram Bot, and how to get your
-Telegram user id.
+下面我们将介绍如何创建你的 Telegram 机器人，以及如何获取你的 Telegram 用户ID。
 
-### 1. Create your Telegram bot
+### 1. 创建你的 Telegram 机器人
 
-Start a chat with the [Telegram BotFather](https://telegram.me/BotFather)
+与 [Telegram BotFather](https://telegram.me/BotFather) 开始聊天。
 
-Send the message `/newbot`.
+发送消息 `/newbot`。
 
-*BotFather response:*
+*BotFather 回复：*
 
-> Alright, a new bot. How are we going to call it? Please choose a name for your bot.
+> 好的，新机器人。我们打算叫它什么名字？请为你的机器人选择一个名称。
 
-Choose the public name of your bot (e.x. `Freqtrade bot`)
+选择你机器人的公共名称（例如：`Freqtrade bot`）
 
-*BotFather response:*
+*BotFather 回复：*
 
-> Good. Now let's choose a username for your bot. It must end in `bot`. Like this, for example: TetrisBot or tetris_bot.
+> 很好。接下来为你的机器人选择一个用户名。它必须以 `bot` 结尾。例如：TetrisBot 或 tetris_bot。
 
-Choose the name id of your bot and send it to the BotFather (e.g. "`My_own_freqtrade_bot`")
+选择你的机器人ID（如：`My_own_freqtrade_bot`），并发给 BotFather。
 
-*BotFather response:*
+*BotFather 回复：*
 
-> Done! Congratulations on your new bot. You will find it at `t.me/yourbots_name_bot`. You can now add a description, about section and profile picture for your bot, see /help for a list of commands. By the way, when you've finished creating your cool bot, ping our Bot Support if you want a better username for it. Just make sure the bot is fully operational before you do this.
+> 完成！恭喜你创建了你的新机器人。你可以在 `t.me/yourbots_name_bot` 找到它。现在你可以为你的机器人添加描述、关于部分和头像，详见 /help 查看指令列表。顺便提一下，当你完成创建你的酷炫机器人后，如果想换个更好的用户名，可以联系我们的 Bot 支持。在你确保机器人完全正常运行后再进行此操作。
 
-> Use this token to access the HTTP API: `22222222:APITOKEN`
+> 使用此令牌访问 HTTP API：`22222222:APITOKEN`
 
-> For a description of the Bot API, see this page: https://core.telegram.org/bots/api Father bot will return you the token (API key)
+> 关于 Bot API 的详细信息，请参见此页面：[https://core.telegram.org/bots/api](https://core.telegram.org/bots/api)。Father bot 会返回你的 Token（API 密钥）。
 
-Copy the API Token (`22222222:APITOKEN` in the above example) and keep use it for the config parameter `token`.
+复制 API Token（如上示例中的 `22222222:APITOKEN`），并在配置参数 `token` 中使用它。
 
-Don't forget to start the conversation with your bot, by clicking `/START` button
+别忘了点击 `/START` 按钮，开始与机器人对话。
 
-### 2. Telegram user_id
+### 2. Telegram 用户ID
 
-#### Get your user id
+#### 获取你的用户ID
 
-Talk to the [userinfobot](https://telegram.me/userinfobot)
+与 [userinfobot](https://telegram.me/userinfobot) 对话。
 
-Get your "Id", you will use it for the config parameter `chat_id`.
+获得你的“Id”，你将用它在配置参数 `chat_id` 中。
 
-#### Use Group id
+#### 使用群组ID
 
-To get the group ID, you can add the bot to the group, start freqtrade, and issue a `/tg_info` command.
-This will return the group id to you, without having to use some random bot.
-While "chat_id" is still required, it doesn't need to be set to this particular group id for this command.
+要获取群组ID，可以将机器人添加到群组中，启动 Freqtrade，并发出 `/tg_info` 命令。这会返回群组ID，无需使用随机机器人。
 
-The response will also contain the "topic_id" if necessary - both in a format ready to copy/paste into your configuration.
+虽然“chat_id”仍然需要，但不必为此命令设置为特定的群组ID。
+
+返回的响应还会包含必要的“topic_id”——格式已准备好供你复制粘贴到配置中。
 
 ``` json
  {
@@ -60,33 +59,33 @@ The response will also contain the "topic_id" if necessary - both in a format re
 }
 ```
 
-For the Freqtrade configuration, you can then use the full value (including `-` ) as string:
+在 Freqtrade 配置中，可以使用完整的值（包括 `-`）作为字符串：
 
 ```json
    "chat_id": "-1001332619709"
 ```
 
-!!! Warning "Using telegram groups"
-    When using telegram groups, you're giving every member of the telegram group access to your freqtrade bot and to all commands possible via telegram. Please make sure that you can trust everyone in the telegram group to avoid unpleasant surprises.
+!!! 警告 "使用 Telegram 群组"
+    使用 Telegram 群组时，会让所有群组成员都能访问你的 Freqtrade 机器人以及所有通过 Telegram 能用的命令。请确保你信任群组中的每一位成员，以避免出现不愉快的意外。
 
-##### Group Topic ID
+##### 群组话题ID (topic_id)
 
-To use a specific topic in a group, you can use the `topic_id` parameter in the configuration. This will allow you to use the bot in a specific topic in a group.  
-Without this, the bot will always respond to the general channel in the group if topics are enabled for a group chat.
+如果你想在特定话题内使用机器人，可以在配置中使用 `topic_id` 参数。这允许你在群组的特定话题中使用机器人。  
+没有这个参数时，如果群聊启用了话题，机器人将始终响应群组中的通用频道。
 
 ```json
    "chat_id": "-1001332619709",
    "topic_id": "3"
 ```
 
-Similar to the group-id - you can use `/tg_info` from the topic/thread to get the correct topic-id.
+类似于群组ID，你可以通过 `/tg_info` 命令获取正确的 `topic_id`。
 
-#### Authorized users
+#### 授权用户
 
-For groups, it can be useful to limit who can send commands to the bot.
+对群组来说，限制能给机器人发指令的用户很有用。
 
-If `"authorized_users": []` is present and empty, no user will be allowed to control the bot.
-In the below example, only the user with the id "1234567" is allowed to control the bot - all other users will only be able to receive messages.
+如果 `"authorized_users": []` 存在且为空，任何用户都无法控制机器人。
+在下面的示例中，只有ID为 "1234567" 的用户可以控制机器人，其他用户只能接收消息。
 
 ```json
    "chat_id": "-1001332619709",
@@ -94,16 +93,16 @@ In the below example, only the user with the id "1234567" is allowed to control 
    "authorized_users": ["1234567"]
 ```
 
-## Control telegram noise
+## 控制 Telegram 通知噪音
 
-Freqtrade provides means to control the verbosity of your telegram bot.
-Each setting has the following possible values:
+Freqtrade 提供多种方式控制你的 Telegram 机器人的消息详尽程度。
+每个设置的可能值如下：
 
-* `on` - Messages will be sent, and user will be notified.
-* `silent` - Message will be sent, Notification will be without sound / vibration.
-* `off` - Skip sending a message-type all together.
+* `on` - 消息会被发送，用户会收到通知。
+* `silent` - 消息会被发送，但通知无声音/震动。
+* `off` - 完全不发送此类消息。
 
-Example configuration showing the different settings:
+示例配置展示不同设置：
 
 ``` json
 "telegram": {
@@ -126,12 +125,12 @@ Example configuration showing the different settings:
             "trailing_stop_loss": "on",
             "stop_loss": "on",
             "stoploss_on_exchange": "on",
-            "custom_exit": "silent",  // custom_exit without specifying an exit reason
+            "custom_exit": "silent",  // 自定义退出原因无需特别明确
             "partial_exit": "on",
-            // "custom_exit_message": "silent",  // Disable individual custom exit reasons
-            "*": "off"  // Disable all other exit reasons
+            // "custom_exit_message": "silent",  // 禁用个别自定义退出原因
+            "*": "off"  // 禁用所有其他退出原因
         },
-        // "exit": "off",  // Simplistic configuration to disable all exit messages
+        // "exit": "off",  // 简单配置，禁用所有退出通知
         "exit_cancel": "on",
         "exit_fill": "off",
         "protection_trigger": "off",
@@ -144,33 +143,34 @@ Example configuration showing the different settings:
 },
 ```
 
-* `entry` notifications are sent when the order is placed, while `entry_fill` notifications are sent when the order is filled on the exchange.  
-* `exit` notifications are sent when the order is placed, while `exit_fill` notifications are sent when the order is filled on the exchange.  
-    Exit messages (`exit` and `exit_fill`) can be further controlled at individual exit reasons level, with the specific exit reason as the key. the default for all exit reasons is `on` - but can be configured via special `*` key - which will act as a wildcard for all exit reasons that are not explicitly defined.
-* `*_fill` notifications are off by default and must be explicitly enabled.  
-* `protection_trigger` notifications are sent when a protection triggers and `protection_trigger_global` notifications trigger when global protections are triggered.  
-* `strategy_msg` - Receive notifications from the strategy, sent via `self.dp.send_msg()` from the strategy [more details](strategy-customization.md#send-notification).  
-* `show_candle` - show candle values as part of entry/exit messages. Only possible values are `"ohlc"` or `"off"`.  
-* `balance_dust_level` will define what the `/balance` command takes as "dust" - Currencies with a balance below this will be shown.  
-* `allow_custom_messages` completely disable strategy messages.  
-* `reload` allows you to disable reload-buttons on selected messages.  
+* `entry` 通知在订单下达时发出，`entry_fill` 在订单成交时发出。  
+* `exit` 通知在订单下达时发出，`exit_fill` 在订单成交时发出。  
+  退出消息（`exit` 和 `exit_fill`）也可以在单个退出理由层级进一步控制，使用退出原因作为键，默认全部为 `on`，也可以用特殊的 `*` 作为通配符，影响所有未明确指定的退出原因。  
+* `*_fill` 通知默认关闭，需明确启用。  
+* `protection_trigger` 在保护触发时发出通知，`protection_trigger_global` 在全局保护触发时发出通知。  
+* `strategy_msg` - 来自策略的通知，使用策略中的 `self.dp.send_msg()` 发送[详见](strategy-customization.md#send-notification)。  
+* `show_candle` - 在入场/离场消息中显示蜡烛图数值，值仅支持 `"ohlc"` 或 `"off"`。  
+* `balance_dust_level` 定义 `/balance` 命令中“微尘”货币的最低余额，余额低于此值的货币会显示出来。  
+* `allow_custom_messages` 完全禁用策略消息。  
+* `reload` 可以禁用某些消息的重新载入按钮。
 
-## Create a custom keyboard (command shortcut buttons)
+## 创建自定义快捷按钮（命令快捷键）
 
-Telegram allows us to create a custom keyboard with buttons for commands.
-The default custom keyboard looks like this.
+Telegram 允许我们创建带按钮的自定义键盘，用于快捷命令。
+
+默认的自定义键盘如下：
 
 ```python
 [
-    ["/daily", "/profit", "/balance"], # row 1, 3 commands
-    ["/status", "/status table", "/performance"], # row 2, 3 commands
-    ["/count", "/start", "/stop", "/help"] # row 3, 4 commands
+    ["/daily", "/profit", "/balance"], # 第一行，3个命令
+    ["/status", "/status table", "/performance"], # 第二行，3个命令
+    ["/count", "/start", "/stop", "/help"] # 第三行，4个命令
 ]
 ```
 
-### Usage
+### 使用方法
 
-You can create your own keyboard in `config.json`:
+你可以在 `config.json` 中自定义你的键盘：
 
 ``` json
 "telegram": {
@@ -185,111 +185,107 @@ You can create your own keyboard in `config.json`:
    },
 ```
 
-!!! Note "Supported Commands"
-    Only the following commands are allowed. Command arguments are not supported!
+!!! 提示 "支持的命令"
+    只支持以下命令。命令参数不被支持！
 
     `/start`, `/pause`, `/stop`, `/status`, `/status table`, `/trades`, `/profit`, `/performance`, `/daily`, `/stats`, `/count`, `/locks`, `/balance`, `/stopentry`, `/reload_config`, `/show_config`, `/logs`, `/whitelist`, `/blacklist`, `/edge`, `/help`, `/version`, `/marketdir`
 
-## Telegram commands
+## Telegram 指令
 
-Per default, the Telegram bot shows predefined commands. Some commands
-are only available by sending them to the bot. The table below list the
-official commands. You can ask at any moment for help with `/help`.
+默认情况下，Telegram 机器人会显示预定义的命令。有些命令
+只能通过发送命令给机器人来使用。下表列出了官方指令。你可以随时通过 `/help` 索取帮助。
 
-|  Command | Description |
+|  命令 | 描述 |
 |----------|-------------|
-| **System commands**
-| `/start` | Starts the trader
-| `/pause | /stopentry | /stopbuy` | Pause the trader. Gracefully handle open trades according to their rules. Do not enter new positions.
-| `/stop` | Stops the trader
-| `/reload_config` | Reloads the configuration file
-| `/show_config` | Shows part of the current configuration with relevant settings to operation
-| `/logs [limit]` | Show last log messages.
-| `/help` | Show help message
-| `/version` | Show version
-| **Status** |
-| `/status` | Lists all open trades
-| `/status <trade_id>` | Lists one or more specific trade. Separate multiple <trade_id> with a blank space.
-| `/status table` | List all open trades in a table format. Pending buy orders are marked with an asterisk (*) Pending sell orders are marked with a double asterisk (**)
-| `/order <trade_id>` | Lists orders of one or more specific trade. Separate multiple <trade_id> with a blank space.
-| `/trades [limit]` | List all recently closed trades in a table format.
-| `/count` | Displays number of trades used and available
-| `/locks` | Show currently locked pairs.
-| `/unlock <pair or lock_id>` | Remove the lock for this pair (or for this lock id).
-| `/marketdir [long | short | even | none]` | Updates the user managed variable that represents the current market direction. If no direction is provided, the currently set direction will be displayed.
-| `/list_custom_data <trade_id> [key]` | List custom_data for Trade ID & Key combination. If no Key is supplied it will list all key-value pairs found for that Trade ID.
-| **Modify Trade states** |
-| `/forceexit <trade_id> | /fx <tradeid>` | Instantly exits the given trade  (Ignoring `minimum_roi`).
-| `/forceexit all | /fx all` | Instantly exits all open trades (Ignoring `minimum_roi`).
-| `/fx` | alias for `/forceexit`
-| `/forcelong <pair> [rate]` | Instantly buys the given pair. Rate is optional and only applies to limit orders. (`force_entry_enable` must be set to True)
-| `/forceshort <pair> [rate]` | Instantly shorts the given pair. Rate is optional and only applies to limit orders. This will only work on non-spot markets. (`force_entry_enable` must be set to True)
-| `/delete <trade_id>` | Delete a specific trade from the Database. Tries to close open orders. Requires manual handling of this trade on the exchange.
-| `/reload_trade <trade_id>` | Reload a trade from the Exchange. Only works in live, and can potentially help recover a trade that was manually sold on the exchange.
-| `/cancel_open_order <trade_id> | /coo <trade_id>` | Cancel an open order for a trade.
-| **Metrics** |
-| `/profit [<n>]` | Display a summary of your profit/loss from close trades and some stats about your performance, over the last n days (all trades by default)
-| `/performance` | Show performance of each finished trade grouped by pair
-| `/balance` | Show bot managed balance per currency
-| `/balance full` | Show account balance per currency
-| `/daily <n>` | Shows profit or loss per day, over the last n days (n defaults to 7)
-| `/weekly <n>` | Shows profit or loss per week, over the last n weeks (n defaults to 8)
-| `/monthly <n>` | Shows profit or loss per month, over the last n months (n defaults to 6)
-| `/stats` | Shows Wins / losses by Exit reason as well as Avg. holding durations for buys and sells
-| `/exits` | Shows Wins / losses by Exit reason as well as Avg. holding durations for buys and sells
-| `/entries` | Shows Wins / losses by Exit reason as well as Avg. holding durations for buys and sells
-| `/whitelist [sorted] [baseonly]` | Show the current whitelist. Optionally display in alphabetical order and/or with just the base currency of each pairing.
-| `/blacklist [pair]` | Show the current blacklist, or adds a pair to the blacklist.
-| `/edge` | Show validated pairs by Edge if it is enabled.
+| **系统指令** |
+| `/start` | 启动交易机器人 |
+| `/pause | /stopentry | /stopbuy` | 暂停交易机器人。会根据规则妥善处理未平仓交易。不会开启新仓位。 |
+| `/stop` | 关闭交易机器人 |
+| `/reload_config` | 重新加载配置文件 |
+| `/show_config` | 展示部分当前配置及相关操作参数 |
+| `/logs [limit]` | 查看最新的日志信息 |
+| `/help` | 获取帮助信息 |
+| `/version` | 查看版本号 |
+| **状态相关** |
+| `/status` | 列出所有未平仓交易 |
+| `/status <trade_id>` | 查看一个或多个特定交易。多个 `<trade_id>` 用空格分隔。 |
+| `/status table` | 以表格形式列出所有未平仓交易。待买订单用 `*` 标记，待卖订单用 `**` 标记。 |
+| `/order <trade_id>` | 查看一个或多个特定交易的订单。多个 `<trade_id>` 用空格分隔。 |
+| `/trades [limit]` | 以表格形式列出最近已关闭的交易。 |
+| `/count` | 显示已用和可用的交易数 |
+| `/locks` | 查看当前已锁定的交易对 |
+| `/unlock <pair or lock_id>` | 解除该交易对（或指定锁ID）的锁定 |
+| `/marketdir [long | short | even | none]` | 更新代表当前市场方向的用户管理变量。如果未提供方向，则显示当前设置。示例：`/marketdir long` |
+| `/list_custom_data <trade_id> [key]` | 列出特定交易ID及键的自定义数据。如果未提供键，则列出所有相关的键值对。 |
+| **修改交易状态** |
+| `/forceexit <trade_id> | /fx <trade_id>` | 立即退出指定交易（忽略 `minimum_roi`） |
+| `/forceexit all | /fx all` | 立即退出所有未平仓交易（忽略 `minimum_roi`） |
+| `/fx` | `/forceexit` 的别名 |
+| `/forcelong <pair> [rate]` | 立即买入指定交易对。Rate 为选填，仅限限价单（`force_entry_enable` 必须设为 True） |
+| `/forceshort <pair> [rate]` | 立即做空指定交易对。Rate 为选填，仅限非现货市场（`force_entry_enable` 必须设为 True） |
+| `/delete <trade_id>` | 从数据库中删除某笔交易，并尝试关闭其订单。需手动在交易所处理。 |
+| `/reload_trade <trade_id>` | 从交易所重新加载该交易，只在实盘中有效，可能帮助恢复被手动卖出的交易。 |
+| `/cancel_open_order <trade_id> | /coo <trade_id>` | 取消某笔交易的未平仓订单 |
+| **指标信息** |
+| `/profit [<n>]` | 统计已平仓交易的盈亏情况和绩效表现（最近 n 天，默认为全部） |
+| `/performance` | 按交易对显示每笔已完成交易的绩效表现 |
+| `/balance` | 显示每种币的机器人管理余额 |
+| `/balance full` | 显示每种币的账户余额 |
+| `/daily <n>` | 显示过去 n 天的每日盈亏（n 默认为7） |
+| `/weekly <n>` | 显示过去 n 周的每周盈亏（从周一开始，n 默认为8） |
+| `/monthly <n>` | 显示过去 n 个月的月度盈亏（n 默认为6） |
+| `/stats` | 显示按退出原因划分的赢/亏情况，以及买入卖出的平均持有时间 |
+| `/exits` | 同 `/stats`，按退出原因划分 |
+| `/entries` | 同 `/stats`，显示买入/卖出的赢/亏状态 |
+| `/whitelist [sorted] [baseonly]` | 查看当前白名单，支持按字母排序，或仅显示基础货币。 |
+| `/blacklist [pair]` | 查看当前黑名单，或添加某个交易对到黑名单，支持多个交易对用空格隔开。使用 `/reload_config` 重置黑名单。 |
+| `/edge` | 查看由 Edge 验证过的交易对及其相应的胜率、预期盈亏和止损值。 |
 
-## Telegram commands in action
+## Telegram 指令示例
 
-Below, example of Telegram message you will receive for each command.
+以下是每个命令你会收到的示例消息。
 
 ### /start
 
-> **Status:** `running`
+> **状态：** `running`
 
 ### /pause | /stopentry | /stopbuy
 
-> **Status:** `paused, no more entries will occur from now. Run /start to enable entries.`
+> **状态：** `paused, no more entries will occur from now. Run /start to enable entries.`
 
-Prevents the bot from opening new trades by changing the state to `paused`.
-Open trades will continue to be managed according to their regular rules (ROI/exit signals, stop-loss, etc.).
-Note that position adjustment remains active, but only on the exit side — meaning that when the bot is `paused`, it can only reduce the position size of open trades.
+暂停策略，阻止开启新仓位，已开启的仓位会根据规则继续管理（ROI/退出信号、止损等）。  
+注意，仓位调整仍会进行，但只限于退出方面——意味着当机器人处于 `paused` 时，只能缩减未平仓仓位的规模。
 
-After this, give the bot time to close off open trades (can be checked via `/status table`).
-Once all positions are closed, run `/stop` to completely stop the bot.
+暂停后，等待机器人关闭所有仓位（可用 `/status table` 查看），所有仓位关闭后，可发 `/stop` 完全停止机器人。
 
-Use `/start` to resume the bot to the `running` state, allowing it to open new positions.
+用 `/start` 恢复运行状态，允许开新仓。
 
-!!! Warning
-    The pause/stopentry signal is ONLY active while the bot is running, and is not persisted anyway, so restarting the bot will cause this to reset.
+!!! 警告
+    暂停/停止入场信号仅在机器人运行时有效，且不会持久化，重启机器人后会重置。
 
 ### /stop
 
-> `Stopping trader ...`
-> **Status:** `stopped`
+> `Stopping trader ...`  
+> **状态：** `stopped`
 
 ### /status
 
-For each open trade, the bot will send you the following message.
-Enter Tag is configurable via Strategy.
+机器人会为每个未平仓交易发送如下信息。策略中的入场标签（Enter Tag）可配置。
 
-> **Trade ID:** `123` `(since 1 days ago)`  
-> **Current Pair:** CVC/BTC  
-> **Direction:** Long  
-> **Leverage:** 1.0  
-> **Amount:** `26.64180098`  
-> **Enter Tag:** Awesome Long Signal  
-> **Open Rate:** `0.00007489`  
-> **Current Rate:** `0.00007489`  
-> **Unrealized Profit:** `12.95%`  
-> **Stoploss:** `0.00007389 (-0.02%)`  
+> **交易ID：** `123`（已持有 1 天）  
+> **当前对：** CVC/BTC  
+> **方向：** 多头  
+> **杠杆：** 1.0  
+> **金额：** `26.64180098`  
+> **入场标签：** Awesome Long Signal  
+> **开仓价格：** `0.00007489`  
+> **当前价格：** `0.00007489`  
+> **未实现盈亏：** `12.95%`  
+> **止损：** `0.00007389 (-0.02%)`
 
 ### /status table
 
-Return the status of all open trades in a table format.
+以表格形式返回所有未平仓交易的状态。
 
 ```
 ID L/S    Pair     Since   Profit
@@ -300,7 +296,7 @@ ID L/S    Pair     Since   Profit
 
 ### /count
 
-Return the number of trades used and available.
+返回已用和最大交易数。
 
 ```
 current    max
@@ -310,64 +306,64 @@ current    max
 
 ### /profit
 
-Return a summary of your profit/loss and performance.
+返回你的盈亏总结以及绩效。
 
-> **ROI:** Close trades  
+> **ROI：** 已平仓交易  
 >   ∙ `0.00485701 BTC (2.2%) (15.2 Σ%)`  
 >   ∙ `62.968 USD`  
-> **ROI:** All trades  
+> **ROI：** 所有交易  
 >   ∙ `0.00255280 BTC (1.5%) (6.43 Σ%)`  
 >   ∙ `33.095 EUR`  
 >  
-> **Total Trade Count:** `138`  
-> **Bot started:** `2022-07-11 18:40:44`  
-> **First Trade opened:** `3 days ago`  
-> **Latest Trade opened:** `2 minutes ago`  
-> **Avg. Duration:** `2:33:45`  
-> **Best Performing:** `PAY/BTC: 50.23%`  
-> **Trading volume:** `0.5 BTC`  
-> **Profit factor:** `1.04`  
-> **Win / Loss:** `102 / 36`  
-> **Winrate:** `73.91%`  
-> **Expectancy (Ratio):** `4.87 (1.66)`  
-> **Max Drawdown:** `9.23% (0.01255 BTC)`  
+> **总交易数：** `138`  
+> **机器人启动时间：** `2022-07-11 18:40:44`  
+> **首笔交易开启时间：** `3 天前`  
+> **最新交易开启时间：** `2 分钟前`  
+> **平均持有时间：** `2:33:45`  
+> **表现最佳：** `PAY/BTC：50.23%`  
+> **交易量：** `0.5 BTC`  
+> **盈利因子：** `1.04`  
+> **赢/亏：** `102 / 36`  
+> **胜率：** `73.91%`  
+> **期望值（比率）：** `4.87 (1.66)`  
+> **最大回撤：** `9.23% (0.01255 BTC)`
 
-The relative profit of `1.2%` is the average profit per trade.  
-The relative profit of `15.2 Σ%` is be based on the starting capital - so in this case, the starting capital was `0.00485701 * 1.152 = 0.00738 BTC`.  
-**Starting capital(**) is either taken from the `available_capital` setting, or calculated by using current wallet size - profits.  
-**Profit Factor** is calculated as gross profits / gross losses - and should serve as an overall metric for the strategy.  
-**Expectancy** corresponds to the average return per currency unit at risk, i.e. the winrate and the risk-reward ratio (the average gain of winning trades compared to the average loss of losing trades).  
-**Expectancy Ratio** is expected profit or loss of a subsequent trade based on the performance of all past trades.  
-**Max drawdown** corresponds to the backtesting metric `Absolute Drawdown (Account)` - calculated as `(Absolute Drawdown) / (DrawdownHigh + startingBalance)`.  
-**Bot started date** will refer to the date the bot was first started. For older bots, this will default to the first trade's open date.  
+相对利润为 `1.2%`，为每笔交易的平均利润。  
+相对利润的 `15.2 Σ%` 是基于起始资金计算的——即：`0.00485701 * 1.152 ≈ 0.00738 BTC`。  
+**起始资金**（`starting capital`）可以取自 `available_capital` 设置，或通过当前钱包余额和利润计算得出。  
+**利润因子**（Profit Factor）为总利润除以总亏损，作为策略的总体衡量指标。  
+**期望值**代表每单位风险币的平均回报，即胜率和风险回报比（赢的交易平均收益与亏的交易平均损失之比）。  
+**期望比率（Expectancy Ratio）**是基于所有历史交易的表现，预测下一笔交易的预期盈亏。  
+**最大回撤**对应回测指标 `Absolute Drawdown (Account)`，计算公式为 `(Absolute Drawdown) / (DrawdownHigh + startingBalance)`。  
+**机器人启动时间**指首次启动机器人的时间，对于较早的机器人，则默认为首次交易的开启时间。
 
 ### /forceexit <trade_id>
 
 > **BINANCE:** Exiting BTC/LTC with limit `0.01650000 (profit: ~-4.07%, -0.00008168)`
 
-!!! Tip
-    You can get a list of all open trades by calling `/forceexit` without parameter, which will show a list of buttons to simply exit a trade.
-    This command has an alias in `/fx` - which has the same capabilities, but is faster to type in "emergency" situations.
+!!! 提示
+    可以调用 `/forceexit` 不带参数，列出所有未平仓交易的按钮，直接退出某笔交易。
+    该命令亦有 `/fx` 的别名，功能相同，但在紧急情况下输入更快捷。
 
 ### /forcelong <pair> [rate] | /forceshort <pair> [rate]
 
-`/forcebuy <pair> [rate]` is also supported for longs but should be considered deprecated.
+支持 `/forcebuy <pair> [rate]` 用于多头，但建议逐步弃用。
 
-> **BINANCE:** Long ETH/BTC with limit `0.03400000` (`1.000000 ETH`, `225.290 USD`)
+> **BINANCE:** 以限价 `0.03400000` 买入 ETH/BTC（`1.000000 ETH`，USD 225.290）
 
-Omitting the pair will open a query asking for the pair to trade (based on the current whitelist).
-Trades created through `/forcelong` will have the buy-tag of `force_entry`.
+省略交易对时，会弹出请求所需交易对（基于当前白名单）。  
+通过 `/forcelong` 创建的订单会带有 `force_entry` 标签。
 
-![Telegram force-buy screenshot](assets/telegram_forcebuy.png)
+![Telegram 强制买入截图](assets/telegram_forcebuy.png)
 
-Note that for this to work, `force_entry_enable` needs to be set to true.
+请注意，要使用此功能，必须将 `force_entry_enable` 设置为 `true`。
 
-[More details](configuration.md#understand-force_entry_enable)
+[更多详情](configuration.md#understand-force_entry_enable)
 
 ### /performance
 
-Return the performance of each crypto-currency the bot has sold.
-> Performance:  
+显示机器人已卖出的每个加密货币的绩效表现。
+> 绩效：  
 > 1. `RCN/BTC 0.003 BTC (57.77%) (1)`  
 > 2. `PAY/BTC 0.0012 BTC (56.91%) (1)`  
 > 3. `VIB/BTC 0.0011 BTC (47.07%) (1)`  
@@ -375,87 +371,85 @@ Return the performance of each crypto-currency the bot has sold.
 > 5. `STORJ/BTC 0.0009 BTC (27.24%) (1)`  
 > ...  
 
-The relative performance is calculated against the total investment in the currency, aggregating all filled entries for the currency.
+相对表现基于在该币种的总投资额，汇总所有已完成的交易。
 
 ### /balance
 
-Return the balance of all crypto-currency your have on the exchange.
+返回你在交易所中的所有加密货币余额。
 
-> **Currency:** BTC  
-> **Available:** 3.05890234  
-> **Balance:** 3.05890234  
-> **Pending:** 0.0  
+> **币种：** BTC  
+> **可用：** 3.05890234  
+> **余额：** 3.05890234  
+> **待确认：** 0.0  
 >
-> **Currency:** CVC  
-> **Available:** 86.64180098  
-> **Balance:** 86.64180098  
-> **Pending:** 0.0  
+> **币种：** CVC  
+> **可用：** 86.64180098  
+> **余额：** 86.64180098  
+> **待确认：** 0.0  
 
 ### /daily <n>
 
-Per default `/daily` will return the 7 last days. The example below if for `/daily 3`:
+默认返回最近 7 天的每日盈亏。以下为 `/daily 3` 的示例：
 
-> **Daily Profit over the last 3 days:**
+> **最近 3 天的每日盈亏：**
 
 ```
-Day (count)     USDT          USD         Profit %
+天数（计数）   USDT           USD           盈亏比例 %
 --------------  ------------  ----------  ----------
-2022-06-11 (1)  -0.746 USDT   -0.75 USD   -0.08%
-2022-06-10 (0)  0 USDT        0.00 USD    0.00%
-2022-06-09 (5)  20 USDT       20.10 USD   5.00%
+2022-06-11 (1)  -0.746 USDT  -0.75 USD  -0.08%
+2022-06-10 (0)   0 USDT       0.00 USD    0.00%
+2022-06-09 (5)  20 USDT      20.10 USD   5.00%
 ```
 
 ### /weekly <n>
 
-Per default `/weekly` will return the 8 last weeks, including the current week. Each week starts
-from Monday. The example below if for `/weekly 3`:
+默认返回包含当周在内的最近 8 周的周度盈亏，周一为一周的起点。以下为 `/weekly 3` 示例：
 
-> **Weekly Profit over the last 3 weeks (starting from Monday):**
+> **最近 3 周的周盈亏（从周一开始）：**
 
 ```
-Monday (count)  Profit BTC      Profit USD   Profit %
--------------  --------------  ------------    ----------
-2018-01-03 (5)  0.00224175 BTC  29,142 USD   4.98%
-2017-12-27 (1)  0.00033131 BTC   4,307 USD   0.00%
-2017-12-20 (4)  0.00269130 BTC  34.986 USD   5.12%
+星期一（计数）  盈亏 BTC      盈亏 USD    盈亏比例 %
+--------------  --------------  ----------  ----------
+2018-01-03 (5)  0.00224175 BTC  29142 USD  4.98%
+2017-12-27 (1)  0.00033131 BTC  4307 USD   0.00%
+2017-12-20 (4)  0.00269130 BTC  34986 USD  5.12%
 ```
 
 ### /monthly <n>
 
-Per default `/monthly` will return the 6 last months, including the current month. The example below
-if for `/monthly 3`:
+默认返回最近 6 个月（含本月）的月度盈亏。以下为 `/monthly 3` 示例：
 
-> **Monthly Profit over the last 3 months:**
+> **最近 3 个月的月盈亏：**
+
 ```
-Month (count)  Profit BTC      Profit USD    Profit %
--------------  --------------  ------------    ----------
-2018-01 (20)    0.00224175 BTC  29,142 USD  4.98%
-2017-12 (5)    0.00033131 BTC   4,307 USD   0.00%
-2017-11 (10)    0.00269130 BTC  34.986 USD  5.10%
+月份（计数）  盈亏 BTC      盈亏 USD    盈亏比例 %
+--------------  --------------  ----------  ----------
+2018-01 (20)    0.00224175 BTC  29142 USD  4.98%
+2017-12 (5)    0.00033131 BTC   4307 USD   0.00%
+2017-11 (10)   0.00269130 BTC   34986 USD  5.10%
 ```
 
 ### /whitelist
 
-Shows the current whitelist
+展示当前白名单。
 
-> Using whitelist `StaticPairList` with 22 pairs  
+> 使用白名单 `StaticPairList`，包含 22 个交易对  
 > `IOTA/BTC, NEO/BTC, TRX/BTC, VET/BTC, ADA/BTC, ETC/BTC, NCASH/BTC, DASH/BTC, XRP/BTC, XVG/BTC, EOS/BTC, LTC/BTC, OMG/BTC, BTG/BTC, LSK/BTC, ZEC/BTC, HOT/BTC, IOTX/BTC, XMR/BTC, AST/BTC, XLM/BTC, NANO/BTC`
 
 ### /blacklist [pair]
 
-Shows the current blacklist.
-If Pair is set, then this pair will be added to the pairlist.
-Also supports multiple pairs, separated by a space.  
-Use `/reload_config` to reset the blacklist.
+展示当前黑名单。  
+如果指定交易对（pair），则将该对加入黑名单。支持多个交易对，用空格隔开。  
+使用 `/reload_config` 重置黑名单。
 
-> Using blacklist `StaticPairList` with 2 pairs  
->`DODGE/BTC`, `HOT/BTC`.  
+> 使用黑名单 `StaticPairList`，包含 2 个交易对：  
+> `DODGE/BTC`, `HOT/BTC`。
 
 ### /edge
 
-Shows pairs validated by Edge along with their corresponding win-rate, expectancy and stoploss values.
+显示由 Edge 验证的交易对及其对应的胜率、预期盈亏和止损值。
 
-> **Edge only validated following pairs:**
+> **Edge验证的交易对：**
 ```
 Pair        Winrate    Expectancy    Stoploss
 --------  ---------  ------------  ----------
@@ -468,28 +462,24 @@ ARDR/ETH   0.366667      0.143059       -0.01
 
 ### /version
 
-> **Version:** `0.14.3`
+> **版本：** `0.14.3`
 
 ### /marketdir
 
-If a market direction is provided the command updates the user managed variable that represents the current market direction.
-This variable is not set to any valid market direction on bot startup and must be set by the user. The example below is for `/marketdir long`:
+如果提供市场方向参数，该命令会更新代表当前市场方向的用户管理变量。  
+此变量在机器人启动时默认未设置，需由用户自行设定。示例：`/marketdir long`。
+
+如果未提供参数，则输出当前设置：
 
 ```
-Successfully updated marketdirection from none to long.
+当前市场方向：even
 ```
 
-If no market direction is provided the command outputs the currently set market directions. The example below is for `/marketdir`:
+你可以在策略中通过 `self.market_direction` 使用该变量。
 
-```
-Currently set marketdirection: even
-```
+!!! 警告 "机器人重启"
+    请注意，市场方向不进行持久化，重启或重新加载后会重置。
 
-You can use the market direction in your strategy via `self.market_direction`.
-
-!!! Warning "Bot restarts"
-    Please note that the market direction is not persisted, and will be reset after a bot restart/reload.
-
-!!! Danger "Backtesting"
-    As this value/variable is intended to be changed manually in dry/live trading.
-    Strategies using `market_direction` will probably not produce reliable, reproducible results (changes to this variable will not be reflected for backtesting). Use at your own risk.
+!!! 危险 "回测"
+    此值/变量旨在在模拟/实盘交易中手动调整。  
+    使用 `market_direction` 的策略可能无法产生可靠的、可复现的结果（更改不会影响回测结果）。请自行承担风险。

@@ -1,41 +1,31 @@
-```
-usage: freqtrade convert-trade-data [-h] [-v] [--no-color] [--logfile FILE]
-                                    [-V] [-c PATH] [-d PATH] [--userdir PATH]
-                                    [-p PAIRS [PAIRS ...]] --format-from
-                                    {json,jsongz,feather,parquet,kraken_csv}
-                                    --format-to {json,jsongz,feather,parquet}
-                                    [--erase] [--exchange EXCHANGE]
+用法：freqtrade convert-trade-data [-h] [-v] [--no-color] [--logfile FILE]
+                                      [-V] [-c PATH] [-d PATH] [--userdir PATH]
+                                      [-p PAIRS [PAIRS ...]] --format-from
+                                      {json,jsongz,feather,parquet,kraken_csv}
+                                      --format-to {json,jsongz,feather,parquet}
+                                      [--erase] [--exchange EXCHANGE]
 
-options:
-  -h, --help            show this help message and exit
+选项：
+  -h, --help            显示此帮助信息并退出
   -p PAIRS [PAIRS ...], --pairs PAIRS [PAIRS ...]
-                        Limit command to these pairs. Pairs are space-
-                        separated.
+                        将命令限制为这些交易对。交易对之间用空格分隔。
   --format-from {json,jsongz,feather,parquet,kraken_csv}
-                        Source format for data conversion.
+                        源数据格式，用于数据转换。
   --format-to {json,jsongz,feather,parquet}
-                        Destination format for data conversion.
-  --erase               Clean all existing data for the selected
-                        exchange/pairs/timeframes.
-  --exchange EXCHANGE   Exchange name. Only valid if no config is provided.
+                        目标数据格式，用于数据转换。
+  --erase               清除所选交易所/交易对/时间周期的所有现有数据。
+  --exchange EXCHANGE   交易所名称。仅在未提供配置文件时有效。
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
+常用参数：
+  -v, --verbose         详细模式（-vv表示更详细，-vvv显示所有消息）。
+  --no-color            禁用超参数优化结果的颜色显示。如果你将输出重定向到文件，可能会有用。
   --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        'syslog', 'journald'. See the documentation for more
-                        details.
-  -V, --version         show program's version number and exit
+                        日志输出到指定文件。特殊值包括：
+                        'syslog'，'journald'。详情请查阅相关文档。
+  -V, --version         显示程序版本号并退出
   -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
+                        指定配置文件（默认：`userdir/config.json`或`config.json`，取决于哪个存在）。可以使用多个 --config 选项。也可以设置为 `-` 从标准输入读取配置。
   -d PATH, --datadir PATH, --data-dir PATH
-                        Path to directory with historical backtesting data.
+                        历史回测数据所在目录路径。
   --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
-
-```
+                        用户数据目录路径。

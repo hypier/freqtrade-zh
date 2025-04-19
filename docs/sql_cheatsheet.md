@@ -1,81 +1,82 @@
-# SQL Helper
+# SQL 助手
 
-This page contains some help if you want to query your sqlite db.
+本页面提供一些关于查询你的 sqlite 数据库的帮助。
 
-!!! Tip "Other Database systems"
-    To use other Database Systems like PostgreSQL or MariaDB, you can use the same queries, but you need to use the respective client for the database system. [Click here](advanced-setup.md#use-a-different-database-system) to learn how to setup a different database system with freqtrade.
+!!! Tip "其他数据库系统"
+    若要使用 PostgreSQL 或 MariaDB 等其他数据库系统，可以使用相同的查询，但需要使用对应数据库系统的客户端。[点此](advanced-setup.md#use-a-different-database-system)了解如何使用 freqtrade 设置不同的数据库系统。
 
 !!! Warning
-    If you are not familiar with SQL, you should be very careful when running queries on your database.  
-    Always make sure to have a backup of your database before running any queries.
+    如果你不熟悉 SQL，运行数据库查询时应格外小心。  
+    在执行任何查询之前，务必备份你的数据库。
 
-## Install sqlite3
+## 安装 sqlite3
 
-Sqlite3 is a terminal based sqlite application.
-Feel free to use a visual Database editor like SqliteBrowser if you feel more comfortable with that.
+Sqlite3 是基于终端的 sqlite 应用程序。  
+如果你更喜欢图形界面，也可以使用如 SqliteBrowser 之类的可视化数据库编辑器。
 
-### Ubuntu/Debian installation
+### Ubuntu/Debian 安装
 
 ```bash
 sudo apt-get install sqlite3
 ```
 
-### Using sqlite3 via docker
+### 通过 docker 使用 sqlite3
 
-The freqtrade docker image does contain sqlite3, so you can edit the database without having to install anything on the host system.
+freqtrade 的 Docker 镜像中已包含 sqlite3，因此无需在主机系统上安装任何东西即可编辑数据库。
 
-``` bash
+```bash
 docker compose exec freqtrade /bin/bash
 sqlite3 <database-file>.sqlite
 ```
 
-## Open the DB
+## 打开数据库
 
 ```bash
 sqlite3
 .open <filepath>
 ```
 
-## Table structure
+## 表结构
 
-### List tables
+### 列出所有表
 
 ```bash
 .tables
 ```
 
-### Display table structure
+### 显示表结构
 
 ```bash
 .schema <table_name>
 ```
 
-### Get all trades in the table
+### 获取表中的所有交易记录
 
 ```sql
 SELECT * FROM trades;
 ```
 
-## Destructive queries
+## 危险操作的查询
 
-Queries that write to the database.
-These queries should usually not be necessary as freqtrade tries to handle all database operations itself - or exposes them via API or telegram commands.
+写入（修改、插入或删除）数据库的查询。  
+通常情况下不需要手动执行这些操作，因为 freqtrade 会自动处理所有数据库操作——或通过 API 和 Telegram 命令提供。
 
 !!! Warning
-    Please make sure you have a backup of your database before running any of the below queries.
+    在运行以下任何查询前，请确保已备份你的数据库。
 
 !!! Danger
-    You should also **never** run any writing query (`update`, `insert`, `delete`) while a bot is connected to the database.
-    This can and will lead to data corruption - most likely, without the possibility of recovery.
+    在机器人连接到数据库时，**绝对不要**运行任何写入操作（`update`、`insert`、`delete`）。  
+    这可能导致数据损坏，且很可能无法恢复。
 
-### Fix trade still open after a manual exit on the exchange
+### 解决在手动退出后交易仍然开启的问题
 
 !!! Warning
-    Manually selling a pair on the exchange will not be detected by the bot and it will try to sell anyway. Whenever possible, /forceexit <tradeid> should be used to accomplish the same thing.  
-    It is strongly advised to backup your database file before making any manual changes.
+    手动在交易所卖出某对资产不会被机器人检测到，机器人仍会尝试再次卖出。  
+    尽可能地，应使用 `/forceexit <tradeid>` 来实现同样的效果。  
+    强烈建议在手动操作前备份你的数据库文件。
 
 !!! Note
-    This should not be necessary after /forceexit, as force_exit orders are closed automatically by the bot on the next iteration.
+    这在使用 `/forceexit` 后通常不需要，因为通过 force_exit 下单的仓位会在下一轮自动关闭。
 
 ```sql
 UPDATE trades
@@ -88,7 +89,7 @@ SET is_open=0,
 WHERE id=<trade_ID_to_update>;
 ```
 
-#### Example
+#### 示例
 
 ```sql
 UPDATE trades
@@ -101,15 +102,16 @@ SET is_open=0,
 WHERE id=31;
 ```
 
-### Remove trade from the database
+### 从数据库中移除交易
 
-!!! Tip "Use RPC Methods to delete trades"
-    Consider using `/delete <tradeid>` via telegram or rest API. That's the recommended way to deleting trades.
+!!! Tip "使用 RPC 方法删除交易"
+    建议通过 Telegram 或 REST API 使用 `/delete <tradeid>` 来删除交易。这是推荐的方法。
 
-If you'd still like to remove a trade from the database directly, you can use the below query.
+如果你仍希望直接从数据库中移除交易，可以使用以下查询。
 
 !!! Danger
-    Some systems (Ubuntu) disable foreign keys in their sqlite3 packaging. When using sqlite - please ensure that foreign keys are on by running `PRAGMA foreign_keys = ON` before the above query.
+    一些系统（如 Ubuntu）在 sqlite3 打包时禁用了外键功能。  
+    使用 sqlite 时，请确保在执行上述操作前运行 `PRAGMA foreign_keys = ON` 以启用外键支持。
 
 ```sql
 DELETE FROM trades WHERE id = <tradeid>;
@@ -118,4 +120,4 @@ DELETE FROM trades WHERE id = 31;
 ```
 
 !!! Warning
-    This will remove this trade from the database. Please make sure you got the correct id and **NEVER** run this query without the `where` clause.
+    该操作会将对应交易从数据库中完全删除。请确保 id 正确，无误后再执行，且**绝不**在没有 `where` 条件的情况下运行此类删除语句。

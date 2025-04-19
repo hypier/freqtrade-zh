@@ -1,16 +1,12 @@
-```
-usage: freqtrade show-config [-h] [--userdir PATH] [-c PATH]
-                             [--show-sensitive]
+用法: freqtrade show-config [-h] [--userdir PATH] [-c PATH]
+                                 [--show-sensitive]
 
-options:
-  -h, --help            show this help message and exit
+选项：
+  -h, --help            显示此帮助信息并退出
   --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+                        用户数据目录路径。
   -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
-  --show-sensitive      Show secrets in the output.
-
-```
+                        指定配置文件（默认：
+                        `userdir/config.json` 或 `config.json`，以存在的为准）。
+                        可以使用多个 --config 选项。也可以设为 `-` 从标准输入读取配置。
+  --show-sensitive      在输出中显示敏感信息。

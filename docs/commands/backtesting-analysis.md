@@ -1,5 +1,4 @@
-```
-usage: freqtrade backtesting-analysis [-h] [-v] [--no-color] [--logfile FILE]
+用法：freqtrade backtesting-analysis [-h] [-v] [--no-color] [--logfile FILE]
                                       [-V] [-c PATH] [-d PATH]
                                       [--userdir PATH]
                                       [--export-filename PATH]
@@ -12,55 +11,38 @@ usage: freqtrade backtesting-analysis [-h] [-v] [--no-color] [--logfile FILE]
                                       [--rejected-signals] [--analysis-to-csv]
                                       [--analysis-csv-path ANALYSIS_CSV_PATH]
 
-options:
-  -h, --help            show this help message and exit
+参数选项：
+  -h, --help            显示帮助信息并退出
   --export-filename PATH, --backtest-filename PATH
-                        Use this filename for backtest results.Requires
-                        `--export` to be set as well. Example: `--export-filen
-                        ame=user_data/backtest_results/backtest_today.json`
+                        使用该文件名保存回测结果。需要同时设置 `--export`。示例：`--export-filename=user_data/backtest_results/backtest_today.json`
   --analysis-groups {0,1,2,3,4,5} [{0,1,2,3,4,5} ...]
-                        grouping output - 0: simple wins/losses by enter tag,
-                        1: by enter_tag, 2: by enter_tag and exit_tag, 3: by
-                        pair and enter_tag, 4: by pair, enter_ and exit_tag
-                        (this can get quite large), 5: by exit_tag
+                        分组输出 - 0：按入场标签的简单赢/亏情况，1：按入场标签，2：按入场和退出标签，3：按对和入场标签，4：按对、入场和退出标签（可能会很大），5：按退出标签
   --enter-reason-list ENTER_REASON_LIST [ENTER_REASON_LIST ...]
-                        Space separated list of entry signals to analyse.
-                        Default: all. e.g. 'entry_tag_a entry_tag_b'
+                        要分析的入场信号列表，用空格分隔。默认：全部。例如：'entry_tag_a entry_tag_b'
   --exit-reason-list EXIT_REASON_LIST [EXIT_REASON_LIST ...]
-                        Space separated list of exit signals to analyse.
-                        Default: all. e.g. 'exit_tag_a roi stop_loss
-                        trailing_stop_loss'
+                        要分析的退出信号列表，用空格分隔。默认：全部。例如：'exit_tag_a roi stop_loss trailing_stop_loss'
   --indicator-list INDICATOR_LIST [INDICATOR_LIST ...]
-                        Space separated list of indicators to analyse. e.g.
-                        'close rsi bb_lowerband profit_abs'
-  --entry-only          Only analyze entry signals.
-  --exit-only           Only analyze exit signals.
+                        要分析的指标列表，用空格分隔。例如：'close rsi bb_lowerband profit_abs'
+  --entry-only          仅分析入场信号。
+  --exit-only           仅分析退出信号。
   --timerange TIMERANGE
-                        Specify what timerange of data to use.
-  --rejected-signals    Analyse rejected signals
-  --analysis-to-csv     Save selected analysis tables to individual CSVs
+                        指定使用的数据时间范围。
+  --rejected-signals    分析被拒绝的信号
+  --analysis-to-csv     将选定的分析表保存为单独的CSV文件
   --analysis-csv-path ANALYSIS_CSV_PATH
-                        Specify a path to save the analysis CSVs if
-                        --analysis-to-csv is enabled. Default:
-                        user_data/basktesting_results/
+                        指定保存分析CSV文件的路径，前提是启用--analysis-to-csv。默认为：
+                        user_data/backtesting_results/
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
+常用参数：
+  -v, --verbose         详细模式（-vv 获取更多信息，-vvv 获取全部信息）。
+  --no-color            禁用超越优化结果的颜色显示。如果你将输出重定向到文件，这可能会很有用。
   --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        'syslog', 'journald'. See the documentation for more
-                        details.
-  -V, --version         show program's version number and exit
+                        将日志输出到指定文件。特殊值包括：
+                        'syslog', 'journald'。详情请参阅相关文档。
+  -V, --version         显示程序版本号后退出
   -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
+                        指定配置文件（默认：`userdir/config.json`或存在的`config.json`）。可以使用多个 --config 选项。也可以设置为 `-`，从标准输入读取配置。
   -d PATH, --datadir PATH, --data-dir PATH
-                        Path to directory with historical backtesting data.
+                        指定存放历史回测数据的目录路径。
   --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
-
-```
+                        指定用户数据目录路径。

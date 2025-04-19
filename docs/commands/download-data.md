@@ -1,70 +1,51 @@
-```
-usage: freqtrade download-data [-h] [-v] [--no-color] [--logfile FILE] [-V]
-                               [-c PATH] [-d PATH] [--userdir PATH]
-                               [-p PAIRS [PAIRS ...]] [--pairs-file FILE]
-                               [--days INT] [--new-pairs-days INT]
-                               [--include-inactive-pairs]
-                               [--timerange TIMERANGE] [--dl-trades]
-                               [--convert] [--exchange EXCHANGE]
-                               [-t TIMEFRAMES [TIMEFRAMES ...]] [--erase]
-                               [--data-format-ohlcv {json,jsongz,feather,parquet}]
-                               [--data-format-trades {json,jsongz,feather,parquet}]
-                               [--trading-mode {spot,margin,futures}]
-                               [--prepend]
+用法：freqtrade download-data [-h] [-v] [--no-color] [--logfile FILE] [-V]
+                                    [-c PATH] [-d PATH] [--userdir PATH]
+                                    [-p PAIRS [PAIRS ...]] [--pairs-file FILE]
+                                    [--days INT] [--new-pairs-days INT]
+                                    [--include-inactive-pairs]
+                                    [--timerange TIMERANGE] [--dl-trades]
+                                    [--convert] [--exchange EXCHANGE]
+                                    [-t TIMEFRAMES [TIMEFRAMES ...]] [--erase]
+                                    [--data-format-ohlcv {json,jsongz,feather,parquet}]
+                                    [--data-format-trades {json,jsongz,feather,parquet}]
+                                    [--trading-mode {spot,margin,futures}]
+                                    [--prepend]
 
-options:
-  -h, --help            show this help message and exit
+参数选项：
+  -h, --help            显示帮助信息并退出
   -p PAIRS [PAIRS ...], --pairs PAIRS [PAIRS ...]
-                        Limit command to these pairs. Pairs are space-
-                        separated.
-  --pairs-file FILE     File containing a list of pairs. Takes precedence over
-                        --pairs or pairs configured in the configuration.
-  --days INT            Download data for given number of days.
-  --new-pairs-days INT  Download data of new pairs for given number of days.
-                        Default: `None`.
+                        将命令限制在这些交易对。交易对用空格分隔。
+  --pairs-file FILE     包含交易对列表的文件。优先于--pairs或配置中的交易对。
+  --days INT            下载给定天数的数据。
+  --new-pairs-days INT  下载新交易对的指定天数的数据。默认：`None`。
   --include-inactive-pairs
-                        Also download data from inactive pairs.
+                        同时下载非活跃交易对的数据。
   --timerange TIMERANGE
-                        Specify what timerange of data to use.
-  --dl-trades           Download trades instead of OHLCV data.
-  --convert             Convert downloaded trades to OHLCV data. Only
-                        applicable in combination with `--dl-trades`. Will be
-                        automatic for exchanges which don't have historic
-                        OHLCV (e.g. Kraken). If not provided, use `trades-to-
-                        ohlcv` to convert trades data to OHLCV data.
-  --exchange EXCHANGE   Exchange name. Only valid if no config is provided.
+                        指定使用的数据时间范围。
+  --dl-trades           下载交易数据而非OHLCV数据。
+  --convert             将已下载的交易数据转换为OHLCV数据。仅在结合`--dl-trades`使用时有效。对于没有历史OHLCV数据的交易所（例如Kraken），会自动转换。如果不提供此参数，将使用`trades-to-ohlcv`命令将交易数据转换为OHLCV数据。
+  --exchange EXCHANGE   交易所名称。仅在未提供配置文件时有效。
   -t TIMEFRAMES [TIMEFRAMES ...], --timeframes TIMEFRAMES [TIMEFRAMES ...]
-                        Specify which tickers to download. Space-separated
-                        list. Default: `1m 5m`.
-  --erase               Clean all existing data for the selected
-                        exchange/pairs/timeframes.
+                        指定要下载的时间周期。空格分隔。默认：`1m 5m`。
+  --erase               清除所选交易所/交易对/时间周期的所有现有数据。
   --data-format-ohlcv {json,jsongz,feather,parquet}
-                        Storage format for downloaded candle (OHLCV) data.
-                        (default: `feather`).
+                        下载的K线（OHLCV）数据存储格式。(默认：`feather`)。
   --data-format-trades {json,jsongz,feather,parquet}
-                        Storage format for downloaded trades data. (default:
-                        `feather`).
+                        下载的交易数据存储格式。(默认：`feather`)。
   --trading-mode {spot,margin,futures}, --tradingmode {spot,margin,futures}
-                        Select Trading mode
-  --prepend             Allow data prepending. (Data-appending is disabled)
+                        选择交易模式。
+  --prepend             允许数据前置添加（数据追加被禁用）。
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
+常用参数：
+  -v, --verbose         显示详细信息模式（-vv表示更多信息，-vvv表示显示所有消息）。
+  --no-color            禁用彩色显示，可能在将输出重定向到文件时有用。
   --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        'syslog', 'journald'. See the documentation for more
-                        details.
-  -V, --version         show program's version number and exit
+                        将日志记录到指定文件。特殊值包括：
+                        'syslog', 'journald'。详细信息请参阅文档。
+  -V, --version         显示程序版本号并退出。
   -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
+                        指定配置文件（默认：`userdir/config.json`或`config.json`，以存在的文件为准）。可以使用多个--config参数。也可以设置为`-`从标准输入读取配置。
   -d PATH, --datadir PATH, --data-dir PATH
-                        Path to directory with historical backtesting data.
+                        历史回测数据所在目录路径。
   --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
-
-```
+                        用户数据目录路径。

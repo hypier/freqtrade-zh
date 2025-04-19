@@ -1,52 +1,52 @@
-# Recursive analysis
+# 递归分析
 
-This page explains how to validate your strategy for inaccuracies due to recursive issues with certain indicators.
+本页面介绍如何验证策略中由于某些指标的递归问题可能导致的不准确性。
 
-A recursive formula defines any term of a sequence relative to its preceding term(s). An example of a recursive formula is a<sub>n</sub> = a<sub>n-1</sub> + b.
+递归公式定义了序列中每一项相对于前一项（或多项）的关系。一个递归公式的示例是 a<sub>n</sub> = a<sub>n-1</sub> + b。
 
-Why does this matter for Freqtrade? In backtesting, the bot will get full data of the pairs according to the timerange specified. But in a dry/live run, the bot will be limited by the amount of data each exchanges gives.
+这一点对Freqtrade有何意义？在回测中，机器人会根据指定的时间范围获取所有交易对的完整数据。但在干跑/实盘运行时，机器人受到每个交易所提供数据量的限制。
 
-For example, to calculate a very basic indicator called `steps`, the first row's value is always 0, while the following rows' values are equal to the value of the previous row plus 1. If I were to calculate it using the latest 1000 candles, then the `steps` value of the first row is 0, and the `steps` value at the last closed candle is 999.
+例如，为了计算一个非常基础的指标 `steps`，第一行的值始终为0，而后续行的值等于前一行的值加1。如果用最新的1000根K线来计算，那么第一行的 `steps` 值是0，最后一根已收盘K线的 `steps` 值是999。
 
-What happens if the calculation is using only the latest 500 candles? Then instead of 999, the `steps` value at last closed candle is 499. The difference of the value means your backtest result can differ from your dry/live run result.
+如果仅用最近的500根K线进行计算，会怎样？那么最后一根已收盘K线的 `steps` 值将是499，而不是999。这两者的差异意味着你的回测结果可能与干跑/实盘的结果不同。
 
-The `recursive-analysis` command requires historic data to be available. To learn how to get data for the pairs and exchange you're interested in,
-head over to the [Data Downloading](data-download.md) section of the documentation.
+`recursive-analysis` 命令需要有历史数据。要了解如何获取你感兴趣的交易对和交易所的数据，可以参考文档中的 [Data Downloading](data-download.md) 部分。
 
-This command is built upon preparing different lengths of data and calculates indicators based on them.
-This does not backtest the strategy itself, but rather only calculates the indicators. After calculating the indicators of different startup candle values (`startup_candle_count`) are done, the values of last rows across all specified `startup_candle_count` are compared to see how much variance they show compared to the base calculation.
+该命令基于准备不同长度的数据，并根据它们计算指标。它不直接回测策略，而只计算指标。在完成不同启动蜡烛数 (`startup_candle_count`)的指标计算后，会比较所有指定 `startup_candle_count` 的最后一行数值，观察它们相对于基础计算的差异。
 
-Command settings:
+命令设置：
 
-- Use the `-p` option to set your desired pair to analyze. Since we are only looking at indicator values, using more than one pair is redundant. Preferably use a pair with a relatively high price and at least moderate volatility, such as BTC or ETH, to avoid rounding issues that can make the results inaccurate. If no pair is set on the command, the pair used for this analysis is the first pair in the whitelist.
-- It is recommended to set a long timerange (at least 5000 candles) so that the initial indicators' calculation that is going to be used as a benchmark has very small or no recursive issues itself. For example, for a 5m timeframe, a timerange of 5000 candles would be equal to 18 days.
-- `--cache` is forced to "none" to avoid loading previous indicators calculation automatically.
+- 使用 `-p` 选项设置你希望分析的交易对。由于只关注指标值，使用多个交易对没有必要。建议选择价格较高、波动适中的交易对，例如BTC或ETH，以避免因取整误差导致的结果不精确。如果未在命令中指定交易对，则默认使用白名单中的第一个交易对。
 
-In addition to the recursive formula check, this command also carries out a simple lookahead bias check on the indicator values only. For a full lookahead check, use [Lookahead-analysis](lookahead-analysis.md).
+- 建议设置较长的时间范围（至少5000根K线），以确保作为基准的指标计算没有或极小的递归问题。例如，5分钟周期下，5000根K线等于18天。
 
-## Recursive-analysis command reference
+- `--cache` 参数强制设为 "none"，以避免自动加载之前的指标计算结果。
+
+除了递归公式检查外，此命令还会对指标值进行简单的前瞻偏差（lookahead bias）检测。若需更全面的前瞻偏差检测，请使用 [Lookahead-analysis](lookahead-analysis.md)。
+
+## 递归分析命令参考
 
 --8<-- "commands/recursive-analysis.md"
 
-### Why are odd-numbered default startup candles used?
+### 为什么默认的启动蜡烛数采用奇数？
 
-The default value for startup candles are odd numbers. When the bot fetches candle data from the exchange's API, the last candle is the one being checked by the bot and the rest of the data are the "startup candles".
+默认的启动蜡烛数为奇数。当机器人从交易所API获取蜡烛数据时，最后一根蜡烛是机器人当前正在检查的蜡烛，其余的为“启动蜡烛”。
 
-For example, Binance allows 1000 candles per API call. When the bot receives 1000 candles, the last candle is the "current candle", and the preceding 999 candles are the "startup candles". By setting the startup candle count as 1000 instead of 999, the bot will try to fetch 1001 candles instead. The exchange API will then send candle data in a paginated form, i.e. in case of the Binance API, this will be two groups- one of length 1000 and another of length 1. This results in the bot thinking the strategy needs 1001 candles of data, and so it will download 2000 candles worth of data instead, which means there will be 1 "current candle" and 1999 "startup candles".
+比如，Binance每次API请求允许获取1000根蜡烛。当机器人收到1000根蜡烛时，最后一根是“当前蜡烛”，前面的999根为“启动蜡烛”。如果将启动蜡烛数设置为1000（奇数），而非999（偶数），机器人会尝试获取1001根蜡烛。这样API会分页返回蜡烛数据——以Binance API为例，数据会被拆分成两个部分：一个长度为1000，另一个长度为1。这会导致机器人认为策略需要1001根蜡烛，于是会额外下载2000根蜡烛（其中包括最后一根“当前蜡烛”及全部“启动蜡烛”），实际情况是：有1根“当前蜡烛”与1999根“启动蜡烛”。
 
-Furthermore, exchanges limit the number of consecutive bulk API calls, e.g. Binance allows 5 calls. In this case, only 5000 candles can be downloaded from Binance API without hitting the API rate limit, which means the max `startup_candle_count` you can have is 4999.
+此外，交易所对连续批量API请求有限制，比如Binance限制为每次5个请求。在这种限制下，最多只能下载5000根蜡烛，否则将触发API速率限制，也就是说你能设置的最大 `startup_candle_count` 约为4999。
 
-Please note that this candle limit may be changed in the future by the exchanges without any prior notice.
+请注意，未来交易所可能会调整蜡烛数的限制，而无需提前通知。
 
-### How does the command work?
+### 该命令是如何工作的？
 
-- Firstly an initial indicator calculation is carried out using the supplied timerange to generate a benchmark for indicator values.
-- After setting the benchmark it will then carry out additional runs for each of the different startup candle count values.
-- The command will then compare the indicator values at the last candle rows and report the differences in a table.
+- 首先，用提供的时间范围进行初次指标计算，以生成指标值的基准。
+- 后续会针对不同的 `startup_candle_count` 值进行多次计算。
+- 最后，将各次计算的最后一行指标值进行比较，并以表格形式报告差异。
 
-## Understanding the recursive-analysis output
+## 理解递归分析结果
 
-This is an example of an output results table where at least one indicator has a recursive formula issue:
+以下是一个示例输出结果表，显示至少存在一个指标的递归公式问题：
 
 ```
 | indicators   | 20      | 40      | 80     | 100    | 150     | 300     | 999    |
@@ -55,16 +55,16 @@ This is an example of an output results table where at least one indicator has a
 | rsi_14       | 24.141% | -0.876% | 0.070% | 0.007% | -0.000% | -0.000% | -      |
 ```
 
-The column headers indicate the different `startup_candle_count` used in the analysis. The values in the table indicate the variance of the calculated indicators compared to the benchmark value.
+表格列头表示在分析中使用的不同 `startup_candle_count`。表中的数值显示与基准值的偏差百分比。
 
-`nan%` means the value of that indicator cannot be calculated due to lack of data. In this example, you cannot calculate RSI with length 30 with just 21 candles (1 current candle + 20 startup candles).
+`nan%` 表示该指标由于数据不足无法计算。例如，仅有21根蜡烛，无法计算长度为30的RSI（需要30根蜡烛，实际只有21根，包括1根当前蜡烛和20根启动蜡烛）。
 
-Users should assess the table per indicator to decide if the specified `startup_candle_count` results in a sufficiently small variance so that the indicator does not have any effect on entries and/or exits.
+用户应逐个指标评估表格，判断设定的 `startup_candle_count` 是否能使偏差较小，从而确保指标对入场和离场没有显著影响。
 
-As such, aiming for absolute zero variance (shown by `-` value) might not be the best option, because some indicators might require you to use such a long `startup_candle_count` to have zero variance.
+因此，追求绝对零偏差（用`-`表示）可能并非最佳方案，因为某些指标可能需要较长的 `startup_candle_count` 才能实现零偏差。
 
-## Caveats
+## 警告事项
 
-- `recursive-analysis` will only calculate and compare the indicator values at the last row. The output table reports the percentage differences between the different startup candle count calculations and the original benchmark calculation. Whether it has any actual impact on your entries and exits is not included.
-- The ideal scenario is that indicators will have no variance (or at least very close to 0%) despite the startup candle being varied. In reality, indicators such as EMA are using a recursive formula to calculate indicator values, so the goal is not necessarily to have zero percentage variance, but to have the variance low enough (and therefore `startup_candle_count` high enough) that the recursion inherent in the indicator will not have any real impact on trading decisions.
-- `recursive-analysis` will only run calculations on `populate_indicators` and `@informative` decorator(s). If you put any indicator calculation on `populate_entry_trend` or `populate_exit_trend`, it won't be calculated.
+- `recursive-analysis` 只会检查并比较最后一行的指标值，输出表格显示不同 `startup_candle_count` 计算结果与基准的差异百分比，是否对实际入场或离场策略有影响未在此评估。
+- 理想状态是，无论 `startup_candle_count` 如何变动，指标都应无偏差（或偏差极小）。实际上，像EMA这类指标使用递归公式计算，其目标不一定是实现零偏差，而是保持偏差在较低水平（即 `startup_candle_count` 够高）以确保指标计算的稳定性，而不会对交易决策产生实际影响。
+- `recursive-analysis` 只对 `populate_indicators` 和 `@informative` 装饰器的指标计算生效。如果你在 `populate_entry_trend` 或 `populate_exit_trend` 中添加了指标计算，它不会被检测。

@@ -1,27 +1,27 @@
-# Windows installation
+# Windows 安装
 
-We **strongly** recommend that Windows users use [Docker](docker_quickstart.md) as this will work much easier and smoother (also more secure).
+我们**强烈建议**Windows用户使用 [Docker](docker_quickstart.md)，因为这样会更加易用且流畅（也更安全）。
 
-If that is not possible, try using the Windows Linux subsystem (WSL) - for which the Ubuntu instructions should work.
-Otherwise, please follow the instructions below.
+如果不方便使用Docker，建议尝试使用Windows子系统Linux（WSL）——对应的Ubuntu安装说明应该也适用。  
+否则，请按照下面的指引操作。
 
-All instructions assume that python 3.10+ is installed and available.
+所有说明均假设已安装并可用Python 3.10+。
 
-## Clone the git repository
+## 克隆git仓库
 
-First of all clone the repository by running:
+首先，通过运行以下命令克隆仓库：
 
-``` powershell
+```powershell
 git clone https://github.com/freqtrade/freqtrade.git
 ```
 
-Now, choose your installation method, either automatically via script (recommended) or manually following the corresponding instructions.
+接下来，选择你的安装方式，可以通过脚本自动安装（推荐）或手动按照对应的指南操作。
 
-## Install freqtrade automatically
+## 自动安装freqtrade
 
-### Run the installation script
+### 运行安装脚本
 
-The script will ask you a few questions to determine which parts should be installed.
+该脚本会询问你几个问题，以确定需要安装哪些部分。
 
 ```powershell
 Set-ExecutionPolicy -ExecutionPolicy Bypass
@@ -29,50 +29,48 @@ cd freqtrade
 . .\setup.ps1
 ```
 
-## Install freqtrade manually
+## 手动安装freqtrade
 
-!!! Note "64bit Python version"
-    Please make sure to use 64bit Windows and 64bit Python to avoid problems with backtesting or hyperopt due to the memory constraints 32bit applications have under Windows.
-    32bit python versions are no longer supported under Windows.
+!!! Note "64位Python版本"  
+    请确保使用64位Windows和64位Python，以避免因Windows下32位应用程序的内存限制导致回测或超参数优化时出现问题。  
+    Windows不再支持32位Python版本。
 
-!!! Hint
-    Using the [Anaconda Distribution](https://www.anaconda.com/distribution/) under Windows can greatly help with installation problems. Check out the [Anaconda installation section](installation.md#installation-with-conda) in the documentation for more information.
+!!! Hint  
+    在Windows上使用[Anaconda发行版](https://www.anaconda.com/distribution/)可以大大简化安装过程。更多信息请参考文档中的[Anaconda安装部分](installation.md#installation-with-conda)。
 
-### Install ta-lib
+### 安装ta-lib
 
-Install ta-lib according to the [ta-lib documentation](https://github.com/TA-Lib/ta-lib-python#windows).
+根据[ta-lib官方文档](https://github.com/TA-Lib/ta-lib-python#windows)安装ta-lib。
 
-As compiling from source on windows has heavy dependencies (requires a partial visual studio installation), Freqtrade provides these dependencies (in the binary wheel format) for the latest 3 Python versions (3.10, 3.11 and 3.12) and for 64bit Windows.
-These Wheels are also used by CI running on windows, and are therefore tested together with freqtrade.
+由于在Windows上从源代码编译依赖繁重（需要部分Visual Studio安装），Freqtrade提供了这些依赖的二进制轮子（Wheel格式），适用于最新的3个Python版本（3.10、3.11和3.12）以及64位Windows系统。这些Wheel文件也由在Windows上运行的持续集成（CI）测试，与Freqtrade一同测试通过。
 
-Other versions must be downloaded from the above link.
+其他版本请从上述链接下载。
 
-``` powershell
+```powershell
 cd \path\freqtrade
 python -m venv .venv
 .venv\Scripts\activate.ps1
-# optionally install ta-lib from wheel
-# Eventually adjust the below filename to match the downloaded wheel
+# 可选：安装ta-lib wheel包
+# 根据实际下载的Wheel文件名调整以下命令中的文件名
 pip install --find-links build_helpers\ TA-Lib -U
 pip install -r requirements.txt
 pip install -e .
 freqtrade
 ```
 
-!!! Note "Use Powershell"
-    The above installation script assumes you're using powershell on a 64bit windows.
-    Commands for the legacy CMD windows console may differ.
+!!! Note "使用PowerShell"  
+    上述安装脚本假设你在64位Windows上使用PowerShell。  
+    在传统CMD（命令提示符）中的命令可能略有不同。
 
-### Error during installation on Windows
+### 在Windows上安装时遇到错误
 
-``` bash
+```bash
 error: Microsoft Visual C++ 14.0 is required. Get it with "Microsoft Visual C++ Build Tools": http://landinghub.visualstudio.com/visual-cpp-build-tools
 ```
 
-Unfortunately, many packages requiring compilation don't provide a pre-built wheel. It is therefore mandatory to have a C/C++ compiler installed and available for your python environment to use.
+不幸的是，许多需要编译的包没有提供预编译的Wheel，因此必须在Python环境中安装可用的C/C++编译器。
 
-You can download the Visual C++ build tools from [here](https://visualstudio.microsoft.com/visual-cpp-build-tools/) and install "Desktop development with C++" in it's default configuration. Unfortunately, this is a heavy download / dependency so you might want to consider WSL2 or [docker compose](docker_quickstart.md) first.
+你可以从[这里](https://visualstudio.microsoft.com/visual-cpp-build-tools/)下载Visual C++构建工具，安装“使用C++的桌面开发”（默认配置）。  
+这是一份较大的下载和依赖，你也可以考虑优先使用WSL2或[docker compose](docker_quickstart.md)。  
 
 ![Windows installation](assets/windows_install.png)
-
----

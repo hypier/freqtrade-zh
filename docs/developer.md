@@ -1,86 +1,85 @@
-# Development Help
+# 开发帮助
 
-This page is intended for developers of Freqtrade, people who want to contribute to the Freqtrade codebase or documentation, or people who want to understand the source code of the application they're running.
+本页面面向Freqtrade的开发者、希望为Freqtrade代码库或文档贡献内容的人，或者希望了解自己运行的应用源代码的人。
 
-All contributions, bug reports, bug fixes, documentation improvements, enhancements and ideas are welcome. We [track issues](https://github.com/freqtrade/freqtrade/issues) on [GitHub](https://github.com) and also have a dev channel on [discord](https://discord.gg/p7nuUNVfP7) where you can ask questions.
+欢迎所有的贡献、问题报告、漏洞修复、文档改进、功能增强和创意点子。我们在 [GitHub](https://github.com/freqtrade/freqtrade/issues) 上跟踪问题，也在 [discord](https://discord.gg/p7nuUNVfP7) 上设有开发频道，您可以在这里提问。
 
-## Documentation
+## 文档
 
-Documentation is available at [https://freqtrade.io](https://www.freqtrade.io/) and needs to be provided with every new feature PR.
+文档可在 [https://freqtrade.io](https://www.freqtrade.io/) 获取，提交每个新功能的PR时都需要提供对应的文档。
 
-Special fields for the documentation (like Note boxes, ...) can be found [here](https://squidfunk.github.io/mkdocs-material/reference/admonitions/).
+关于文档的特殊格式（如 Note 框等）可以在 [这里](https://squidfunk.github.io/mkdocs-material/reference/admonitions/) 查找。
 
-To test the documentation locally use the following commands.
+要在本地测试文档，可以执行以下命令：
 
-``` bash
+```bash
 pip install -r docs/requirements-docs.txt
 mkdocs serve
 ```
 
-This will spin up a local server (usually on port 8000) so you can see if everything looks as you'd like it to.
+这样会启动一个本地服务器（通常在端口8000），方便您查看效果。
 
-## Developer setup
+## 开发者环境设置
 
-To configure a development environment, you can either use the provided [DevContainer](#devcontainer-setup), or use the `setup.sh` script and answer "y" when asked "Do you want to install dependencies for dev [y/N]? ".
-Alternatively (e.g. if your system is not supported by the setup.sh script), follow the manual installation process and run `pip3 install -r requirements-dev.txt` - followed by `pip3 install -e .[all]`.
+要配置开发环境，您可以选择使用提供的 [DevContainer](#devcontainer-setup)，也可以运行 `setup.sh` 脚本，并在提示“Do you want to install dependencies for dev [y/N]?”时回答“y”。  
 
-This will install all required tools for development, including `pytest`, `ruff`, `mypy`, and `coveralls`.
+或者，若您的系统不支持 `setup.sh` 脚本，可以手动安装：运行 `pip3 install -r requirements-dev.txt`，之后再运行 `pip3 install -e .[all]`。
 
-Then install the git hook scripts by running `pre-commit install`, so your changes will be verified locally before committing.
-This avoids a lot of waiting for CI already, as some basic formatting checks are done locally on your machine.
+此操作会安装所有开发所需工具，包括 `pytest`、`ruff`、`mypy` 和 `coveralls`。
 
-Before opening a pull request, please familiarize yourself with our [Contributing Guidelines](https://github.com/freqtrade/freqtrade/blob/develop/CONTRIBUTING.md).
+然后，执行 `pre-commit install` 安装git钩子脚本，在提交前自动校验修改内容。这可以避免在CI中重复等待，因为一些基本的格式化检查会在本地完成。
 
-### Devcontainer setup
+在提交PR之前，请熟悉我们的 [贡献指南](https://github.com/freqtrade/freqtrade/blob/develop/CONTRIBUTING.md)。
 
-The fastest and easiest way to get started is to use [VSCode](https://code.visualstudio.com/) with the Remote container extension.
-This gives developers the ability to start the bot with all required dependencies *without* needing to install any freqtrade specific dependencies on your local machine.
+### Devcontainer 设置
 
-#### Devcontainer dependencies
+最便捷的入门方式是使用 [VSCode](https://code.visualstudio.com/) 和远程容器扩展（Remote container extension）。  
+这样开发者可以在不安装任何Freqtrade特定依赖到本地机器的情况下启动机器人。
+
+#### Devcontainer 依赖
 
 * [VSCode](https://code.visualstudio.com/)
 * [docker](https://docs.docker.com/install/)
-* [Remote container extension documentation](https://code.visualstudio.com/docs/remote)
+* [Remote container扩展文档](https://code.visualstudio.com/docs/remote)
 
-For more information about the [Remote container extension](https://code.visualstudio.com/docs/remote), best consult the documentation.
+详细信息建议直接参考 [Remote container扩展的官方文档](https://code.visualstudio.com/docs/remote)。
 
-### Tests
+## 测试
 
-New code should be covered by basic unittests. Depending on the complexity of the feature, Reviewers may request more in-depth unittests.
-If necessary, the Freqtrade team can assist and give guidance with writing good tests (however please don't expect anyone to write the tests for you).
+新代码应包含基础的单元测试。根据功能复杂度，评审者可能会要求补充更深入的单元测试。  
+如有需要，Freqtrade团队可以协助编写高质量的测试（但请不要期望有人为你写测试代码）。
 
-#### How to run tests
+### 运行测试的方法
 
-Use `pytest` in root folder to run all available testcases and confirm your local environment is setup correctly
+在仓库根目录运行 `pytest`，可以测试所有用例，确保你的环境配置正确。
 
-!!! Note "feature branches"
-    Tests are expected to pass on the `develop` and `stable` branches. Other branches may be work in progress with tests not working yet.
+!!! 提示 "feature branches"
+    预计`develop`和`stable`分支上的测试都应通过。其他分支可能仍在开发中，测试可能尚未完成。
 
-#### Checking log content in tests
+### 检查日志内容
 
-Freqtrade uses 2 main methods to check log content in tests, `log_has()` and `log_has_re()` (to check using regex, in case of dynamic log-messages).
-These are available from `conftest.py` and can be imported in any test module.
+Freqtrade 在测试中主要使用两种方法检查日志内容：`log_has()` 和 `log_has_re()`（后者支持正则表达式，用于处理动态日志信息）。  
+它们在 `conftest.py` 中定义，可以在任何测试模块中导入。
 
-A sample check looks as follows:
+一个示例检查如下：
 
-``` python
+```python
 from tests.conftest import log_has, log_has_re
 
 def test_method_to_test(caplog):
     method_to_test()
 
     assert log_has("This event happened", caplog)
-    # Check regex with trailing number ...
+    # 检查带有数字的动态信息
     assert log_has_re(r"This dynamic event happened and produced \d+", caplog)
-
 ```
 
-### Debug configuration
+### 调试配置
 
-To debug freqtrade, we recommend VSCode (with the Python extension) with the following launch configuration (located in `.vscode/launch.json`).
-Details will obviously vary between setups - but this should work to get you started.
+推荐使用 VSCode（配合 Python 扩展）进行调试，配置文件位于 `.vscode/launch.json`。  
+以下是基本的示例配置（具体细节会因环境不同而变化）：
 
-``` json
+```json
 {
     "name": "freqtrade trade",
     "type": "debugpy",
@@ -89,41 +88,38 @@ Details will obviously vary between setups - but this should work to get you sta
     "console": "integratedTerminal",
     "args": [
         "trade",
-        // Optional:
+        // 可选参数：
         // "--userdir", "user_data",
         "--strategy", 
-        "MyAwesomeStrategy",
+        "MyAwesomeStrategy"
     ]
-},
+}
 ```
 
-Command line arguments can be added in the `"args"` array.
-This method can also be used to debug a strategy, by setting the breakpoints within the strategy.
+你可以在 `"args"` 数组中添加命令行参数。  
+此方法还能用来调试策略：在策略代码中设置断点。
 
-A similar setup can also be taken for Pycharm - using `freqtrade` as module name, and setting the command line arguments as "parameters".
+PyCharm 也可以采用类似设置，只需用 `freqtrade` 作为模块名，并在“参数”中配置命令行参数。
 
-??? Tip "Correct venv usage"
-    When using a virtual environment (which you should), make sure that your Editor is using the correct virtual environment to avoid problems or "unknown import" errors.
+??? 提示 "正确使用虚拟环境"
+    使用虚拟环境（这是推荐做法）时，确保编辑器使用正确的虚拟环境，避免出现“未知导入”等问题。
 
-    #### Vscode
-
-    You can select the correct environment in VSCode with the command "Python: Select Interpreter" - which will show you environments the extension detected.
-    If your environment has not been detected, you can also pick a path manually.
+    #### VSCode
+    你可以通过“Python：选择解释器”选择正确环境，扩展会检测到已识别的环境。如果没有检测到，可手动指定路径。
 
     #### Pycharm
+    在“运行/调试配置”窗口中选择合适的环境。  
+    ![Pycharm调试配置](assets/pycharm_debug.png)
 
-    In pycharm, you can select the appropriate Environment in the "Run/Debug Configurations" window.
-    ![Pycharm debug configuration](assets/pycharm_debug.png)
+!!! 注意 "启动目录"
+    假设仓库已检出，编辑器在仓库根目录启动（即 `pyproject.toml` 位于根目录），否则调试配置可能无效。
 
-!!! Note "Startup directory"
-    This assumes that you have the repository checked out, and the editor is started at the repository root level (so pyproject.toml is at the top level of your repository).
+## 错误处理
 
-## ErrorHandling
+所有 Freqtrade 异常都继承自 `FreqtradeException`。  
+但此父类不应直接使用，实际使用时应选择具体的子异常类。
 
-Freqtrade Exceptions all inherit from `FreqtradeException`.
-This general class of error should however not be used directly. Instead, multiple specialized sub-Exceptions exist.
-
-Below is an outline of exception inheritance hierarchy:
+以下是异常继承层次的概述：
 
 ```
 + FreqtradeException
@@ -153,22 +149,22 @@ Below is an outline of exception inheritance hierarchy:
 
 ---
 
-## Plugins
+## 插件
 
-### Pairlists
+### 交易对列表（Pairlists）
 
-You have a great idea for a new pair selection algorithm you would like to try out? Great.
-Hopefully you also want to contribute this back upstream.
+如果您对新的交易对选择算法有想法，欢迎尝试开发！  
+当然，也希望能将您的算法贡献到上游。
 
-Whatever your motivations are - This should get you off the ground in trying to develop a new Pairlist Handler.
+无论动机为何——以下步骤能帮您快速上手开发新的Pairlist Handler。
 
-First of all, have a look at the [VolumePairList](https://github.com/freqtrade/freqtrade/blob/develop/freqtrade/plugins/pairlist/VolumePairList.py) Handler, and best copy this file with a name of your new Pairlist Handler.
+首先，参考 [VolumePairList](https://github.com/freqtrade/freqtrade/blob/develop/freqtrade/plugins/pairlist/VolumePairList.py)，复制此文件，给你的新Pairlist Handler起个新名字。
 
-This is a simple Handler, which however serves as a good example on how to start developing.
+这是一个简单的Handler，作为开发示例非常合适。
 
-Next, modify the class-name of the Handler (ideally align this with the module filename).
+然后，修改这个Handler的类名（建议和模块文件名保持一致）。
 
-The base-class provides an instance of the exchange (`self._exchange`) the pairlist manager (`self._pairlistmanager`), as well as the main configuration (`self._config`), the pairlist dedicated configuration (`self._pairlistconfig`) and the absolute position within the list of pairlists.
+**基础类提供了交易所实例 (`self._exchange`)、交易对列表管理器 (`self._pairlistmanager`)、主配置 (`self._config`)、特定的交易对列表配置 (`self._pairlistconfig`) 以及在列表中的绝对位置 (`self._pairlist_pos`)：**
 
 ```python
         self._exchange = exchange
@@ -178,199 +174,212 @@ The base-class provides an instance of the exchange (`self._exchange`) the pairl
         self._pairlist_pos = pairlist_pos
 ```
 
-!!! Tip
-    Don't forget to register your pairlist in `constants.py` under the variable `AVAILABLE_PAIRLISTS` - otherwise it will not be selectable.
+!!! 提示
+    不要忘了在 `constants.py` 中注册你的交易对列表，在变量 `AVAILABLE_PAIRLISTS` 下，否则它不会被选择。
 
-Now, let's step through the methods which require actions:
+接下来，按照以下要求实现相关方法：
 
-#### Pairlist configuration
+#### 交易对列表配置
 
-Configuration for the chain of Pairlist Handlers is done in the bot configuration file in the element `"pairlists"`, an array of configuration parameters for each Pairlist Handlers in the chain.
+链式交易对列表的配置在机器人配置文件中的 `"pairlists"` 字段内，此字段是一个配置参数数组，定义链中每个交易对列表Handler。
 
-By convention, `"number_assets"` is used to specify the maximum number of pairs to keep in the pairlist. Please follow this to ensure a consistent user experience.
+一般而言，“number_assets”用于指定保留在交易对列表中的最大交易对数。请遵循此规范以确保一致的用户体验。
 
-Additional parameters can be configured as needed. For instance, `VolumePairList` uses `"sort_key"` to specify the sorting value - however feel free to specify whatever is necessary for your great algorithm to be successful and dynamic.
+还可以根据需要添加其他参数。例如，`VolumePairList` 使用 `"sort_key"` 指定排序依据，但也可以根据你的算法定义任何适用的参数。
 
 #### short_desc
 
-Returns a description used for Telegram messages.
+返回用于Telegram消息的描述信息。
 
-This should contain the name of the Pairlist Handler, as well as a short description containing the number of assets. Please follow the format `"PairlistName - top/bottom X pairs"`.
+应包含交易对列表Handler的名称，以及一句简短描述（资产数量），格式为 `"PairlistName - top/bottom X pairs"`。
 
 #### gen_pairlist
 
-Override this method if the Pairlist Handler can be used as the leading Pairlist Handler in the chain, defining the initial pairlist which is then handled by all Pairlist Handlers in the chain. Examples are `StaticPairList` and `VolumePairList`.
+如果此Handler可以作为链条中的第一个交易对列表，定义初始的交易对列表（由所有后续Handler处理），请重写此方法。示例：`StaticPairList` 和 `VolumePairList`。
 
-This is called with each iteration of the bot (only if the Pairlist Handler is at the first location) - so consider implementing caching for compute/network heavy calculations.
+此方法在机器人每次执行时调用（仅当此Handler位于第一个位置），建议考虑实现缓存，避免重复复杂的计算/网络请求。
 
-It must return the resulting pairlist (which may then be passed into the chain of Pairlist Handlers).
+此方法应返回生成的交易对列表（后续的Handler会继续处理）。
 
-Validations are optional, the parent class exposes a `verify_blacklist(pairlist)` and `_whitelist_for_active_markets(pairlist)` to do default filtering. Use this if you limit your result to a certain number of pairs - so the end-result is not shorter than expected.
+**验证步骤为可选，父类提供 `verify_blacklist(pairlist)` 和 `_whitelist_for_active_markets(pairlist)` 来进行默认过滤。**  
+若你限制结果的交易对数量，确保最终的列表不短于预期。
 
 #### filter_pairlist
 
-This method is called for each Pairlist Handler in the chain by the pairlist manager.
+此方法在链中的每个交易对列表Handler中由对列表管理器调用。
 
-This is called with each iteration of the bot - so consider implementing caching for compute/network heavy calculations.
+同样每次执行时调用——建议使用缓存减少重复计算。
 
-It gets passed a pairlist (which can be the result of previous pairlists) as well as `tickers`, a pre-fetched version of `get_tickers()`.
+它会接收交易对列表（可能是前一阶段生成的列表）和 `tickers`（提前获取的市场行情字典，来自 `get_tickers()`）。
 
-The default implementation in the base class simply calls the `_validate_pair()` method for each pair in the pairlist, but you may override it. So you should either implement the `_validate_pair()` in your Pairlist Handler or override `filter_pairlist()` to do something else.
+父类默认实现会对每个交易对调用 `_validate_pair()`，你可以重写此方法来自定义过滤逻辑。所以你应在你的Handler中实现 `_validate_pair()` 或重写 `filter_pairlist()`。
 
-If overridden, it must return the resulting pairlist (which may then be passed into the next Pairlist Handler in the chain).
+如果重写，必须返回筛选后的交易对列表，供下一个Handler使用。
 
-Validations are optional, the parent class exposes a `verify_blacklist(pairlist)` and `_whitelist_for_active_markets(pairlist)` to do default filters. Use this if you limit your result to a certain number of pairs - so the end result is not shorter than expected.
+同样可以调用父类的 `verify_blacklist()` 和 `_whitelist_for_active_markets()` 进行默认过滤。  
+确保结果符合预期长度。
 
-In `VolumePairList`, this implements different methods of sorting, does early validation so only the expected number of pairs is returned.
+在 `VolumePairList` 中，这个方法还会实现不同的排序策略、提前验证确保返回数量符合预期。
 
-##### sample
+##### 示例
 
-``` python
-    def filter_pairlist(self, pairlist: list[str], tickers: dict) -> List[str]:
-        # Generate dynamic whitelist
-        pairs = self._calculate_pairlist(pairlist, tickers)
-        return pairs
+```python
+def filter_pairlist(self, pairlist: list[str], tickers: dict) -> List[str]:
+    # 生成动态白名单
+    pairs = self._calculate_pairlist(pairlist, tickers)
+    return pairs
 ```
 
-### Protections
+### 保护措施（Protections）
 
-Best read the [Protection documentation](plugins.md#protections) to understand protections.
-This Guide is directed towards Developers who want to develop a new protection.
+建议阅读 [Protection 文档](plugins.md#protections)，了解保护机制。  
+本指南面向希望开发新保护的开发者。
 
-No protection should use datetime directly, but use the provided `date_now` variable for date calculations. This preserves the ability to backtest protections.
+没有任何保护应直接使用 `datetime`，而应使用提供的 `date_now` 变量进行日期计算，保证保护措施可回测。
 
-!!! Tip "Writing a new Protection"
-    Best copy one of the existing Protections to have a good example.
+??? 提示 "开发新保护"
+    最佳实践是复制已有的保护方案作为示例。
 
-#### Implementation of a new protection
+#### 实现新保护
 
-All Protection implementations must have `IProtection` as parent class.
-For that reason, they must implement the following methods:
+所有保护类必须继承自 `IProtection`。
+
+必须实现以下方法：
 
 * `short_desc()`
 * `global_stop()`
-* `stop_per_pair()`.
+* `stop_per_pair()`
 
-`global_stop()` and `stop_per_pair()` must return a ProtectionReturn object, which consists of:
+`global_stop()` 和 `stop_per_pair()` 必须返回 `ProtectionReturn` 对象，其内容包括：
 
-* lock pair - boolean
-* lock until - datetime - until when should the pair be locked (will be rounded up to the next new candle)
-* reason - string, used for logging and storage in the database
-* lock_side - long, short or '*'.
+* lock_pair（布尔值）——是否锁定交易对
+* lock_until（datetime）——锁定截止时间（会被四舍五入到下一根新蜡烛）
+* reason（字符串）——日志与数据库存储用途
+* lock_side（长、短或'*'）——锁定的方向
 
-The `until` portion should be calculated using the provided `calculate_lock_end()` method.
+`until` 时间段应通过调用提供的 `calculate_lock_end()` 方法进行计算。
 
-All Protections should use `"stop_duration"` / `"stop_duration_candles"` to define how long a pair (or all pairs) should be locked.
-The content of this is made available as `self._stop_duration` to the each Protection.
+所有保护措施应使用 `"stop_duration"` / `"stop_duration_candles"` 来定义锁定时间（可以是秒、蜡烛数等），内容在保护类中作为 `self._stop_duration` 提供。
 
-If your protection requires a look-back period, please use `"lookback_period"` / `"lockback_period_candles"` to keep all protections aligned.
+如果需要考虑回溯期，请使用 `"lookback_period"` / `"lockback_period_candles"` 来同步所有保护逻辑。
 
-#### Global vs. local stops
+#### 全局与局部停止（Global vs. Local Stops）
 
-Protections can have 2 different ways to stop trading for a limited :
+保护机制可以选择两种方式停止交易：
 
-* Per pair (local)
-* For all Pairs (globally)
+* 针对单个交易对（局部）
+* 针对所有交易对（全局）
 
-##### Protections - per pair
+##### 针对单个交易对的保护（Per pair）
 
-Protections that implement the per pair approach must set `has_local_stop=True`.
-The method `stop_per_pair()` will be called whenever a trade closed (exit order completed).
+实现局部停止的保护类必须设置 `has_local_stop=True`。
 
-##### Protections - global protection
+`stop_per_pair()` 在每次交易结束（退出订单完成）时调用。
 
-These Protections should do their evaluation across all pairs, and consequently will also lock all pairs from trading (called a global PairLock).
-Global protection must set `has_global_stop=True` to be evaluated for global stops.
-The method `global_stop()` will be called whenever a trade closed (exit order completed).
+##### 全局保护（Global Protection）
 
-##### Protections - calculating lock end time
+此类保护会在所有交易对上进行评估，影响所有交易对的交易（“全局交易锁”）。  
+要实现全局停止，必须设置 `has_global_stop=True`。
 
-Protections should calculate the lock end time based on the last trade it considers.
-This avoids re-locking should the lookback-period be longer than the actual lock period.
+`global_stop()` 在每次交易结束后调用。
 
-The `IProtection` parent class provides a helper method for this in `calculate_lock_end()`.
+##### 计算锁定结束时间
+
+保护措施应基于最近一次交易，计算锁定截止时间，以避免重复锁定。  
+`calculate_lock_end()` 方法提供了辅助。
 
 ---
 
-## Implement a new Exchange (WIP)
+## 实现新的交易所（WIP）
 
-!!! Note
-    This section is a Work in Progress and is not a complete guide on how to test a new exchange with Freqtrade.
+!!! 注意
+    本部分仍在开发中，不是完整指南，不能保证所有步骤已涵盖。
 
-!!! Note
-    Make sure to use an up-to-date version of CCXT before running any of the below tests.
-    You can get the latest version of ccxt by running `pip install -U ccxt` with activated virtual environment.
-    Native docker is not supported for these tests, however the available dev-container will support all required actions and eventually necessary changes.
+!!! 注意
+    在运行任何测试前，请确保已使用最新版本的 CCXT (`pip install -U ccxt`)。
 
-Most exchanges supported by CCXT should work out of the box.
+大部分由 CCXT 支持的交易所可以直接使用。
 
-To quickly test the public endpoints of an exchange, add a configuration for your exchange to `tests/exchange_online/conftest.py` and run these tests with `pytest --longrun tests/exchange_online/test_ccxt_compat.py`.
-Completing these tests successfully a good basis point (it's a requirement, actually), however these won't guarantee correct exchange functioning, as this only tests public endpoints, but no private endpoint (like generate order or similar).
+快速测试交易所公开接口的方法：在 `tests/exchange_online/conftest.py` 添加配置，然后用以下命令运行：
 
-Also try to use `freqtrade download-data` for an extended timerange (multiple months) and verify that the data downloaded correctly (no holes, the specified timerange was actually downloaded).
+```bash
+pytest --longrun tests/exchange_online/test_ccxt_compat.py
+```
 
-These are prerequisites to have an exchange listed as either Supported or Community tested (listed on the homepage).
-The below are "extras", which will make an exchange better (feature-complete) - but are not absolutely necessary for either of the 2 categories.
+成功通过这些测试是基础（这是必要条件），但并不保证交易所所有功能都正常，因为这里只测试公共接口，私有接口（如下单、资金查询）还需额外验证。
 
-Additional tests / steps to complete:
+建议使用 `freqtrade download-data` 下载较长时间段的数据（如数月），确认下载无误（无空洞，时间范围正确）。
 
-* Verify data provided by `fetch_ohlcv()` - and eventually adjust `ohlcv_candle_limit` for this exchange
-* Check L2 orderbook limit range (API documentation) - and eventually set as necessary
-* Check if balance shows correctly (*)
-* Create market order (*)
-* Create limit order (*)
-* Cancel order (*)
-* Complete trade (enter + exit) (*)
-  * Compare result calculation between exchange and bot
-  * Ensure fees are applied correctly (check the database against the exchange)
+以下操作是将交易所列入“支持”或“社区测试”列表的前提。  
+一些“扩展”步骤能让交易所更完善（功能更全），但不是必要条件。
 
-(*) Requires API keys and Balance on the exchange.
+附加建议/步骤：
 
-### Stoploss On Exchange
+* 验证 `fetch_ohlcv()` 返回数据，必要时调整 `ohlcv_candle_limit`
+* 检查L2订单深度API的限制范围（API文档）
+* 检查余额是否正确显示（需要API密钥）
+* 测试市价单（需要API密钥）
+* 测试限价单（需要API密钥）
+* 测试订单取消（需要API密钥）
+* 完整的交易流程（开仓+平仓）（需要API密钥）
+  * 比较交易所与机器人结果
+  * 校验手续费是否正确应用（与API端点对比）
 
-Check if the new exchange supports Stoploss on Exchange orders through their API.
+*** 注意：需要API密钥和资金账户在对应交易所***
 
-Since CCXT does not provide unification for Stoploss On Exchange yet, we'll need to implement the exchange-specific parameters ourselves. Best look at `binance.py` for an example implementation of this. You'll need to dig through the documentation of the Exchange's API on how exactly this can be done. [CCXT Issues](https://github.com/ccxt/ccxt/issues) may also provide great help, since others may have implemented something similar for their projects.
+### 支持止损（Stoploss）/在交易所订单
 
-### Incomplete candles
+确认新交易所是否支持在API中设置Stoploss订单。
 
-While fetching candle (OHLCV) data, we may end up getting incomplete candles (depending on the exchange).
-To demonstrate this, we'll use daily candles (`"1d"`) to keep things simple.
-We query the api (`ct.fetch_ohlcv()`) for the timeframe and look at the date of the last entry. If this entry changes or shows the date of a "incomplete" candle, then we should drop this since having incomplete candles is problematic because indicators assume that only complete candles are passed to them, and will generate a lot of false buy signals. By default, we're therefore removing the last candle assuming it's incomplete.
+因CCXT尚未统一支持“在交易所订单设置止损”，需要自行实现相关参数。  
+建议参考 `binance.py` 中的实现示例。  
+需详细阅读交易所API的文档，了解具体实现方式。  
+[CCXT Issues](https://github.com/ccxt/ccxt/issues) 可能提供帮助，尤其是其他项目已实现类似功能的案例。
 
-To check how the new exchange behaves, you can use the following snippet:
+### 不完整的蜡烛（Incomplete candles）
 
-``` python
+在获取K线（OHLCV）数据时，可能会得到未完整的蜡烛（取决于交易所）。  
+此处以每日蜡烛 (`"1d"`) 为例，以简化操作。
+
+查询示例：
+
+```python
 import ccxt
 from datetime import datetime, timezone
 from freqtrade.data.converter import ohlcv_to_dataframe
-ct = ccxt.binance()  # Use the exchange you're testing
+
+ct = ccxt.binance()  # 替换为测试的交易所
 timeframe = "1d"
-pair = "BTC/USDT"  # Make sure to use a pair that exists on that exchange!
+pair = "BTC/USDT"  # 确保该交易对在交易所存在
 raw = ct.fetch_ohlcv(pair, timeframe=timeframe)
 
-# convert to dataframe
+# 转DataFrame
 df1 = ohlcv_to_dataframe(raw, timeframe, pair=pair, drop_incomplete=False)
 
 print(df1.tail(1))
 print(datetime.now(timezone.utc))
 ```
 
-``` output
+输出示例：
+
+```
                          date      open      high       low     close  volume  
 499 2019-06-08 00:00:00+00:00  0.000007  0.000007  0.000007  0.000007   26264344.0  
 2019-06-09 12:30:27.873327
 ```
 
-The output will show the last entry from the Exchange as well as the current UTC date.
-If the day shows the same day, then the last candle can be assumed as incomplete and should be dropped (leave the setting `"ohlcv_partial_candle"` from the exchange-class untouched / True). Otherwise, set `"ohlcv_partial_candle"` to `False` to not drop Candles (shown in the example above).
-Another way is to run this command multiple times in a row and observe if the volume is changing (while the date remains the same).
+最后一行显示的是交易所的最新数据，后一行是当前UTC时间。  
+如果日期相同，说明最后一个蜡烛可能未完整，应删除（保持`"ohlcv_partial_candle"`为True）；  
+否则，将参数设为`False`，不删除蜡烛（如上示例）。  
+另一种检测方法：多次运行代码，观察成交量变化情况。
 
-### Update binance cached leverage tiers
+### 更新 Binance 递归杠杆等级
 
-Updating leveraged tiers should be done regularly - and requires an authenticated account with futures enabled.
+定期更新杠杆等级信息：需要已启用期货账户。
 
-``` python
+示例代码：
+
+```python
 import ccxt
 import json
 from pathlib import Path
@@ -379,125 +388,130 @@ exchange = ccxt.binance({
     'apiKey': '<apikey>',
     'secret': '<secret>',
     'options': {'defaultType': 'swap'}
-    })
+})
 _ = exchange.load_markets()
 
 lev_tiers = exchange.fetch_leverage_tiers()
 
-# Assumes this is running in the root of the repository.
+# 假设在仓库的根目录运行
 file = Path('freqtrade/exchange/binance_leverage_tiers.json')
 json.dump(dict(sorted(lev_tiers.items())), file.open('w'), indent=2)
-
 ```
 
-This file should then be contributed upstream, so others can benefit from this, too.
+此文件应提交到上游，供他人使用。
 
-## Updating example notebooks
+## 更新示例笔记本
 
-To keep the jupyter notebooks aligned with the documentation, the following should be ran after updating a example notebook.
+为了保证Jupyter笔记本与文档同步，更新示例笔记本后，应运行：
 
-``` bash
+```bash
 jupyter nbconvert --ClearOutputPreprocessor.enabled=True --inplace freqtrade/templates/strategy_analysis_example.ipynb
 jupyter nbconvert --ClearOutputPreprocessor.enabled=True --to markdown freqtrade/templates/strategy_analysis_example.ipynb --stdout > docs/strategy_analysis_example.md
 ```
 
-## Continuous integration
+## 持续集成（CI）
 
-This documents some decisions taken for the CI Pipeline.
+部分 CI 流程设计概要：
 
-* CI runs on all OS variants, Linux (ubuntu), macOS and Windows.
-* Docker images are build for the branches `stable` and `develop`, and are built as multiarch builds, supporting multiple platforms via the same tag.
-* Docker images containing Plot dependencies are also available as `stable_plot` and `develop_plot`.
-* Docker images contain a file, `/freqtrade/freqtrade_commit` containing the commit this image is based of.
-* Full docker image rebuilds are run once a week via schedule.
-* Deployments run on ubuntu.
-* ta-lib binaries are contained in the build_helpers directory to avoid fails related to external unavailability.
-* All tests must pass for a PR to be merged to `stable` or `develop`.
+* CI 支持所有操作系统：Ubuntu、macOS、Windows。
+* 主分支（`stable`）和开发分支（`develop`）的 Docker 镜像会定期重新构建，支持多架构。
+* 包含Plot依赖的镜像采用 `*_plot` 后缀。
+* Docker 镜像会记录基于的提交（存于 `/freqtrade/freqtrade_commit` 文件）。
+* 每周定期运行完整镜像重建。
+* 部署在Ubuntu上。
+* `build_helpers` 目录内包括 ta-lib 二进制，避免因外部依赖引发失败。
+* 提交PR前，所有测试都必须通过，才能合入`stable`或`develop`。
 
-## Creating a release
+## 发布流程
 
-This part of the documentation is aimed at maintainers, and shows how to create a release.
+本部分面向维护者，介绍版本发布流程。
 
-### Create release branch
+### 创建发布分支
 
-!!! Note
-    Make sure that the `stable` branch is up-to-date!
+!!! 注意
+    请确保 `stable` 分支是最新的！
 
-First, pick a commit that's about one week old (to not include latest additions to releases).
+选择一个大约一周前的提交（避免包含最新提交），新建分支：
 
-``` bash
-# create new branch
+```bash
+# 创建新分支
 git checkout -b new_release <commitid>
 ```
 
-Determine if crucial bugfixes have been made between this commit and the current state, and eventually cherry-pick these.
+确认该提交到当前分支之间没有重要修复遗漏。如果有，挑选（cherry-pick）相关提交。
 
-* Merge the release branch (stable) into this branch.
-* Edit `freqtrade/__init__.py` and add the version matching the current date (for example `2019.7` for July 2019). Minor versions can be `2019.7.1` should we need to do a second release that month. Version numbers must follow allowed versions from PEP0440 to avoid failures pushing to pypi.
-* Commit this part.
-* Push that branch to the remote and create a PR against the **stable branch**.
-* Update develop version to next version following the pattern `2019.8-dev`.
+然后，将`stable`分支合并到此分支。
 
-### Create changelog from git commits
+编辑`freqtrade/__init__.py`，加入当前日期的版本号（如`2019.7`，表示2019年7月）。  
+当月如果需要二次发布，可以用`2019.7.1`等次版本号。  
+版本号必须符合 [PEP440](https://peps.python.org/pep-0440/) 规范。
 
-``` bash
-# Needs to be done before merging / pulling that branch.
+提交此修改。
+
+推送分支到远端仓库，并对`stable`分支提出PR。
+
+在`develop`分支上，将版本号更新为下一版本（如`2019.8-dev`）。
+
+### 生成变更记录（Changelog）
+
+PR合并前执行：
+
+```bash
 git log --oneline --no-decorate --no-merges stable..new_release
 ```
 
-To keep the release-log short, best wrap the full git changelog into a collapsible details section.
+建议用折叠符号包裹完整变更日志：
 
 ```markdown
 <details>
-<summary>Expand full changelog</summary>
+<summary>展开完整变更日志</summary>
 
-... Full git changelog
+... 全部git提交信息
 
 </details>
 ```
 
-### FreqUI release
+### 发布FreqUI
 
-If FreqUI has been updated substantially, make sure to create a release before merging the release branch.
-Make sure that freqUI CI on the release is finished and passed before merging the release.
+若FreqUI有重要更新，应在合入发布分支前先创建FreqUI的发布版本。  
+确保FreqUI的CI任务已完成且通过，再合入版本。
 
-### Create github release / tag
+### 创建GitHub发布（Tag）
 
-Once the PR against stable is merged (best right after merging):
+在PR合入后（推荐在合入的同时或稍后）：
 
-* Use the button "Draft a new release" in the Github UI (subsection releases).
-* Use the version-number specified as tag.
-* Use "stable" as reference (this step comes after the above PR is merged).
-* Use the above changelog as release comment (as codeblock).
-* Use the below snippet for the new release
+* 进入GitHub，点击“Draft a new release”
+* 使用标签（Tag）指定版本号
+* 以“stable”作为基础
+* 将变更记录粘贴为说明（支持Markdown）
+* 参考以下示例：
 
-??? Tip "Release template"
+??? 提示 “发布模板”
     ````
     --8<-- "includes/release_template.md"
     ````
+    
 
-## Releases
+
+## 版本发布
 
 ### pypi
 
-!!! Warning "Manual Releases"
-    This process is automated as part of Github Actions.  
-    Manual pypi pushes should not be necessary.
+!!! 警告 “手动发布”
+    这是自动化流程的一部分，不需要人工操作。  
 
-??? example "Manual release"
-    To manually create a pypi release, please run the following commands:
+??? 示例 “手动发布”
+    若需手动上传到PyPI，可执行以下步骤（前提是已安装`wheel`和`twine`，且在PyPI帐户拥有权限）：
 
-    Additional requirement: `wheel`, `twine` (for uploading), account on pypi with proper permissions.
+```bash
+pip install -U build
+python -m build --sdist --wheel
 
-    ``` bash
-    pip install -U build
-    python -m build --sdist --wheel
+# PyPI测试环境（验证发布效果）
+twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 
-    # For pypi test (to check if some change to the installation did work)
-    twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+# 正式环境
+twine upload dist/*
+```
 
-    # For production:
-    twine upload dist/*
-    ```
-
-    Please don't push non-releases to the productive / real pypi instance.
+请勿将非正式版本推送到正式PyPI，以免引发发布问题。

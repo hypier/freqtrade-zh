@@ -1,5 +1,4 @@
-```
-usage: freqtrade hyperopt [-h] [-v] [--no-color] [--logfile FILE] [-V]
+用法：freqtrade hyperopt [-h] [-v] [--no-color] [--logfile FILE] [-V]
                           [-c PATH] [-d PATH] [--userdir PATH] [-s NAME]
                           [--strategy-path PATH] [--recursive-strategy-search]
                           [--freqaimodel NAME] [--freqaimodel-path PATH]
@@ -17,63 +16,42 @@ usage: freqtrade hyperopt [-h] [-v] [--no-color] [--logfile FILE] [-V]
                           [--hyperopt-loss NAME] [--disable-param-export]
                           [--ignore-missing-spaces] [--analyze-per-epoch]
 
-options:
-  -h, --help            show this help message and exit
+选项：
+  -h, --help            显示此帮助信息并退出
   -i TIMEFRAME, --timeframe TIMEFRAME
-                        Specify timeframe (`1m`, `5m`, `30m`, `1h`, `1d`).
+                        指定时间周期（`1m`, `5m`, `30m`, `1h`, `1d`）
   --timerange TIMERANGE
-                        Specify what timerange of data to use.
+                        指定要使用的数据时间范围
   --data-format-ohlcv {json,jsongz,feather,parquet}
-                        Storage format for downloaded candle (OHLCV) data.
-                        (default: `feather`).
+                        下载的蜡烛图数据存储格式。
+                        默认值：`feather`
   --max-open-trades INT
-                        Override the value of the `max_open_trades`
-                        configuration setting.
+                        覆盖配置中的`max_open_trades`值
   --stake-amount STAKE_AMOUNT
-                        Override the value of the `stake_amount` configuration
-                        setting.
-  --fee FLOAT           Specify fee ratio. Will be applied twice (on trade
-                        entry and exit).
+                        覆盖配置中的`stake_amount`值
+  --fee FLOAT           指定交易手续费比例。将在买入和卖出时均应用。
   -p PAIRS [PAIRS ...], --pairs PAIRS [PAIRS ...]
-                        Limit command to these pairs. Pairs are space-
-                        separated.
-  --hyperopt-path PATH  Specify additional lookup path for Hyperopt Loss
-                        functions.
+                        限制命令仅对这些交易对执行。交易对用空格分隔。
+  --hyperopt-path PATH  指定附加的超参数优化损失函数查找路径
   --eps, --enable-position-stacking
-                        Allow buying the same pair multiple times (position
-                        stacking).
+                        允许对同一交易对多次买入（仓位叠加）
   --enable-protections, --enableprotections
-                        Enable protections for backtesting.Will slow
-                        backtesting down by a considerable amount, but will
-                        include configured protections
+                        启用回测保护措施。会显著减慢回测速度，但会包含已配置的保护策略
   --dry-run-wallet DRY_RUN_WALLET, --starting-balance DRY_RUN_WALLET
-                        Starting balance, used for backtesting / hyperopt and
-                        dry-runs.
+                        起始余额，用于回测/超参数优化和Dry-Run
   --timeframe-detail TIMEFRAME_DETAIL
-                        Specify detail timeframe for backtesting (`1m`, `5m`,
-                        `30m`, `1h`, `1d`).
-  -e INT, --epochs INT  Specify number of epochs (default: 100).
+                        指定回测的详细时间周期（`1m`, `5m`, `30m`, `1h`, `1d`）
+  -e INT, --epochs INT  指定训练轮次（默认：100）
   --spaces {all,buy,sell,roi,stoploss,trailing,protection,trades,default} [{all,buy,sell,roi,stoploss,trailing,protection,trades,default} ...]
-                        Specify which parameters to hyperopt. Space-separated
-                        list.
-  --print-all           Print all results, not only the best ones.
-  --print-json          Print output in JSON format.
+                        指定进行超参数优化的参数空间。空格分隔的列表。
+  --print-all           打印所有结果，而不仅仅是最优结果
+  --print-json          以JSON格式输出
   -j JOBS, --job-workers JOBS
-                        The number of concurrently running jobs for
-                        hyperoptimization (hyperopt worker processes). If -1
-                        (default), all CPUs are used, for -2, all CPUs but one
-                        are used, etc. If 1 is given, no parallel computing
-                        code is used at all.
-  --random-state INT    Set random state to some positive integer for
-                        reproducible hyperopt results.
-  --min-trades INT      Set minimal desired number of trades for evaluations
-                        in the hyperopt optimization path (default: 1).
+                        同时运行的超参数优化任务数（hyperopt工作进程数）。如果设为-1（默认），则使用所有CPU；-2表示使用除一个CPU外的所有CPU，以此类推。如果设为1，则不进行并行计算。
+  --random-state INT    设置随机种子为某个正整数，以确保超参数优化结果可重现
+  --min-trades INT      设置超参数优化中评估所需的最小交易次数（默认：1）
   --hyperopt-loss NAME, --hyperoptloss NAME
-                        Specify the class name of the hyperopt loss function
-                        class (IHyperOptLoss). Different functions can
-                        generate completely different results, since the
-                        target for optimization is different. Built-in
-                        Hyperopt-loss-functions are:
+                        指定超参数优化的损失函数类名（IHyperOptLoss）。不同的函数会产生完全不同的优化目标。内置的超参数损失函数包括：
                         ShortTradeDurHyperOptLoss, OnlyProfitHyperOptLoss,
                         SharpeHyperOptLoss, SharpeHyperOptLossDaily,
                         SortinoHyperOptLoss, SortinoHyperOptLossDaily,
@@ -82,41 +60,32 @@ options:
                         MaxDrawDownPerPairHyperOptLoss,
                         ProfitDrawDownHyperOptLoss, MultiMetricHyperOptLoss
   --disable-param-export
-                        Disable automatic hyperopt parameter export.
+                        禁用自动超参数导出
   --ignore-missing-spaces, --ignore-unparameterized-spaces
-                        Suppress errors for any requested Hyperopt spaces that
-                        do not contain any parameters.
-  --analyze-per-epoch   Run populate_indicators once per epoch.
+                        忽略请求的超参数空间中没有参数的错误
+  --analyze-per-epoch   每个轮次运行一次`populate_indicators`
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
+常用参数：
+  -v, --verbose         详细模式（-vv 获取更多信息，-vvv 获取全部消息）
+  --no-color            禁用超参数优化结果的色彩显示。如果你将结果重定向到文件，这可能会有用。
   --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        'syslog', 'journald'. See the documentation for more
-                        details.
-  -V, --version         show program's version number and exit
+                        将日志输出到指定文件。特殊值包括：
+                        'syslog', 'journald'。详见相关文档。
+  -V, --version         显示程序版本信息并退出
   -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
+                        指定配置文件（默认：
+                        `userdir/config.json` 或 `config.json`，以存在的文件为准）。可以使用多个--config选项。也可以设为`-`，从标准输入读取配置。
   -d PATH, --datadir PATH, --data-dir PATH
-                        Path to directory with historical backtesting data.
+                        指定包含历史回测数据的目录路径
   --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+                        指定用户数据目录路径
 
-Strategy arguments:
+策略参数：
   -s NAME, --strategy NAME
-                        Specify strategy class name which will be used by the
-                        bot.
-  --strategy-path PATH  Specify additional strategy lookup path.
+                        指定将由交易机器人使用的策略类名
+  --strategy-path PATH  指定额外的策略查找路径
   --recursive-strategy-search
-                        Recursively search for a strategy in the strategies
-                        folder.
-  --freqaimodel NAME    Specify a custom freqaimodels.
+                        递归搜索策略文件夹中的策略
+  --freqaimodel NAME    指定自定义的freqaimodel
   --freqaimodel-path PATH
-                        Specify additional lookup path for freqaimodels.
-
-```
+                        指定freqaimodel的额外查找路径

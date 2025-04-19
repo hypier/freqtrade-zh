@@ -1,72 +1,67 @@
-# Lookahead analysis
+# 远见分析
 
-This page explains how to validate your strategy in terms of look ahead bias.
+本页介绍如何验证你的策略是否存在远见偏差（look ahead bias）。
 
-Checking look ahead bias is the bane of any strategy since it is sometimes very easy to introduce backtest bias -
-but very hard to detect.
+检查远见偏差是任何策略中的一大难题，因为有时很容易在回测中引入偏差——但很难察觉。
 
-Backtesting initializes all timestamps at once and calculates all indicators in the beginning.
-This means that if your indicators or entry/exit signals could look into future candles and falsify your backtest.
+回测会在开始时同时初始化所有时间戳，并计算所有指标。这意味着，如果你的指标或者入场/出场信号能够“看到”未来的K线，从而导致回测结果不真实。
 
-Lookahead-analysis requires historic data to be available.
-To learn how to get data for the pairs and exchange you're interested in,
-head over to the [Data Downloading](data-download.md) section of the documentation.
+远见分析要求可以获取历史数据。
+如果你想了解如何获取目标交易对和交易所的数据，可以参考文档的 [Data Downloading](data-download.md) 部分。
 
-This command is built upon backtesting since it internally chains backtests and pokes at the strategy to provoke it to show look ahead bias.
-This is done by not looking at the strategy itself - but at the results it returned.
-The results are things like changed indicator-values and moved entries/exits compared to the full backtest.
+此命令是在回测基础上开发的，它内部串联多个回测，并对策略进行检测，旨在揭示远见偏差。
+具体做法不是观察策略本身，而是分析其返回的结果。
+这些结果包括指标值的变化、以及相较于完整回测后，入场/出场点移位等情况。
 
-You can use commands of [Backtesting](backtesting.md).
-It also supports the lookahead-analysis of freqai strategies.
+你可以使用 [Backtesting](backtesting.md) 的相关命令。
+该命令也支持对 freqai 策略的远见分析。
 
-- `--cache` is forced to "none".
-- `--max-open-trades` is forced to be at least equal to the number of pairs.
-- `--dry-run-wallet` is forced to be basically infinite (1 billion).
-- `--stake-amount` is forced to be a static 10000 (10k).
-- `--enable-protections` is forced to be off.
+- `--cache` 被强制设为 "none"
+- `--max-open-trades` 被强制设为至少等于交易对的数量
+- `--dry-run-wallet` 被强制设为几乎无限（10亿）
+- `--stake-amount` 被强制设为静态的10000（10k）
+- `--enable-protections` 被强制关闭
 
-Those are set to avoid users accidentally generating false positives.
+这些设置旨在避免用户无意中产生误判。
 
-## Lookahead-analysis command reference
+## 远见分析命令参考
 
 --8<-- "commands/lookahead-analysis.md"
 
-!!! Note ""
-    The above Output was reduced to options `lookahead-analysis` adds on top of regular backtesting commands.
+!!! 注意 ""
+    上述输出内容已缩减为 `lookahead-analysis` 在常规回测命令基础上新增的选项。
 
-### Summary
+### 概述
 
-Checks a given strategy for look ahead bias via lookahead-analysis
-Look ahead bias means that the backtest uses data from future candles thereby not making it viable beyond backtesting
-and producing false hopes for the one backtesting.
+通过远见分析检测某个策略是否存在远见偏差。
+远见偏差意味着回测使用了未来的K线数据，从而使回测结果在实际应用中不具有参考价值，容易误导用户。
 
-### Introduction
+### 引言
 
-Many strategies - without the programmer knowing - have fallen prey to look ahead bias.
+许多策略——甚至在开发者不知情的情况下——都可能陷入远见偏差。
 
-Any backtest will populate the full dataframe including all time stamps at the beginning.
-If the programmer is not careful or oblivious how things work internally
-(which sometimes can be really hard to find out) then it will just look into the future making the strategy amazing
-but not realistic.
+任何回测都是在开始时就将所有时间戳完整填充到数据框中。
+如果开发者不够细心，或者不了解内部工作原理（有时候理解较难），那么回测可能无意中“看到”未来数据，导致策略看起来表现出色但不符合现实。
 
-This command is made to try to verify the validity in the form of the aforementioned look ahead bias.
+此命令旨在验证上述远见偏差，从而检验策略的有效性。
 
-### How does the command work?
+### 命令的工作原理
 
-It will start with a backtest of all pairs to generate a baseline for indicators and entries/exits.
-After the backtest ran, it will look if the `minimum-trade-amount` is met
-and if not cancel the lookahead-analysis for this strategy.
+它会先对所有交易对进行一次回测，以生成指标和入场/出场点的基准数据。
+回测完成后，会检查是否满足 `minimum-trade-amount` 条件，
+如果未满足，则中止对该策略的远见分析。
 
-After setting the baseline it will then do additional runs for every entry and exit separately.
-When a verification-backtest is done, it will compare the indicators as the signal (either entry or exit) and report the bias.
-After all signals have been verified or falsified a result-table will be generated for the user to see.
+在建立基准之后，还会对每个入场和出场信号单独进行额外的验证回测。
+验证完毕后，会比较指标值（作为信号——入场或出场）和偏差情况。
+所有信号验证完毕后，会生成一份结果表让用户查看。
 
-### Caveats
+### 注意事项
 
-- `lookahead-analysis` can only verify / falsify the trades it calculated and verified.
-If the strategy has many different signals / signal types, it's up to you to select appropriate parameters to ensure that all signals have triggered at least once. Not triggered signals will not have been verified.
-This could lead to a false-negative (the strategy will then be reported as non-biased).
-- `lookahead-analysis` has access to everything that backtesting has too.
-Please don't provoke any configs like enabling position stacking.
-If you decide to do so, then make doubly sure that you won't ever run out of `max_open_trades` amount and neither leftover money in your wallet.
-- In the results table, the `biased_indicators` column will falsely flag FreqAI target indicators defined in `set_freqai_targets()` as biased. These are not biased and can safely be ignored.
+- `lookahead-analysis` 仅能验证/否定其自身所计算和验证的交易。
+如果策略包含许多不同类型的信号，用户需合理选择参数，确保所有信号至少触发一次。未触发的信号不会被验证。
+可能导致的结果是“假阴性”——即策略被判定为无偏，但实际上存在偏差。
+- `lookahead-analysis` 还能访问回测时所有的数据。
+请勿尝试通过开启仓位堆叠等配置进行“作弊”。
+若要启用此类配置，请确保不会超出 `max_open_trades` 数量，也不要留有钱包中的余款。
+
+- 在结果表中，`biased_indicators` 列可能会错误标记在 `set_freqai_targets()` 中定义的目标指标为偏差。这些指标并不存在偏差，可以安全忽略。

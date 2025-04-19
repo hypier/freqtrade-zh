@@ -1,143 +1,144 @@
-# Trading with Leverage
+# 杠杆交易
 
-!!! Warning "Beta feature"
-    This feature is still in it's testing phase. Should you notice something you think is wrong please let us know via Discord or via Github Issue.
+!!! 警告 "测试版功能"  
+    该功能仍处于测试阶段。如您发现任何问题，请通过 Discord 或 Github Issue 向我们反馈。
 
-!!! Note "Multiple bots on one account"
-    You can't run 2 bots on the same account with leverage. For leveraged / margin trading, freqtrade assumes it's the only user of the account, and all liquidation levels are calculated based on this assumption.
+!!! 说明 "一个账户上可以运行多个机器人"  
+    不支持在同一账户上使用杠杆运行两个机器人。对于杠杆/保证金交易，freqtrade 假设该账户为唯一用户，所有清算水平均基于此假设进行计算。
 
-!!! Danger "Trading with leverage is very risky"
-    Do not trade with a leverage > 1 using a strategy that hasn't shown positive results in a live run using the spot market. Check the stoploss of your strategy. With a leverage of 2, a stoploss of 0.5 (50%) would be too low, and these trades would be liquidated before reaching that stoploss.
-    We do not assume any responsibility for eventual losses that occur from using this software or this mode.
+!!! 危险 "使用杠杆交易风险极高"  
+    不要在未在现货市场环境下进行实盘测试并取得正向效果的策略中使用杠杆> 1进行交易。请检查您的策略止损设置。以2倍杠杆为例，0.5（50%）的止损非常低，超出此止损的交易很可能会在到达止损前被强制清算。  
+    我们不对因使用此软件或此模式而导致的任何损失负责。
 
-    Please only use advanced trading modes when you know how freqtrade (and your strategy) works.
-    Also, never risk more than what you can afford to lose.
+    仅在您充分了解 freqtrade（以及您的策略）工作原理后，才使用高级交易模式。  
+    另外，不要承担超出自己承受能力的风险。
 
-If you already have an existing strategy, please read the [strategy migration guide](strategy_migration.md#strategy-migration-between-v2-and-v3) to migrate your strategy from a freqtrade v2 strategy, to strategy of version 3 which can short and trade futures.
+如果您已有现成的策略，请阅读 [strategy migration guide](strategy_migration.md#strategy-migration-between-v2-and-v3)，以将您的策略从 freqtrade v2 迁移到支持空头和期货交易的 v3 版本策略。
 
-## Shorting
+## 空头操作
 
-Shorting is not possible when trading with [`trading_mode`](#leverage-trading-modes) set to `spot`. To short trade, `trading_mode` must be set to `margin`(currently unavailable) or [`futures`](#futures), with [`margin_mode`](#margin-mode) set to `cross`(currently unavailable) or [`isolated`](#isolated-margin-mode)
+当 [`trading_mode`](#leverage-trading-modes) 设置为 `spot` 时，不支持空头交易。  
+要进行空头，必须将 `trading_mode` 设置为 `margin`（当前不可用）或 [`futures`](#futures)，同时将 [`margin_mode`](#margin-mode) 设置为 `cross`（当前不可用）或 [`isolated`](#isolated-margin-mode)。
 
-For a strategy to short, the strategy class must set the class variable `can_short = True`
+要让策略支持空头，策略类必须定义类变量 `can_short = True`。
 
-Please read [strategy customization](strategy-customization.md#entry-signal-rules) for instructions on how to set signals to enter and exit short trades.
+请参考 [strategy customization](strategy-customization.md#entry-signal-rules) 以获取如何设置空头入场和离场信号的指引。
 
-## Understand `trading_mode`
+## 理解 `trading_mode`
 
-The possible values are: `spot` (default), `margin`(*Currently unavailable*) or `futures`.
+可能的取值有：`spot`（默认）、`margin`（*目前不可用*）或 `futures`。
 
-### Spot
+### 现货（Spot）
 
-Regular trading mode (low risk)
+常规交易模式（低风险）
 
-- Long trades only (No short trades).
-- No leverage.
-- No Liquidation.
-- Profits gained/lost are equal to the change in value of the assets (minus trading fees).
+- 仅支持多头交易（无空头）。
+- 不使用杠杆。
+- 不会被强制清算。
+- 利润或亏损等于资产价值的变动（扣除交易手续费）。
 
-### Leverage trading modes
+### 杠杆交易模式
 
-With leverage, a trader borrows capital from the exchange. The capital must be re-payed fully to the exchange (potentially with interest), and the trader keeps any profits, or pays any losses, from any trades made using the borrowed capital.
+使用杠杆时，交易者从交易所借入资金。借入的资金需全额偿还（可能包含利息），而交易者可以保留所有盈利，或承担所有亏损，这些亏损是由借入资金所产生。
 
-Because the capital must always be re-payed, exchanges will **liquidate** (forcefully sell the traders assets) a trade made using borrowed capital when the total value of assets in the leverage account drops to a certain point (a point where the total value of losses is less than the value of the collateral that the trader actually owns in the leverage account), in order to ensure that the trader has enough capital to pay the borrowed assets back to the exchange. The exchange will also charge a **liquidation fee**, adding to the traders losses.
+因为借入资金必须偿还，交易所会在资产总值跌至一定水平时进行**强制清算**（即强制卖出交易者资产），以保证交易者有足够的资金偿还借贷。强制清算时，交易所还会收取**清算手续费**，这会增加交易者的亏损。
 
-For this reason, **DO NOT TRADE WITH LEVERAGE IF YOU DON'T KNOW EXACTLY WHAT YOUR DOING. LEVERAGE TRADING IS HIGH RISK, AND CAN RESULT IN THE VALUE OF YOUR ASSETS DROPPING TO 0 VERY QUICKLY, WITH NO CHANCE OF INCREASING IN VALUE AGAIN.**
+因此，**不要在不清楚自己在做什么的情况下使用杠杆交易。杠杆交易风险极高，可能导致你的资产价值迅速降至零，且没有机会再度增值。**
 
-#### Margin (currently unavailable)
+#### 保证金（目前不可用）
 
-Trading occurs on the spot market, but the exchange lends currency to you in an amount equal to the chosen leverage. You pay the amount lent to you back to the exchange with interest, and your profits/losses are multiplied by the leverage specified.
+在现货市场进行交易，但交易所会根据所选杠杆倍率借出对应金额的货币。你需要偿还借入的金额（含利息），而利润和亏损会乘以指定的杠杆倍数。
 
-#### Futures
+#### 期货
 
-Perpetual swaps (also known as Perpetual Futures) are contracts traded at a price that is closely tied to the underlying asset they are based off of (ex.). You are not trading the actual asset but instead are trading a derivative contract. Perpetual swap contracts can last indefinitely, in contrast to futures or option contracts.
+永久掉期合约（Perpetual swaps，又称永续合约）以紧密关联标的资产的价格进行交易（如 `ETH/USDT:USDT`）。你实际上不是交易实际资产，而是交易衍生品合约。这类合约可以无限持仓时间，相较于期货或期权合约。
 
-In addition to the gains/losses from the change in price of the futures contract, traders also exchange _funding fees_, which are gains/losses worth an amount that is derived from the difference in price between the futures contract and the underlying asset. The difference in price between a futures contract and the underlying asset varies between exchanges.
+除了因价格变动而带来的盈亏外，交易者还会支付/获得 _资金费_，这是一种根据期货合约价格与标的资产价格差异产生的盈亏。不同交易所的期货合约与标的资产的价格差异会有所不同。
 
-To trade in futures markets, you'll have to set `trading_mode` to "futures".
-You will also have to pick a "margin mode" (explanation below) - with freqtrade currently only supporting isolated margin.
+使用期货市场时，需要将 `trading_mode` 设置为 `"futures"`。  
+同时，还需选择“保证金模式”（下文说明）——目前 freqtrade 仅支持 `_isolated_` 隔离保证金。
 
 ``` json
 "trading_mode": "futures",
 "margin_mode": "isolated"
 ```
 
-##### Pair namings
+##### 交易对命名
 
-Freqtrade follows the [ccxt naming conventions for futures](https://docs.ccxt.com/#/README?id=perpetual-swap-perpetual-future).
-A futures pair will therefore have the naming of `base/quote:settle` (e.g. `ETH/USDT:USDT`).
+freqtrade 遵循 [ccxt 关于期货的命名规范](https://docs.ccxt.com/#/README?id=perpetual-swap-perpetual-future)。  
+因此，期货交易对的格式为 `base/quote:settle`（例如 `ETH/USDT:USDT`）。
 
-### Margin mode
+### 保证金模式
 
-On top of `trading_mode` - you will also have to configure your `margin_mode`.
-While freqtrade currently only supports one margin mode, this will change, and by configuring it now you're all set for future updates.
+在设置 `trading_mode` 的基础上，还需要配置 `margin_mode`。  
+目前 freqtrade 只支持一种保证金模式，但未来会支持更多，将提前配置以便后续升级。
 
-The possible values are: `isolated`, or `cross`(*currently unavailable*).
+可能的值为：`isolated`（隔离保证金）或 `cross`（跨账户保证金）（*目前不可用*）。
 
-#### Isolated margin mode
+#### 隔离保证金模式
 
-Each market(trading pair), keeps collateral in a separate account
+每个交易市场（交易对）拥有独立的保证金账户。
 
 ``` json
 "margin_mode": "isolated"
 ```
 
-#### Cross margin mode
+#### 跨账户保证金模式
 
-One account is used to share collateral between markets (trading pairs). Margin is taken from total account balance to avoid liquidation when needed.
+一个账户用于在多个交易市场（交易对）之间共享保证金。当需要时，从总账户余额中划出保证金，避免强制清算。
 
 ``` json
 "margin_mode": "cross"
 ```
 
-Please read the [exchange specific notes](exchanges.md) for exchanges that support this mode and how they differ.
+请查阅 [exchanges.md](exchanges.md) 中支持此模式的交易所说明及其差异。
 
-## Set leverage to use
+## 设置杠杆倍数
 
-Different strategies and risk profiles will require different levels of leverage.
-While you could configure one static leverage value - freqtrade offers you the flexibility to adjust this via [strategy leverage callback](strategy-callbacks.md#leverage-callback) - which allows you to use different leverages by pair, or based on some other factor benefitting your strategy result.
+不同策略和风险偏好需要不同的杠杆倍数。  
+虽然你可以配置一个固定的杠杆值，freqtrade 也提供了通过 [strategy leverage callback](strategy-callbacks.md#leverage-callback) 动态调整杠杆的灵活性——可以按交易对或其他因素调整杠杆，从而优化策略效果。
 
-If not implemented, leverage defaults to 1x (no leverage).
+如果未配置，默认为 1x（无杠杆）。
 
-!!! Warning
-    Higher leverage also equals higher risk - be sure you fully understand the implications of using leverage!
+!!! 警告  
+    更高的杠杆意味着更高的风险——务必确保你充分理解使用杠杆的后果！
 
-## Understand `liquidation_buffer`
+## 理解 `liquidation_buffer`
 
-*Defaults to `0.05`*
-
-A ratio specifying how large of a safety net to place between the liquidation price and the stoploss to prevent a position from reaching the liquidation price.
-This artificial liquidation price is calculated as:
+*默认值为 `0.05`*  
+一个比例，用于在清算价格与止损价格之间设立安全垫，以防止仓位触及清算价格。  
+此人工计算的清算价格公式为：
 
 `freqtrade_liquidation_price = liquidation_price ± (abs(open_rate - liquidation_price) * liquidation_buffer)`
 
-- `±` = `+` for long trades
-- `±` = `-` for short trades
+- `±` 对多头为 `+`，对空头为 `-`  
+- 取值范围为：任何在 0.0 到 0.99 之间的浮点数
 
-Possible values are any floats between 0.0 and 0.99
+**示例：** 某交易在价格为10 coin/USDT 时开仓，清算价为8 coin/USDT，设置 `liquidation_buffer` 为 0.05，那么此交易的最低止损价为：  
+`8 + ((10 - 8) * 0.05) = 8 + 0.1 = 8.1`
 
-**ex:** If a trade is entered at a price of 10 coin/USDT, and the liquidation price of this trade is 8 coin/USDT, then with `liquidation_buffer` set to `0.05` the minimum stoploss for this trade would be $8 + ((10 - 8) * 0.05) = 8 + 0.1 = 8.1$
+!!! 危险 "`liquidation_buffer` 设置为0.0或较低值，有可能导致频繁清算及清算手续费"  
+    目前 freqtrade 可以计算清算价格，但不会计算清算手续费。将 `liquidation_buffer` 设置为 0.0 或使用较低的值，可能会导致仓位被频繁清算。freqtrade 不会追踪清算手续费，因此清算可能导致利润/亏损计算不准确。若使用较低的 `liquidation_buffer`，建议启用 `stoploss_on_exchange`（如果交易所支持）以降低风险。
 
-!!! Danger "A `liquidation_buffer` of 0.0, or a low `liquidation_buffer` is likely to result in liquidations, and liquidation fees"
-    Currently Freqtrade is able to calculate liquidation prices, but does not calculate liquidation fees. Setting your `liquidation_buffer` to 0.0, or using a low `liquidation_buffer` could result in your positions being liquidated. Freqtrade does not track liquidation fees, so liquidations will result in inaccurate profit/loss results for your bot. If you use a low `liquidation_buffer`, it is recommended to use `stoploss_on_exchange` if your exchange supports this.
+## 不支持的资金费率
 
-## Unavailable funding rates
+对于期货数据，交易所通常提供期货蜡烛图、标记价格及资金费率（funding rate）。  
+但常见情况是蜡烛图和标记价格可用，而资金费率不可用。这可能影响回测时段，即可能只能测试近期时段，无法测试更早的历史数据，导致出现 `No data found. Terminating.` 错误。  
+解决方案为在配置中添加 `futures_funding_rate` 选项，如 [configuration.md](configuration.md) 所示，建议将其设置为 `0`，除非你知道特定交易对、交易所和时间段的资金费率。将其设置为非0值，可能会对策略中的 `custom_exit`、`custom_stoploss` 等函数中的盈利计算产生严重影响。
 
-For futures data, exchanges commonly provide the futures candles, the marks, and the funding rates. However, it is common that whilst candles and marks might be available, the funding rates are not. This can affect backtesting timeranges, i.e. you may only be able to test recent timeranges and not earlier, experiencing the `No data found. Terminating.` error. To get around this, add the `futures_funding_rate` config option as listed in [configuration.md](configuration.md), and it is recommended that you set this to `0`, unless you know a given specific funding rate for your pair, exchange and timerange. Setting this to anything other than `0` can have drastic effects on your profit calculations within strategy, e.g. within the `custom_exit`, `custom_stoploss`, etc functions.
+!!! 警告 "这会导致回测结果不准确"  
+    这样不会覆盖交易所提供的真实资金费率，但请注意设置虚假的资金费率会使回测在没有资金费率数据的历史时段结果不准确。
 
-!!! Warning "This will mean your backtests are inaccurate."
-    This will not overwrite funding rates that are available from the exchange, but bear in mind that setting a false funding rate will mean backtesting results will be inaccurate for historical timeranges where funding rates are not available.
+### 开发者专用
 
-### Developer
+#### 保证金模式
 
-#### Margin mode
+对于空头：支付`借入` 货币利息的资金将在平仓时一并买入（也就是说，空头平仓时买入的金额大于开仓时卖出的金额）。
 
-For shorts, the currency which pays the interest fee for the `borrowed` currency is purchased at the same time of the closing trade (This means that the amount purchased in short closing trades is greater than the amount sold in short opening trades).
+对于多头：支付利息的货币已由用户持有，无需额外买入。利息会在 `close_value` 中扣除。
 
-For longs, the currency which pays the interest fee for the `borrowed` will already be owned by the user and does not need to be purchased. The interest is subtracted from the `close_value` of the trade.
+所有相关费用都包含在交易中的 `current_profit` 计算内。
 
-All Fees are included in `current_profit` calculations during the trade.
+#### 期货模式
 
-#### Futures mode
-
-Funding fees are either added or subtracted from the total amount of a trade
+资金费率会被直接加到或从交易总金额中扣除。

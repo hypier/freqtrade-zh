@@ -1,60 +1,49 @@
-```
-usage: freqtrade recursive-analysis [-h] [-v] [--no-color] [--logfile FILE]
-                                    [-V] [-c PATH] [-d PATH] [--userdir PATH]
-                                    [-s NAME] [--strategy-path PATH]
-                                    [--recursive-strategy-search]
-                                    [--freqaimodel NAME]
-                                    [--freqaimodel-path PATH] [-i TIMEFRAME]
-                                    [--timerange TIMERANGE]
-                                    [--data-format-ohlcv {json,jsongz,feather,parquet}]
-                                    [-p PAIRS [PAIRS ...]]
-                                    [--startup-candle STARTUP_CANDLE [STARTUP_CANDLE ...]]
+用法：freqtrade recursive-analysis [-h] [-v] [--no-color] [--logfile FILE]
+                                        [-V] [-c PATH] [-d PATH] [--userdir PATH]
+                                        [-s NAME] [--strategy-path PATH]
+                                        [--recursive-strategy-search]
+                                        [--freqaimodel NAME]
+                                        [--freqaimodel-path PATH] [-i TIMEFRAME]
+                                        [--timerange TIMERANGE]
+                                        [--data-format-ohlcv {json,jsongz,feather,parquet}]
+                                        [-p PAIRS [PAIRS ...]]
+                                        [--startup-candle STARTUP_CANDLE [STARTUP_CANDLE ...]]
 
-options:
-  -h, --help            show this help message and exit
+参数说明：
+  -h, --help            显示帮助信息并退出
   -i TIMEFRAME, --timeframe TIMEFRAME
-                        Specify timeframe (`1m`, `5m`, `30m`, `1h`, `1d`).
+                        指定时间周期（`1m`、`5m`、`30m`、`1h`、`1d`）
   --timerange TIMERANGE
-                        Specify what timerange of data to use.
+                        指定要使用的数据时间范围
   --data-format-ohlcv {json,jsongz,feather,parquet}
-                        Storage format for downloaded candle (OHLCV) data.
-                        (default: `feather`).
+                        下载的蜡烛（OHLCV）数据存储格式
+                        （默认：`feather`）
   -p PAIRS [PAIRS ...], --pairs PAIRS [PAIRS ...]
-                        Limit command to these pairs. Pairs are space-
-                        separated.
+                        将命令限制在这些交易对上，交易对用空格分隔
   --startup-candle STARTUP_CANDLE [STARTUP_CANDLE ...]
-                        Specify startup candles to be checked (`199`, `499`,
-                        `999`, `1999`).
+                        指定需要检查的启动蜡烛（如：`199`、`499`、
+                        `999`、`1999`）
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
+常用参数：
+  -v, --verbose         输出详细信息（-vv 获取更多信息，-vvv 获取所有消息）
+  --no-color            禁用超参数优化结果的颜色显示。如果你将输出重定向到文件，这可能会很有用
   --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        'syslog', 'journald'. See the documentation for more
-                        details.
-  -V, --version         show program's version number and exit
+                        指定日志文件。特殊值包括：
+                        'syslog'、'journald'。详细信息请参阅文档。
+  -V, --version         显示程序版本信息并退出
   -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
+                        指定配置文件（默认：`userdir/config.json`或`config.json`，以存在的文件为准）。可以使用多个--config参数。也可以设为`-`，从标准输入读取配置
   -d PATH, --datadir PATH, --data-dir PATH
-                        Path to directory with historical backtesting data.
+                        历史回测数据目录路径
   --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+                        用户数据目录路径
 
-Strategy arguments:
+策略相关参数：
   -s NAME, --strategy NAME
-                        Specify strategy class name which will be used by the
-                        bot.
-  --strategy-path PATH  Specify additional strategy lookup path.
+                        指定将由机器人使用的策略类名
+  --strategy-path PATH  指定额外的策略查找路径
   --recursive-strategy-search
-                        Recursively search for a strategy in the strategies
-                        folder.
-  --freqaimodel NAME    Specify a custom freqaimodels.
+                        递归搜索策略文件夹中的策略
+  --freqaimodel NAME    指定自定义的freqaimodel模型
   --freqaimodel-path PATH
-                        Specify additional lookup path for freqaimodels.
-
-```
+                        指定freqaimodel模型的额外查找路径

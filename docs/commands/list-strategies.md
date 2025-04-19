@@ -1,34 +1,29 @@
-```
-usage: freqtrade list-strategies [-h] [-v] [--no-color] [--logfile FILE] [-V]
-                                 [-c PATH] [-d PATH] [--userdir PATH]
-                                 [--strategy-path PATH] [-1]
-                                 [--recursive-strategy-search]
+用法：freqtrade list-strategies [-h] [-v] [--no-color] [--logfile FILE] [-V]
+                                   [-c PATH] [-d PATH] [--userdir PATH]
+                                   [--strategy-path PATH] [-1]
+                                   [--recursive-strategy-search]
 
-options:
-  -h, --help            show this help message and exit
-  --strategy-path PATH  Specify additional strategy lookup path.
-  -1, --one-column      Print output in one column.
+选项：
+  -h, --help            显示此帮助信息并退出
+  --strategy-path PATH  指定额外的策略查找路径
+  -1, --one-column      以单列格式输出结果
   --recursive-strategy-search
-                        Recursively search for a strategy in the strategies
-                        folder.
+                        递归搜索策略文件夹中的策略
 
-Common arguments:
-  -v, --verbose         Verbose mode (-vv for more, -vvv to get all messages).
-  --no-color            Disable colorization of hyperopt results. May be
-                        useful if you are redirecting output to a file.
+常用参数：
+  -v, --verbose         详细模式（-vv 表示更多信息，-vvv 获取全部消息）
+  --no-color            禁用超参数优化结果的彩色显示。若将输出重定向到文件，可能会有用。
   --logfile FILE, --log-file FILE
-                        Log to the file specified. Special values are:
-                        'syslog', 'journald'. See the documentation for more
-                        details.
-  -V, --version         show program's version number and exit
+                        将日志记录到指定文件。特殊值包括：
+                        'syslog'、'journald'。详情请参阅文档。
+  -V, --version         显示程序版本号并退出
   -c PATH, --config PATH
-                        Specify configuration file (default:
-                        `userdir/config.json` or `config.json` whichever
-                        exists). Multiple --config options may be used. Can be
-                        set to `-` to read config from stdin.
+                        指定配置文件（默认：
+                        `userdir/config.json` 或 `config.json`，以存在的文件为准）。
+                        可以使用多个 --config 选项。也可以设为 `-` 以从标准输入读取配置。
   -d PATH, --datadir PATH, --data-dir PATH
-                        Path to directory with historical backtesting data.
+                        指定包含历史回测数据的目录路径
   --userdir PATH, --user-data-dir PATH
-                        Path to userdata directory.
+                        指定用户数据目录路径
 
 ```
